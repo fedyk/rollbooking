@@ -1,0 +1,8 @@
+{
+  "name": "Rollbooking main application",
+  "description": "Rolbooking main nodejs application",
+  "repository": "https://git.heroku.com/rollbooking.git",
+  "addons": [
+    ""
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "rollbooking.com",
+  "version": "0.0.1",
+  "description": "Rolbooking main nodejs application",
+  "repository": "https://git.heroku.com/rollbooking.git",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "8.9.1"
+  },
+  "author": "Andrew Fedyk",
+  "license": "ISC",
+  "dependencies": {
+    "debug": "3.1.0",
+    "koa": "2.5.0",
+    "nodemon": "1.17.3"
+  }
+}
