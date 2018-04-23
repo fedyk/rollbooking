@@ -3,6 +3,12 @@
   "description": "Rolbooking main nodejs application",
   "repository": "https://git.heroku.com/rollbooking.git",
   "addons": [
-    ""
-  ]
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "10"
+      }
+    }
+  ],
+  "image": "heroku/nodejs"
 }

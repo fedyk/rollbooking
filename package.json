@@ -5,7 +5,7 @@
   "repository": "https://git.heroku.com/rollbooking.git",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon --inspect index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
@@ -15,7 +15,14 @@
   "license": "ISC",
   "dependencies": {
     "debug": "3.1.0",
+    "googleapis": "^28.1.0",
     "koa": "2.5.0",
-    "nodemon": "1.17.3"
+    "koa-body": "^2.5.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "koa-views": "^6.1.4",
+    "nodemon": "1.17.3",
+    "nunjucks": "^3.1.2",
+    "pg": "^7.4.1"
   }
 }
