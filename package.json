@@ -1,0 +1,28 @@
+{
+  "name": "rollbooking.com",
+  "version": "0.0.1",
+  "description": "The first version of Rollbooking web app",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "ioredis": "^3.2.2",
+    "koa": "^2.5.1",
+    "koa-body": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-logger": "^3.2.0",
+    "koa-passport": "^4.0.1",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.8.1",
+    "koa-static": "^4.0.2",
+    "koa-views": "^6.1.4",
+    "passport-google-oauth20": "^1.0.0",
+    "swig": "^1.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest --forceExit --coverage --verbose"
+  },
+  "author": "Rollbooking Team",
+  "license": "ISC"
+}

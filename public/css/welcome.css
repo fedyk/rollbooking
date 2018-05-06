@@ -1,0 +1,24 @@
+.welcome {
+  position: relative;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.welcome__container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.welcome__logo {
+  transform: translate(0, -150%);
+  opacity: 0;
+  transition: transform 0.75s ease-out, opacity .5s;
+}
+
+.welcome__logo--ready {
+  transform: translate(0, 0);
+  opacity: 1;
+}
