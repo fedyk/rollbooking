@@ -15,13 +15,16 @@
     "koa-session": "^5.8.1",
     "koa-static": "^4.0.2",
     "koa-views": "^6.1.4",
+    "migrate": "^1.5.0",
     "passport-google-oauth20": "^1.0.0",
+    "pg": "^7.4.3",
     "swig": "^1.4.2"
   },
   "devDependencies": {},
   "scripts": {
     "start": "node index.js",
-    "test": "jest --forceExit --coverage --verbose"
+    "test": "jest --forceExit --coverage --verbose",
+    "migrate": "migrate up --store=./src/lib/migrations-store.js"
   },
   "author": "Rollbooking Team",
   "license": "ISC"

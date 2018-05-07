@@ -5,6 +5,10 @@ if (result.error) {
   throw result.error
 }
 
+if (!process.env.DATABASE_URL) {
+  console.log('No database config. Set DATABASE_URL environment variable.');
+}
+
 if (!process.env.REDIS_URL) {
   console.log('No redis config. Set REDIS_URL environment variable.');
 }
