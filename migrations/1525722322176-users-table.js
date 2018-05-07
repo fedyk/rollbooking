@@ -7,7 +7,7 @@ module.exports.up = async () => {
   await client.query(`CREATE TABLE IF NOT EXISTS users
   (
     id serial,
-    google_id integer NOT NULL DEFAULT 0,
+    google_id BIGINT NOT NULL DEFAULT 0,
     google_meta json,
     email varchar(254) NOT NULL,
     first_name varchar(32),
@@ -17,6 +17,7 @@ module.exports.up = async () => {
     last_login integer,
     CONSTRAINT users_id_pkey PRIMARY KEY (id),
     CONSTRAINT users_email_key UNIQUE (email),
+    CONSTRAINT users_google_id_key UNIQUE (google_id),
     CONSTRAINT users_logins_check CHECK (logins >= 0)
   );`)
 
