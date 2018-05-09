@@ -12,8 +12,9 @@ const bodyParser = require('koa-bodyparser');
 const Koa = require('koa');
 const app = module.exports = new Koa();
 
-const welcome = require('./controllers/welcome');
 const auth = require('./controllers/auth');
+const welcome = require('./controllers/welcome');
+const calendar = require('./controllers/calendar');
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
@@ -35,6 +36,7 @@ app.use(passport.session());
 // route definitions
 
 router.get('/', welcome)
+  .get('/calendar', calendar)
   .get('/login', auth.login)
   .get('/logout', auth.logout)
   .use('/auth', passport.router.routes())

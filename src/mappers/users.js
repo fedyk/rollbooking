@@ -6,5 +6,5 @@ module.exports.mapGoogleProfileToUser = (profile, meta) => ({
   last_name: (profile.name && profile.name.familyName || ''),
   password: '',
   logins: 0,
-  last_login: Date.now(),
+  last_login: new Date(),
 })

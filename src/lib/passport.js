@@ -11,13 +11,15 @@ passport.serializeUser(async function(user, done) {
 })
 
 passport.deserializeUser(async function(id, done) {
+  const client = await connect();
   try {
-    const user = await getUserById(id)
+    const user = await getUserById(client, id)
     done(null, user)
   }
   catch(err) {
     done(err)
   }
+  client.release();
 });
 
 passport.use(new GoogleStrategy({
@@ -26,22 +28,24 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_OAUTH2_REDIRECT_URL,
 }, async function(accessToken, refreshToken, profile, done) {
   const client = await connect();
-  debugger
-  try {
-    const user = await getUserByGoogleId(profile.id, client)
 
+  try {
+    const user = await getUserByGoogleId(client, profile.id)
+
+    // User already present is DB
     if (user) {
       return client.release(), done(null, user);
     }
 
+    // Create new user model
     const newUser = mapGoogleProfileToUser(profile, { accessToken, refreshToken, scope })
 
-    const createdUser = await createUser(newUser)
+    // Put user in database
+    const createdUser = await createUser(client, newUser)
 
     done(null, createdUser)
   }
   catch(e) {
-    debugger
     done(e);
   }
 
@@ -54,7 +58,11 @@ router.get('/google', passport.authenticate('google', {
   failureRedirect: '/'
 }));
 
+router.get('/logout', ctx => {
+  ctx.logout()
+  ctx.redirect('/login')
+});
+
 module.exports.router = router;
 module.exports.initialize = () => passport.initialize();
 module.exports.session = () => passport.session();
-
