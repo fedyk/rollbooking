@@ -29,4 +29,16 @@ if (!process.env.GOOGLE_OAUTH2_REDIRECT_URL) {
   console.log('No google auth config. Set GOOGLE_OAUTH2_REDIRECT_URL environment variable.');
 }
 
+if (!process.env.GOOGLE_API_CLIENT_ID) {
+  console.log('No google auth config. Set GOOGLE_API_CLIENT_ID environment variable.');
+}
+
+if (!process.env.GOOGLE_API_CLIENT_SECRET) {
+  console.log('No google auth config. Set GOOGLE_API_CLIENT_SECRET environment variable.');
+}
+
+if (!process.env.GOOGLE_API_REDIRECT_URIS) {
+  console.log('No google auth config. Set GOOGLE_API_REDIRECT_URIS environment variable.');
+}
+
 module.exports = result.parsed;

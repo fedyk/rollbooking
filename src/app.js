@@ -1,6 +1,5 @@
 const path = require('path');
 const serve = require('koa-static');
-const koaBody = require('koa-body');
 const logger = require('koa-logger');
 const router = require('koa-router')();
 const config = require('./lib/config');
@@ -14,7 +13,8 @@ const app = module.exports = new Koa();
 
 const auth = require('./controllers/auth');
 const welcome = require('./controllers/welcome');
-const calendar = require('./controllers/calendar');
+const schedule = require('./controllers/schedule');
+const onboarding = require('./controllers/onboarding');
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
@@ -27,7 +27,6 @@ const posts = [];
 app.use(bodyParser());
 app.use(logger());
 app.use(render);
-app.use(koaBody());
 app.use(session(app));
 app.use(serve(path.join(__dirname, '../public')));
 app.use(passport.initialize());
@@ -36,7 +35,9 @@ app.use(passport.session());
 // route definitions
 
 router.get('/', welcome)
-  .get('/calendar', calendar)
+  .get('/schedule/:salonId', passport.onlyAuthenticated, schedule)
+  .get('/onboarding', passport.onlyAuthenticated, onboarding)
+  .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
   .get('/login', auth.login)
   .get('/logout', auth.logout)
   .use('/auth', passport.router.routes())

@@ -2,12 +2,27 @@
 
 {% extends '../layout.html' %}
 
-{% block title %}Onboarding{% endblock %}
+{% block title %}Create salon{% endblock %}
 
 {% block head %}
+  <link rel="stylesheet" href="css/onboarding.css?1">
 {% endblock %}
 
 {% block content %}
-  <h1>Onboarding</h1>
-  <pre>{{ JSON.stringify(user, 2, 2) }}</pre>
+  <div class="onboarding">
+    <div class="onboarding__container">
+      <div class="onboarding__error">{{error}}</div>
+
+      <form action="" method="POST">
+        <h1>Welcome</h1>
+        <h2>Lets create your first salon</h2>
+
+        <label for="salon_name">Name</label>
+        <input id="salon_name" name="name" value="New Salon" autofocus="" placeholder="Name" onfocus="this.select()" />
+
+        <button class="">Next</button>
+      </form>
+
+    </div>
+  </div>
 {% endblock %}

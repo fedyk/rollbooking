@@ -63,6 +63,9 @@ router.get('/logout', ctx => {
   ctx.redirect('/login')
 });
 
+const onlyAuthenticated = 
+
 module.exports.router = router;
 module.exports.initialize = () => passport.initialize();
 module.exports.session = () => passport.session();
+module.exports.onlyAuthenticated = async (ctx, next) => !ctx.isAuthenticated() ? ctx.redirect('/login') : next()
