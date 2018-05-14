@@ -10,6 +10,7 @@ module.exports.up = async () => {
     user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     salon_id integer NOT NULL REFERENCES salons(id) ON DELETE CASCADE,
     role varchar(32) NOT NULL,
+    meta json,
     calendar_id varchar(128) NOT NULL,
     created TIMESTAMPTZ NOT NULL,
     updated TIMESTAMPTZ NOT NULL,

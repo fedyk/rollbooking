@@ -20,3 +20,14 @@ module.exports.createUser = async (client, user) => {
 
   return rows.length > 0 ? rows[0] : null
 }
+
+module.exports.updateUser = async (client, user, id) => {
+  const keys = Object.keys(user)
+  const params = keys.map((v, i) => `$` + (i + 1))
+  const values = Object.values(user)
+  const query = `UPDATE users SET (${keys.join(', ')}) = ROW(${params.join(', ')}) WHERE id = $${params.length + 1} RETURNING *;`;
+
+  const { rows } = await client.query(query, values.concat(id));
+
+  return rows.length > 0 ? rows[0] : null
+}

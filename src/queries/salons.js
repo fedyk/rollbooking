@@ -25,3 +25,9 @@ module.exports.createSalonWorker = async (client, salonWorker) => {
 
   return rows.length > 0 ? rows[0] : null
 }
+
+module.exports.getWorkerSalonsIds = async (client, workerId) => {
+  const { rows } = await client.query('SELECT * FROM salon_workers WHERE user_id=$1', [workerId])
+
+  return rows
+}

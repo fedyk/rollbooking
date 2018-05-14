@@ -8,6 +8,8 @@ module.exports.up = async () => {
   (
     id serial,
     name varchar(254) NOT NULL,
+    timezone varchar(64),
+    meta json,
     created TIMESTAMPTZ NOT NULL,
     updated TIMESTAMPTZ NOT NULL,
     CONSTRAINT salons_id_pkey PRIMARY KEY (id)

@@ -1,6 +1,7 @@
 const { google } = require('googleapis');
 const { authorize } = require('../lib/googleapis')
 const debug = require('debug')('saga:create-salon-saga')
+const { updateUser } = require('../queries/users')
 const { createSalon, createSalonWorker } = require('../queries/salons')
 
 async function createSalonSaga(data, user, client) {
@@ -13,6 +14,7 @@ async function createSalonSaga(data, user, client) {
 
   const newSalon = {
     name: data.name,
+    timezone: data.timezone,
     created: new Date(),
     updated: new Date(),
   }
@@ -23,7 +25,6 @@ async function createSalonSaga(data, user, client) {
     version: 'v3',
     auth
   });
-
 
   debug('create calendar for salon worker')
 
@@ -49,6 +50,18 @@ async function createSalonSaga(data, user, client) {
   }
 
   const newSalonWorker = await createSalonWorker(client, salonWorker)
+
+  debug('update user timezone if it is empty')
+
+  if (!user.timezone && data.timezone) {
+    debugger
+
+    const userChanges = {
+      timezone: data.timezone
+    }
+
+    await updateUser(client, userChanges, user.id)
+  }
 
   return salon;
 }

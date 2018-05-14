@@ -5,7 +5,9 @@
 {% block title %}Create salon{% endblock %}
 
 {% block head %}
-  <link rel="stylesheet" href="css/onboarding.css?1">
+  <link rel="stylesheet" href="/css/onboarding.css?1">
+  <script src="/js/vendor/jstz.js"></script>
+  <script src="/js/onboarding.js?1"></script>
 {% endblock %}
 
 {% block content %}
@@ -14,11 +16,14 @@
       <div class="onboarding__error">{{error}}</div>
 
       <form action="" method="POST">
+        <input id="timezone-name" name="timezone" value="" type="hidden" />
+
         <h1>Welcome</h1>
         <h2>Lets create your first salon</h2>
 
         <label for="salon_name">Name</label>
-        <input id="salon_name" name="name" value="New Salon" autofocus="" placeholder="Name" onfocus="this.select()" />
+
+        <input id="salon_name" name="name" value="New Salon" type="text" autofocus="" placeholder="Name" onfocus="this.select()" />
 
         <button class="">Next</button>
       </form>
