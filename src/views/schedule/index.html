@@ -5,9 +5,23 @@
 {% block title %}Calendar{% endblock %}
 
 {% block head %}
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic-ext" rel="stylesheet">
+  <link href="/css/schedule.css?1" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-  <h1>Calendar</h1>
-  <pre>{{ JSON.stringify(user, 2, 2) }}</pre>
+  <div class="schedule">
+    <div class="schedule__header">
+       {% include "./../partials/header.html" with user only %}
+    </div>
+    <div class="schedule__body">
+      <div class="schedule__sidebar">
+        {% include "./sidebar.html" %}
+      </div>
+
+      <div class="schedule__calendar">
+        {% include "./calendar.html" %}
+      </div>
+    </div>
+  </div>
 {% endblock %}

@@ -1,0 +1,29 @@
+.schedule {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+
+  font-family: 'Roboto', sans-serif;
+}
+
+.schedule__header {
+  position: relative;
+  height: 64px;
+  border-bottom: #e0e0e0 1px solid;
+}
+
+.schedule__body {
+  display: flex;
+  flex-direction: row;
+}
+
+.schedule__sidebar {
+  flex: 0 0 256px;
+}
+
+.schedule__calendar {
+  flex: 1 1 auto;
+  border-left: #e0e0e0 1px solid;
+  overflow: hidden;
+}
