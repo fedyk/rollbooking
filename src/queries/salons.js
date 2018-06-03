@@ -1,3 +1,6 @@
+
+const { extractQueryParams } = require('./../lib/database')
+
 module.exports.getSalonById = async (client, id) => {
   const { rows } = await client.query('SELECT * FROM salons WHERE id=$1 LIMIT 1', [id])
 
@@ -15,19 +18,11 @@ module.exports.createSalon = async (client, salon) => {
   return rows.length > 0 ? rows[0] : null
 }
 
-module.exports.createSalonWorker = async (client, salonWorker) => {
-  const keys = Object.keys(salonWorker)
-  const params = keys.map((v, i) => `$` + (i + 1))
-  const values = Object.values(salonWorker)
-  const query = `INSERT INTO salon_workers (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
+module.exports.addUserToSalon = async (client, salonUser) => {
+  const { keys, params, values } = extractQueryParams(salonUser)
+  const query = `INSERT INTO salon_users (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
 
   const { rows } = await client.query(query, values);
 
   return rows.length > 0 ? rows[0] : null
-}
-
-module.exports.getWorkerSalonsIds = async (client, workerId) => {
-  const { rows } = await client.query('SELECT * FROM salon_workers WHERE user_id=$1', [workerId])
-
-  return rows
 }

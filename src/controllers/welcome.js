@@ -1,5 +1,5 @@
 const { connect } = require('../lib/database')
-const { getWorkerSalonsIds } = require('../queries/salons')
+const { getUserSalons } = require('../queries/users')
 const debug = require('debug')('controllers:welcome')
 
 async function welcome(ctx) {
@@ -17,15 +17,15 @@ async function welcome(ctx) {
     debug('user has no default salon in meta - get the first from assigned to him')
 
     const client = await connect();    
-    const workerSalons = await getWorkerSalonsIds(client, user.id);
+    const userSalons = await getUserSalons(client, user.id);
 
-    if (workerSalons.length === 0) {
+    if (userSalons.length === 0) {
       debug('user has no salons. redirect to onboarding')
 
       return ctx.redirect('/onboarding')
     }
 
-    return ctx.redirect(`/schedule/${workerSalons[0].salon_id}`)
+    return ctx.redirect(`/schedule/${userSalons[0].salon_id}`)
   }
 
   await ctx.render('welcome');

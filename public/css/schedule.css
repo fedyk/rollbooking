@@ -5,6 +5,7 @@
   overflow: hidden;
 
   font-family: 'Roboto', sans-serif;
+  font-weight: 400;
 }
 
 .schedule__header {
@@ -16,14 +17,87 @@
 .schedule__body {
   display: flex;
   flex-direction: row;
+  height: calc(100% - 64px);
 }
 
 .schedule__sidebar {
+  position: relative;
   flex: 0 0 256px;
 }
 
 .schedule__calendar {
+  position: relative;
   flex: 1 1 auto;
   border-left: #e0e0e0 1px solid;
   overflow: hidden;
 }
+
+
+.sidebar {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.sidebar__date-picker {
+  position: relative;
+  padding: 0 19px 16px 19px;
+  border-bottom: #e0e0e0 1px solid;
+}
+
+.sidebar__workers {
+  position: relative;
+  padding: 0;
+}
+
+.sidebar__footer {
+  position: relative;
+  padding: 0 19px 9px 19px;
+}
+
+.workers-title {
+  padding-top: 19px;
+  padding-left: 19px;
+  padding-right: 19px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #757575;
+}
+
+.workers-list {
+  position: relative;
+  padding: 10px 0;
+}
+
+.worker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+  padding-left: 19px;
+  padding-right: 19px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.worker__options {
+  opacity: 0;
+  transition: .1s linear;
+}
+
+.worker:hover .worker__options {
+  opacity: 1;
+}
+
+.worker__options .material-icons {
+  font-size: 20px;
+  color: rgba(0,0,0,0.54);  
+}
+
+.worker:hover {
+  background: rgba(0,0,0,.04);
+}
+

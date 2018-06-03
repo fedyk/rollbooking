@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 const { authorize } = require('../lib/googleapis')
 const debug = require('debug')('saga:create-salon-saga')
 const { updateUser } = require('../queries/users')
-const { createSalon, createSalonWorker } = require('../queries/salons')
+const { createSalon, addUserToSalon } = require('../queries/salons')
 
 async function createSalonSaga(data, user, client) {
 
@@ -28,34 +28,35 @@ async function createSalonSaga(data, user, client) {
 
   debug('create calendar for salon worker')
 
-  const newWorkerCalendar = {
+  const calendarResource = {
     summary: `Calendar ${salon.name}/${user.first_name} ${user.last_name}`,
-    timeZone: 'Europe/Warsaw', // TODO: replace this to user timezone
+    timeZone: data.timezone
   }
 
-  const { data: workerCalendar } = await calendar.calendars.insert({
-    resource: newWorkerCalendar,
+  const { data: createdCalendar } = await calendar.calendars.insert({
+    resource: calendarResource,
     auth
   })
 
   debug('create salon worker')
 
-  const salonWorker = {
+  const salonUser = {
     user_id: user.id,
     salon_id: salon.id,
-    role: 'admin',
-    calendar_id: workerCalendar.id,
+    data: {
+      role: 'admin',
+      calendarId: createdCalendar.id,
+      timezone: data.timezone,
+    },
     created: new Date(),
     updated: new Date(),
   }
 
-  const newSalonWorker = await createSalonWorker(client, salonWorker)
+  await addUserToSalon(client, salonUser)
 
   debug('update user timezone if it is empty')
 
   if (!user.timezone && data.timezone) {
-    debugger
-
     const userChanges = {
       timezone: data.timezone
     }

@@ -6,22 +6,25 @@
 
 {% block head %}
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic-ext" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="/css/schedule.css?1" rel="stylesheet">
+  <link href="/css/calendar.css?1" rel="stylesheet">
+  <link href="/css/date-picker.css?1" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
   <div class="schedule">
     <div class="schedule__header">
-       {% include "./../partials/header.html" with user only %}
+       {% include "./../partials/header.html" %}
     </div>
     <div class="schedule__body">
       <div class="schedule__sidebar">
         {% include "./sidebar.html" %}
-      </div>
+      </div><!-- /.schedule__sidebar -->
 
       <div class="schedule__calendar">
         {% include "./calendar.html" %}
-      </div>
+      </div><!-- /.schedule__calendar -->
     </div>
   </div>
 {% endblock %}
