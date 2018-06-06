@@ -26,3 +26,11 @@ module.exports.addUserToSalon = async (client, salonUser) => {
 
   return rows.length > 0 ? rows[0] : null
 }
+
+module.exports.getSalonUsers = async (client, salonId) => {
+  const query = `SELECT * FROM salon_users WHERE salon_id=$1`;
+
+  const { rows } = await client.query(query, [salonId]);
+
+  return rows
+}

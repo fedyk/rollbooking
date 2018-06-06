@@ -186,7 +186,28 @@
   color: #fff;
   font-size: 12px;
 }
+
 .calendar-event__sub {
   color: #fff;
   font-size: 12px;
+}
+
+#worker-dialog {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 340px;
+  padding-left: 250px;
+}
+
+#worker-dialog .mdc-dialog__surface {
+  max-width: 450px;
+  min-width: 200px;
+}
+
+#worker-dialog #name-field {
+  height: 64px;
+}
+
+#worker-dialog #name-field-input {
+  font-size: 1.5rem;
 }

@@ -317,3 +317,36 @@ textarea {
     border: none;
     background: none;
 }
+
+
+.text-field-row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap
+}
+
+.text-field-row .text-field {
+    margin-right: 8px
+}
+
+.text-field-row-full-width {
+    display: block
+}
+
+.text-field-row-fullwidth .text-field-container {
+    margin-bottom: 8px
+}
+
+.text-field-variant-container {
+    display: -ms-flexbox;
+    display: flex
+}
+
+.text-field-container {
+    min-width: 200px
+}

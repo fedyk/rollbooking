@@ -39,3 +39,8 @@ module.exports.getUserSalons = async (client, userId) => {
 
   return rows
 }
+module.exports.getUsersByIds = async (client, usersIds) => {
+  const { rows } = await client.query('SELECT * FROM users WHERE id = ANY($1)', [usersIds])
+
+  return rows
+}
