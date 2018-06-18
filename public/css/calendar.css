@@ -192,22 +192,29 @@
   font-size: 12px;
 }
 
-#worker-dialog {
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding-top: 340px;
-  padding-left: 250px;
-}
-
-#worker-dialog .mdc-dialog__surface {
+#user-dialog .mdc-dialog__surface {
   max-width: 450px;
   min-width: 200px;
 }
 
-#worker-dialog #name-field {
+#user-dialog #name-field {
   height: 64px;
 }
 
-#worker-dialog #name-field-input {
+#user-dialog #name-field-input {
   font-size: 1.5rem;
+}
+
+#user-dialog .mdc-dialog__footer__button--delete {
+  --mdc-theme-primary: #e53935;
+  margin-right: auto;
+  padding: 0 16px 0 16px;
+}
+
+
+/**
+ * wrapper for list of salon users
+ */
+#salon-users-list .mdc-list-item {
+  cursor: pointer;
 }

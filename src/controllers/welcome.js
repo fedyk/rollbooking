@@ -28,7 +28,7 @@ async function welcome(ctx) {
     return ctx.redirect(`/schedule/${userSalons[0].salon_id}`)
   }
 
-  await ctx.render('welcome');
+  ctx.render('welcome.html');
 }
 
 module.exports = welcome;

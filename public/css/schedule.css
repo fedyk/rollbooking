@@ -95,38 +95,3 @@
 .workers-heading__btn:hover {
   background-color: rgba(0,0,0,.07);
 }
-
-.workers-list {
-  position: relative;
-  padding: 10px 0;
-}
-
-.worker {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 32px;
-  padding-left: 19px;
-  padding-right: 19px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.worker__options {
-  opacity: 0;
-  transition: .1s linear;
-}
-
-.worker:hover .worker__options {
-  opacity: 1;
-}
-
-.worker__options .material-icons {
-  font-size: 20px;
-  color: rgba(0,0,0,0.54);  
-}
-
-.worker:hover {
-  background: rgba(0,0,0,.04);
-}
-

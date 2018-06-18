@@ -4,8 +4,9 @@ const createSalonSaga = require('../sagas/create-salon-saga');
 
 async function onboarding(ctx) {
   const { user } = ctx.state;
+  const view = 'onboarding/index.html';
 
-  await ctx.render('onboarding/index', {
+  await ctx.render(view, {
     user
   });
 }
@@ -29,7 +30,7 @@ async function createSalon(ctx) {
 
     debug('Fail in attempt to create new salon. Details: %O', e);
 
-    await ctx.render('onboarding/index', {
+    await ctx.render(view, {
       user,
       error
     });

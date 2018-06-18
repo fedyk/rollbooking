@@ -1,4 +1,4 @@
-const { google } = require('googleapis');
+const { google } = require('googleapis')
 const { authorize } = require('../lib/googleapis')
 const debug = require('debug')('saga:create-salon-saga')
 const { updateUser } = require('../queries/users')

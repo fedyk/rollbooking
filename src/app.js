@@ -7,6 +7,7 @@ const render = require('./lib/render');
 const session = require('./lib/session');
 const passport = require('./lib/passport');
 const bodyParser = require('koa-bodyparser');
+const renderFilters = require('./lib/render-filters');
 
 const Koa = require('koa');
 const app = module.exports = new Koa();
@@ -18,24 +19,30 @@ const onboarding = require('./controllers/onboarding');
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
-// "database"
+// nunjucks filters
 
-const posts = [];
+renderFilters.forEach(([filterName, filter]) => {
+  render.addFilter(filterName, filter)
+})
 
 // middleware
 
-app.use(bodyParser());
-app.use(logger());
-app.use(render);
-app.use(session(app));
-app.use(serve(path.join(__dirname, '../public')));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(bodyParser())
+app.use(logger())
+app.use(render())
+app.use(session(app))
+app.use(serve(path.join(__dirname, '../public')))
+app.use(passport.initialize())
+app.use(passport.session())
 
 // route definitions
 
 router.get('/', welcome)
   .get('/schedule/:salonId', passport.onlyAuthenticated, schedule)
+  .post('/schedule/:salonId/invite-user', passport.onlyAuthenticated, schedule.inviteUser)
+  .get('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.getUserDetails)
+  .post('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.updateUserDetails)
+  .post('/schedule/:salonId/remove-user/:userId', passport.onlyAuthenticated, schedule.removeUser)
   .get('/onboarding', passport.onlyAuthenticated, onboarding)
   .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
   .get('/login', auth.login)

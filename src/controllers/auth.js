@@ -1,5 +1,5 @@
 async function login(ctx) {
-  await ctx.render('auth/login');
+  await ctx.render('auth/login.html');
 }
 
 async function logout(ctx) {
