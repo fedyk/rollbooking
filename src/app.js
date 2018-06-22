@@ -15,6 +15,7 @@ const app = module.exports = new Koa();
 const auth = require('./controllers/auth');
 const welcome = require('./controllers/welcome');
 const schedule = require('./controllers/schedule');
+const salonServices = require('./controllers/salon-services');
 const onboarding = require('./controllers/onboarding');
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
@@ -43,6 +44,13 @@ router.get('/', welcome)
   .get('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.getUserDetails)
   .post('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.updateUserDetails)
   .post('/schedule/:salonId/remove-user/:userId', passport.onlyAuthenticated, schedule.removeUser)
+
+  .get('/schedule/:salonId/services', passport.onlyAuthenticated, salonServices.getSalonServices)
+  .post('/schedule/:salonId/services', passport.onlyAuthenticated, salonServices.addSalonService)
+  .get('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.getSalonService)
+  .put('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.updateSalonService)
+  .del('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.removeSalonService)
+
   .get('/onboarding', passport.onlyAuthenticated, onboarding)
   .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
   .get('/login', auth.login)

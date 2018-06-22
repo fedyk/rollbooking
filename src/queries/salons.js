@@ -71,3 +71,60 @@ module.exports.getSalonUsers = async (client, salonId) => {
 
   return rows
 }
+
+/**
+ * @param {PoolClient} client
+ * @param {number} salonId
+ * @return {Array<{id: number, salon_id: number, data: object}>}
+ */
+module.exports.getSalonServices = async (client, salonId) => {
+  const query = `SELECT * FROM salon_services WHERE salon_id=$1`;
+
+  const { rows } = await client.query(query, [salonId]);
+
+  return rows
+}
+
+/**
+ * @param {PoolClient} client 
+ * @param {Object} service
+ */
+module.exports.addServiceToSalon = async (client, service) => {
+  const { keys, params, values } = extractQueryParams(service)
+  const query = `INSERT INTO salon_services (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
+
+  const { rows } = await client.query(query, values);
+
+  return rows.length > 0 ? rows[0] : null
+}
+
+/**
+ * @param {PoolClient} client 
+ * @param {number} salonId
+ * @param {number} serviceId
+ * @param {Object} service
+ */
+module.exports.updateServiceToSalon = async (client, salonId, serviceId, service) => {
+  const { keys, params, values } = extractQueryParams(service)
+  const query = `UPDATE salon_services
+    SET (${keys.join(',')}) = ROW(${params.join(', ')})
+    WHERE id = $${params.length + 1} AND salon_id = $${params.length + 2}
+    RETURNING *;`;
+
+  const { rows } = await client.query(query, values.concat(serviceId, salonId));
+
+  return rows.length > 0 ? rows[0] : null
+}
+
+/**
+ * @param {PoolClient} client 
+ * @param {number} salonId
+ * @param {number} serviceId
+ */
+module.exports.removeServiceFromSalon = async (client, salonId, serviceId) => {
+  const query = `DELETE FROM salon_services WHERE salon_id = $1 AND id = $2;`
+
+  const { rows } = await client.query(query, [salonId, serviceId]);
+
+  return rows;
+}

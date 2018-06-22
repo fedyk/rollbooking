@@ -16,6 +16,13 @@ env.addGlobal('getVariables', function() {
   return this.getVariables();
 })
 
+/**
+ * Dummy localization function
+ */
+env.addGlobal('__', function(text) {
+  return text;
+})
+
 module.exports = middleware;
 module.exports.addFilter = addFilter;
 
@@ -33,7 +40,11 @@ function middleware() {
       ctx.body = body
     }
 
-    return ctx.render = render, next()
+    const json = (body) => {
+      ctx.body = JSON.stringify(body)
+    }
+
+    return ctx.render = render, ctx.json = json, next()
   }
 }
 

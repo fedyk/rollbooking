@@ -1,0 +1,73 @@
+<aside id="service-dialog" class="mdc-dialog">
+  <div class="mdc-dialog__surface">
+    <form id="user-form" action="" method="POST" onsubmit="services.serviceDialog.saveService(event)">
+
+      <section class="mdc-dialog__body">
+        <div class="text-field-row text-field-row-full-width">
+          <div class="text-field-container">
+            <div id="name-field" class="mdc-text-field mdc-text-field--fullwidth">
+              <input type="text" id="name-field-input" class="mdc-text-field__input" placeholder="{{ __('Name') }}">
+              <div class="mdc-line-ripple"></div>
+            </div>
+            <p id="name-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg" aria-hidden="true"></p>
+          </div>
+        </div>
+        
+        <div class="text-field-row text-field-row-full-width">
+          <div class="text-field-container">
+            <div id="duration-field" class="mdc-select">
+              <select id="duration-field-field" class="mdc-select__native-control">
+                <option value="15" selected>15min</option>
+                <option value="30">30min</option>
+                <option value="45">45min</option>
+                <option value="60">1h</option>
+                <option value="75">1h 15min</option>
+                <option value="90">1h 30min</option>
+                <option value="105">1h 45min</option>
+                <option value="120">2h</option>
+                <option value="150">2h 30min</option>
+                <option value="180">3h</option>
+                <option value="210">3h 30min</option>
+                <option value="240">4h</option>
+              </select>
+              <label class="mdc-floating-label mdc-floating-label--float-above" for="duration-field-field">Duration</label>
+              <div class="mdc-line-ripple"></div>
+            </div>
+            <p id="duration-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg" aria-hidden="true"></p>
+          </div>
+        </div>
+        
+        <div class="text-field-row text-field-row-full-width">
+          <div class="text-field-container">
+            <div id="price-field" class="mdc-text-field mdc-text-field--fullwidth">
+              <input type="number" id="price-field-input" class="mdc-text-field__input" placeholder="Price">
+              <div class="mdc-line-ripple"></div>
+            </div>
+            <p id="price-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg" aria-hidden="true"></p>
+          </div>
+        </div>
+        
+        <div class="text-field-row text-field-row-full-width">
+          <div class="text-field-container">
+            <div id="description-field" class="mdc-text-field mdc-text-field--fullwidth mdc-text-field--textarea">
+              <textarea id="description-field-input" class="mdc-text-field__input"></textarea>
+              <label class="mdc-floating-label" for="description-field-input">Description</label>
+              <div class="mdc-line-ripple"></div>
+            </div>
+            <p id="description-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg" aria-hidden="true"></p>
+          </div>
+        </div>
+
+      </section>
+
+      <footer class="mdc-dialog__footer">
+        <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--delete" onclick="services.serviceDialog.deleteService()">Delete</button>
+        <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
+        <button type="submit" class="mdc-button mdc-dialog__footer__button mdc-button--raised mdc-dialog__footer__button--save">Save</button>
+      </footer>
+
+    </form>
+  </div>
+
+  <div class="mdc-dialog__backdrop"></div>
+</aside>

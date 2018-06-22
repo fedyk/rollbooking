@@ -16,7 +16,10 @@ async function schedule(ctx) {
   const client = await connect();
   const { user } = ctx.state
   const view = 'schedule/index.html'
-  const locals = { salonId, user }
+  const locals = {
+    salonId,
+    user
+  }
 
   try {
     locals.salonUsers = await getSalonUsers(client, salonId)
@@ -146,5 +149,3 @@ async function removeUser(ctx) {
 
   client.release()
 }
-
-

@@ -1,0 +1,26 @@
+{% extends './index.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link href="/css/salon-services.css?1" rel="stylesheet">
+  <script src="/js/salon-services.js?1"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="schedule">
+    <div class="schedule__header">
+       {% include "./../partials/header.html" %}
+    </div>
+    <div class="schedule__body">
+      <div class="schedule__sidebar schedule__sidebar--secondary">
+        {% include "./settings-sidebar.html" %}
+      </div><!-- /.schedule__sidebar.schedule__sidebar--secondary -->
+
+      <div class="schedule__calendar schedule__calendar--secondary">
+        {% include contentViewPath %}
+      </div><!-- /.schedule__calendar -->
+    </div>
+  </div>
+{% endblock %}
