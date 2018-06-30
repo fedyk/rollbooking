@@ -16,6 +16,7 @@ const auth = require('./controllers/auth');
 const welcome = require('./controllers/welcome');
 const schedule = require('./controllers/schedule');
 const salonServices = require('./controllers/salon-services');
+const widgets = require('./controllers/widgets');
 const onboarding = require('./controllers/onboarding');
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
@@ -50,6 +51,9 @@ router.get('/', welcome)
   .get('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.getSalonService)
   .put('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.updateSalonService)
   .del('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.removeSalonService)
+
+  .get('/widgets/reservation/:salonId', widgets.reservation)
+  .get('/widgets/reservation/:salonId/preview', widgets.reservationPreview)
 
   .get('/onboarding', passport.onlyAuthenticated, onboarding)
   .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
