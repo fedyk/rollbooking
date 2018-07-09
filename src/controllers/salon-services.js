@@ -1,15 +1,10 @@
 const { connect } = require('../lib/database');
 const debug = require('debug')('controller:schedule-services');
-// const inviteUserToSalon = require('../sagas/invite-user-to-salon');
-// const getSalonUsers = require('../sagas/get-salon-users');
-// const updateSalonUserDetails = require('../sagas/update-salon-user-details');
-// const removeSalonUser = require('../sagas/remove-salon-user');
 const serviceUtils = require('../utils/service');
 const getSalonServicesSaga = require('../sagas/get-salon-services');
 const addSalonServiceSaga = require('../sagas/add-salon-service');
 const updateSalonServiceSaga = require('../sagas/update-salon-service');
 const removeSalonServiceSaga = require('../sagas/remove-salon-service');
-// const getSalonServiceSaga = require('../sagas/get-salon-service');
 
 module.exports.getSalonServices = getSalonServices;
 module.exports.getSalonService = getSalonService;

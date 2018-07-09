@@ -1,0 +1,32 @@
+<div class="rw-filters">
+  <form action="" method="post" onsubmit="return false;">
+    <div class="rw-filters__row">
+      <label for="rw-date" class="rw-filters__label">Date</label>
+      <select id="rw-date" name=date>
+        {% for freeDate in salonFreeDates -%}
+          <option value="{{ freeDate.toISOString() }}">{{ freeDate.toDateString()}}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="rw-filters__row">
+      <label for="rw-barber" class="rw-filters__label">Barber</label>
+      <select id="rw-barber">
+        <option value="">Any Barber</option>
+        {% for salonUser in salonUsers -%}
+          <option value="{{ salonUser.user_id }}">{{ salonUser.user | getUserName }}, {{ salonUser | getUserRole }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <div class="rw-filters__row">
+      <label for="rw-service" class="rw-filters__label">Service</label>
+      <select id="rw-service">
+          {% for salonService in salonServices -%}
+          <option value="{{ salonService.id }}">{{ salonService | getServiceName }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+  </form>
+</div>

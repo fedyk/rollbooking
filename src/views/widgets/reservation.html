@@ -5,22 +5,40 @@
 {% endblock %}
 
 {% block head %}
-  <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic-ext" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:200,400,500&amp;subset=cyrillic-ext" rel="stylesheet">
+  <link href="/css/widgets.css" rel="stylesheet">
+  <!--
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <link href="/material-components-web/material-components-web.css" rel="stylesheet">
   <link href="/css/schedule.css?1" rel="stylesheet">
   <link href="/css/calendar.css?1" rel="stylesheet">
-  <link href="/css/date-picker.css?1" rel="stylesheet">
+  
 
   <script src="/material-components-web/material-components-web.js"></script>
   <script src="/js/calendar.js?1"></script>
-{% endblock %} -->
+  -->
+{% endblock %}
 
 {% block content %}
+  <pre>{{ error | dump(2) }}</pre>
+  <pre>{{ salonFreeDates | dump(2) }}</pre>
+  <div class="content">
+    <header class="rw-header">
+      <h3 class="rw-header__title">{{ salon.name }}</h3>
+      <h4 class="rw-header__subtitle">Reservation</h4>
+    </header>
+
+    <main>
+      <section class="rw-section rw-section--services">
+        {% include "./reservation-filters.html" %}
+        {% include "./reservation-services.html" %}
+      </section>
+    </main>
+  </div>
+
+  
   <pre>{{ salon | dump(2) }}</pre>
   <pre>{{ salonUsers | dump(2) }}</pre>
   <pre>{{ salonServices | dump(2) }}</pre>
 {% endblock %}
-
-
-

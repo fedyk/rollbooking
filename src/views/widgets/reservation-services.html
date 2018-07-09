@@ -1,0 +1,57 @@
+<div class="rw-services">
+  {% for salonService in salonServices %}
+  <div class="rw-service">
+    <div class="rw-service__price">{{ salonService | getServicePrice }}</div>
+    <div class="rw-service__name">{{ salonService | getServiceName }}</div>
+    <div class="rw-service__duration">{{ salonService | getServiceDuration }}</div>
+    <div class="rw-service__slots-container">
+      <div class="rw-service__slots">
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">4:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">5:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">6:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">7:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">8:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">9:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">10:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">11:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">12:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">13:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">14:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">15:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">16:00 PM</div>
+        </div>
+        <div class="rw-service__slot">
+          <div class="rw-service__slot-time">16:00 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="rw-no-services">No services available.</div>
+  {% endfor %}
+</div>
