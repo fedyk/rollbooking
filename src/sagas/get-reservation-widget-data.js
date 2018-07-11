@@ -1,3 +1,4 @@
+const DateRange = require('../lib/date-range')
 const { getSalonById } = require('../queries/salons')
 const getSalonUsers = require('./get-salon-users')
 const getSalonServices = require('./get-salon-services')
@@ -39,8 +40,9 @@ module.exports = async function getReservationWidgetData(client, googleAuth, sal
 
   debug('fetch salon free dates and times')
 
+  const selectedTime = new Date()
   const timeMin = new Date()
-  const timeMax = addMonth(new Date(), +1)
+  const timeMax = addMonth(new Date(), 1)
   const calendarIds = salonUsers.map(user => getUserCalendarId(user))
   const salonFreebusy = await getSalonFreebusy(googleAuth, timeMin, timeMax, salon.timezone || 'UTC', calendarIds)
 
@@ -50,19 +52,9 @@ module.exports = async function getReservationWidgetData(client, googleAuth, sal
 
   debug('calculate available hours for services')
 
-  const salonSchedule = []
-  salonSchedule[0] = new Date(timeMin.getTime())
-  salonSchedule[0].setHours(10)
-  salonSchedule[0].setMinutes(0)
-  salonSchedule[0].setSeconds(0)
-  salonSchedule[0].setMilliseconds(0)
-  salonSchedule[1] = new Date(timeMin.getTime())
-  salonSchedule[1].setHours(18)
-  salonSchedule[1].setMinutes(0)
-  salonSchedule[1].setSeconds(0)
-  salonSchedule[1].setMilliseconds(0)
+  const salonSchedule = getSalonSchedule(selectedTime)
 
-  const salonServicesSlots = getServicesSlots(salonServices, timeMin, salonFreebusy)
+  const salonServicesSlots = getServicesSlots(salonServices, salonSchedule, salonFreebusy)
 
   debug('return data')
 
@@ -91,4 +83,21 @@ function getSalonFreeDates(timeMin, timeMax, freebusy) {
 
 function getServicesSlots(salonS) {
   
+}
+
+function getSalonSchedule(date) {
+  const start = new Date(date.getTime())
+  const end = new Date(date.getTime())
+
+  start.setHours(10)
+  start.setMinutes(0)
+  start.setSeconds(0)
+  start.setMilliseconds(0)
+
+  end.setHours(18)
+  end.setMinutes(0)
+  end.setSeconds(0)
+  end.setMilliseconds(0)
+
+  return new DateRange(start, end)
 }

@@ -19,4 +19,3 @@ module.exports.addMonth = (date, months) => {
 
   return clone.setMonth(clone.getMonth() + months), clone;
 }
-
