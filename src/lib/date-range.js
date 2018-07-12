@@ -97,17 +97,18 @@ DateRange.prototype.exclude = function(dateRange) {
  * 
  * @param {number} period In Milliseconds
  */
-DateRange.prototype.split = function(period) {
+DateRange.prototype.split = function(period, options) {
   const periods = []
+  const round = options != null && options.round
   let current = new Date(this.start.getTime());
 
-  while(current < this.end) {
+  while(round ? current <= this.end : current < this.end) {
     periods.push(current)
     current = new Date(current.getTime())
     current.setMilliseconds(period)
   }
 
-  if (current !== this.end) {
+  if (!round && current !== this.end) {
     periods.push(new Date(this.end.getTime()))
   }
 

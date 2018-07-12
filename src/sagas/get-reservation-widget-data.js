@@ -81,8 +81,52 @@ function getSalonFreeDates(timeMin, timeMax, freebusy) {
   
 }
 
-function getServicesSlots(salonS) {
-  
+function getServicesSlots(salonServices, salonSchedule, salonFreebusy) {
+  debug('create result object')
+
+  const servicesSlots = salonServices.reduce((p, c) => {
+    return p[c.id] = c, p
+  }, {})
+
+  debug('create object with available ranges')
+
+  const freeRanges = Object.keys(salonFreebusy.calendars).reduce((p, c) => {
+    return p[c] = [], p
+  }, {})
+
+  debug('calculate available ranges')
+
+  for (let key in freeRanges) {
+    freeRanges[key] = freeRanges[key].concat(salonSchedule.exclude(
+      salonFreebusy.calendars[key].busy.map(v => DateRange(v))
+    ))
+  }
+
+  debug('combine ranges to one collection')
+
+  const allDateRanges = Object.keys(freeRanges).reduce((p, key) => {
+    return p.concat(freeRanges[key]), p
+  }, [])
+
+  debug('sort ranges by start time & merge ranges that are overlapping')
+
+  const dateRanges = DateRange.merge(DateRange.sort(allDateRanges));
+
+  debug('sort ranges by start time')
+
+  debug('for each service split ranges by time')
+
+
+
+  // Object.keys(servicesSlots).forEach(serviceId => {
+  //   const serviceDuration = servicesSlots[serviceId].date.duration
+  //   const splitOptions = {
+  //     round: true
+  //   }
+  //   const dateRanges.split(serviceDuration * 60 * 1000, splitOptions);
+
+  //   servicesSlots = 
+  // })
 }
 
 function getSalonSchedule(date) {

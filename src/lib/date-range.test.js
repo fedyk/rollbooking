@@ -153,15 +153,25 @@ describe('lib:DateRange', () => {
 
   describe('#split', () => {
     it('should split', () => {
-      assert.deepEqual(
-        DateRange('2018-05-01T10:00:00.00Z', '2018-05-01T10:04:30.00Z').split(60 * 1000)
-        , [
+      assert.deepEqual(DateRange('2018-05-01T10:00:00.00Z', '2018-05-01T10:04:30.00Z').split(60 * 1000), [
           new Date('2018-05-01T10:00:00.00Z'),
           new Date('2018-05-01T10:01:00.00Z'),
           new Date('2018-05-01T10:02:00.00Z'),
           new Date('2018-05-01T10:03:00.00Z'),
           new Date('2018-05-01T10:04:00.00Z'),
           new Date('2018-05-01T10:04:30.00Z'),
+        ]
+      )
+    })
+    it('should split with rounded periods', () => {
+      assert.deepEqual(DateRange('2018-05-01T10:00:00.00Z', '2018-05-01T10:04:00.00Z').split(60 * 1000, {
+        round: true
+      }), [
+          new Date('2018-05-01T10:00:00.00Z'),
+          new Date('2018-05-01T10:01:00.00Z'),
+          new Date('2018-05-01T10:02:00.00Z'),
+          new Date('2018-05-01T10:03:00.00Z'),
+          new Date('2018-05-01T10:04:00.00Z'),
         ]
       )
     })
