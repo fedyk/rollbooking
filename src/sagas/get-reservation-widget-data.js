@@ -108,15 +108,11 @@ function getServicesSlots(salonServices, salonSchedule, salonFreebusy) {
     return p.concat(freeRanges[key]), p
   }, [])
 
-  debug('sort ranges by start time & merge ranges that are overlapping')
+  debug('merge overlaping ranges')
 
-  const dateRanges = DateRange.merge(DateRange.sort(allDateRanges));
-
-  debug('sort ranges by start time')
+  const dateRanges = DateRange.merge(allDateRanges);
 
   debug('for each service split ranges by time')
-
-
 
   // Object.keys(servicesSlots).forEach(serviceId => {
   //   const serviceDuration = servicesSlots[serviceId].date.duration

@@ -24,6 +24,37 @@ function DateRange(start, end) {
   }
 }
 
+/**
+ * @static
+ * @param {DateRange[]} dateRanges 
+ */
+DateRange.merge = function(dateRanges) {
+  if(dateRanges.length === 0) {
+    return []
+  }
+
+  // Create an empty stack
+  const result = [];
+
+  // Sort ranges by start
+  const ranges = dateRanges.slice().sort((a, b) => a.start - b.start)
+
+  ranges.forEach(range => {
+    if (result.length === 0 || result[result.length - 1].end < range.start) {
+      result.push(range)
+    }
+    else {
+      result[result.length - 1] = new DateRange(
+        result[result.length - 1].start,
+        result[result.length - 1].end > range.end ? result[result.length - 1].end : range.end
+      )
+    }
+  })
+
+  return result;
+}
+
+
 DateRange.prototype.isOverlap = function(dateRange) {
   if (this.start <= dateRange.start && dateRange.start < this.end) {
     return true
