@@ -6,48 +6,11 @@
     <div class="rw-service__duration">{{ salonService | getServiceDuration }}</div>
     <div class="rw-service__slots-container">
       <div class="rw-service__slots">
+        {% for slot in salonServicesSlots[salonService.id] %}
         <div class="rw-service__slot">
-          <div class="rw-service__slot-time">4:00 PM</div>
+          <div class="rw-service__slot-time">{{ slot | dateToLocalTime }}</div>
         </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">5:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">6:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">7:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">8:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">9:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">10:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">11:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">12:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">13:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">14:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">15:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">16:00 PM</div>
-        </div>
-        <div class="rw-service__slot">
-          <div class="rw-service__slot-time">16:00 PM</div>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </div>

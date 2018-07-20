@@ -62,13 +62,14 @@ module.exports = async function getReservationWidgetData(client, googleAuth, sal
     salon,
     salonUsers,
     salonServices,
-    salonFreeDates
+    salonFreeDates,
+    salonServicesSlots
   }
 }
 
 function getSalonFreeDates(timeMin, timeMax, freebusy) {
   const dates = []
-  const calendars = freebusy.calendars || {};
+  // const calendars = freebusy.calendars || {};
   let curr = new Date(timeMin.getTime());
 
   while(curr < timeMax) {
@@ -82,11 +83,10 @@ function getSalonFreeDates(timeMin, timeMax, freebusy) {
 }
 
 function getServicesSlots(salonServices, salonSchedule, salonFreebusy) {
-  debug('create result object')
-
-  const servicesSlots = salonServices.reduce((p, c) => {
-    return p[c.id] = c, p
-  }, {})
+  /**
+   * @type {Object.<number,Date[]>}
+   */
+  const slots = {};
 
   debug('create object with available ranges')
 
@@ -105,7 +105,7 @@ function getServicesSlots(salonServices, salonSchedule, salonFreebusy) {
   debug('combine ranges to one collection')
 
   const allDateRanges = Object.keys(freeRanges).reduce((p, key) => {
-    return p.concat(freeRanges[key]), p
+    return p.concat(freeRanges[key])
   }, [])
 
   debug('merge overlaping ranges')
@@ -114,15 +114,30 @@ function getServicesSlots(salonServices, salonSchedule, salonFreebusy) {
 
   debug('for each service split ranges by time')
 
-  // Object.keys(servicesSlots).forEach(serviceId => {
-  //   const serviceDuration = servicesSlots[serviceId].date.duration
-  //   const splitOptions = {
-  //     round: true
-  //   }
-  //   const dateRanges.split(serviceDuration * 60 * 1000, splitOptions);
+  for (let i = 0; i < salonServices.length; i++) {
+    const service = salonServices[i];
+    const serviceDuration = service.data.duration;
+    const serviceDates = [];
+    
+    for (let j = 0; j < dateRanges.length; j++) {
+      const dateRange = dateRanges[j];
+      const dates = dateRange.split(serviceDuration * 60 * 1000, {
+        round: true
+      });
 
-  //   servicesSlots = 
-  // })
+      dates.pop();
+
+      if (dates.length > 0) {
+        serviceDates.push.apply(serviceDates, dates)
+      }
+    }
+
+    slots[service.id] = serviceDates
+  }
+
+  debug('returns result')
+
+  return slots;
 }
 
 function getSalonSchedule(date) {
