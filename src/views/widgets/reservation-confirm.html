@@ -17,15 +17,11 @@
     </header>
 
     <main>
-      <section class="rw-section rw-section--services">
-        {% include "./reservation-filters.html" %}
-        {% include "./reservation-services.html" %}
+      <section class="rw-section rw-section--confirm">
+        {% include "./reservation-details.html" %}
+        {% include "./reservation-contact-details.html" %}
+        <button>Confirm</button>
       </section>
     </main>
   </div>
-
-  
-  <pre>{{ salon | dump(2) }}</pre>
-  <pre>{{ salonUsers | dump(2) }}</pre>
-  <pre>{{ salonServices | dump(2) }}</pre>
 {% endblock %}

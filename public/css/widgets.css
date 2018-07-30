@@ -124,3 +124,52 @@ section.rw-section.rw-section--services {
   cursor: pointer;
   white-space: nowrap;
 }
+
+
+
+/**
+ * Reservation details
+ */
+.reservation-details {
+  display: flex;
+  padding: 0 24px;
+}
+
+.reservation-details__date {
+  flex: 0 0 auto;
+}
+
+.reservation-details__day {
+  font-size: 20px;
+}
+
+.reservation-details__month {
+  font-size: 12px;
+  color: #1E88E5;
+}
+
+.reservation-details__main {
+  flex: 1 0;
+}
+
+.reservation-details__service-name {}
+
+.reservation-details__brief {}
+
+.reservation-details__start-time {}
+
+.reservation-details__start-time {}
+
+.reservation-details__actions {}
+
+.reservation-details__action {}
+
+.reservation-details__action {}
+
+.reservation-details__more {
+  flex: 0 0 auto;
+}
+
+.reservation-details__price {}
+
+.reservation-details__duration {}

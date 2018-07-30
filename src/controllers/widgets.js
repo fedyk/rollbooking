@@ -5,6 +5,7 @@ const getReservationWidgetData = require('../sagas/get-reservation-widget-data')
 const debug = require('debug')('controllers:widgets')
 
 module.exports.reservation = reservation;
+module.exports.reservationConfirm = reservationConfirm;
 module.exports.reservationPreview = reservationPreview;
 
 async function reservation(ctx) {
@@ -33,6 +34,26 @@ async function reservation(ctx) {
   client.release()
 
   ctx.render(viewPath, viewLocal)
+}
+
+async function reservationConfirm(ctx) {
+  const salonId = parseInt(ctx.params.salonId)
+  const client = await connect()
+  const googleAuth = await authorize()
+  const viewLocal = {
+    error: null
+  }
+
+  try {
+
+  }
+  catch (e) {
+
+  }
+
+  client.release()
+
+  ctx.render('widgets/reservation-confirm.html', viewLocal)
 }
 
 async function reservationPreview(ctx) {

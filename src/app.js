@@ -53,6 +53,7 @@ router.get('/', welcome)
   .del('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.removeSalonService)
 
   .get('/widgets/reservation/:salonId', widgets.reservation)
+  .get('/widgets/reservation/:salonId/confirm', widgets.reservationConfirm)
   .get('/widgets/reservation/:salonId/preview', widgets.reservationPreview)
 
   .get('/onboarding', passport.onlyAuthenticated, onboarding)
