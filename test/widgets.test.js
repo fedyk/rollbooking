@@ -32,6 +32,6 @@ describe('Widgets', () => {
         .expect('Content-Type', /text\/html/)
         .expect(200)
     })
-  });
+  })
 
 })
