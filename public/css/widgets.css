@@ -126,13 +126,13 @@ section.rw-section.rw-section--services {
 }
 
 
-
 /**
  * Reservation details
  */
 .reservation-details {
   display: flex;
   padding: 12px 24px;
+  border-bottom: 1px solid #eee;
 }
 
 .reservation-details__date {
@@ -200,6 +200,7 @@ section.rw-section.rw-section--services {
 .reservation-contact-details {
   position: relative;
   padding: 12px 24px;
+  box-sizing: border-box;
 }
 
 .reservation-contact-details__row {
@@ -211,14 +212,16 @@ section.rw-section.rw-section--services {
 }
 
 .reservation-contact-details__col {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   padding: 0 7px;
+  box-sizing: border-box;
 }
 
 .reservation-contact-details__label {
   display: block;
   color: #424d57;
   margin-bottom: 4px;
+  box-sizing: border-box;
 }
 
 .reservation-contact-details__control {
@@ -230,6 +233,7 @@ section.rw-section.rw-section--services {
   border: solid 1px #bcc6d0;
   box-sizing: border-box;
   transition: background-color cubic-bezier(0.165, 0.84, 0.44, 1) .5s;
+  box-sizing: border-box;
 }
 
 .reservation-contact-details__control--invalid {
@@ -272,3 +276,5 @@ section.rw-section.rw-section--services {
   color: rgba(0,0,0,.37);
   cursor: default;
 }
+
+

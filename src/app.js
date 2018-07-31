@@ -1,6 +1,5 @@
 const path = require('path');
 const serve = require('koa-static');
-const logger = require('koa-logger');
 const router = require('koa-router')();
 const config = require('./lib/config');
 const render = require('./lib/render');
@@ -30,7 +29,6 @@ renderFilters.forEach(([filterName, filter]) => {
 // middleware
 
 app.use(bodyParser())
-app.use(logger())
 app.use(render())
 app.use(session(app))
 app.use(serve(path.join(__dirname, '../public')))
