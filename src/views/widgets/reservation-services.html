@@ -2,13 +2,13 @@
   {% for salonService in salonServices %}
   <div class="rw-service">
     <div class="rw-service__price">{{ salonService | getServicePrice }}</div>
-    <div class="rw-service__name">{{ salonService | getServiceName }}</div>
+    <div class="rw-service__name" style="--loader-width: {{ salonService | getServiceName | length }}0px;">{{ salonService | getServiceName }}</div>
     <div class="rw-service__duration">{{ salonService | getServiceDuration }}</div>
     <div class="rw-service__slots-container">
       <div class="rw-service__slots">
         {% for slot in salonServicesSlots[salonService.id] %}
         <div class="rw-service__slot">
-          <div class="rw-service__slot-time">{{ slot | dateToLocalTime }}</div>
+          <a class="rw-service__slot-time" href="{{ salonService.id | getServiceReservationUrl(salonId, masterId, slot) }}">{{ slot | dateToLocalTime }}</a>
         </div>
         {% endfor %}
       </div>

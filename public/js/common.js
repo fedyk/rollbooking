@@ -94,3 +94,29 @@ function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
+
+/**
+ * @param {HTMLElement} el 
+ * @param {string} className
+ */
+function addClass(el, className) {
+  if (el.classList) {
+    el.classList.add(className);
+  }
+  else {
+    el.className += ' ' + className;
+  }
+}
+
+/**
+ * @param {HTMLElement} el 
+ * @param {string} className
+ */
+function removeClass(el, className) {
+  if (el.classList) {
+    el.classList.remove(className);
+  }
+  else {
+    el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+  }
+}

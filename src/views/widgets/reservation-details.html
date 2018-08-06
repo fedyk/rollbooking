@@ -1,14 +1,14 @@
 <div class="reservation-details">
   <div class="reservation-details__date">
-    <div class="reservation-details__day">23</div>
-    <div class="reservation-details__month">MAY</div>
+    <div class="reservation-details__day">{{ time | getDateDay }}</div>
+    <div class="reservation-details__month">{{ time | getDateMonth }}</div>
   </div>
   <div class="reservation-details__main">
-    <div class="reservation-details__service-name">Lorem ipsum detar</div>
+    <div class="reservation-details__service-name">{{ service | getServiceName }}</div>
     <div class="reservation-details__brief">
-      <span>4 PM</span>
+      <span>{{ time | dateToLocalTime }}</span>
       <span>·</span>
-      <span>Barak Obama(auto)</span>
+      <span>{{ master | getUserName }}{% if masterId == null %}(auto){% endif %}</span>
     </div>
     <div class="reservation-details__actions">
       <button class="reservation-details__action">EDIT</button>
@@ -16,7 +16,7 @@
     </div>
   </div>
   <div class="reservation-details__more">
-    <div class="reservation-details__price">$25</div>
-    <div class="reservation-details__duration">1h</div>
+    <div class="reservation-details__price">{{ service | getServicePrice }}</div>
+    <div class="reservation-details__duration">{{ service | getServiceDuration }}</div>
   </div>
 </div>

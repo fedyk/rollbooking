@@ -47,10 +47,26 @@ section.rw-section.rw-section--services {
   position: relative;
 }
 
-.rw-filters {
+.reservation-filters {
   position: relative;
   padding: 12px 24px;
   border-bottom: 1px solid #E0E0E0;
+}
+
+.reservation-filters__row {
+  display: block;
+}
+
+.reservation-filters__label {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.reservation-filters__control {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rw-services {
@@ -84,8 +100,10 @@ section.rw-section.rw-section--services {
   color: #424242;
 }
 
+
 .rw-service__duration {
   font-size: 13px;
+  display: inline-block;
   color: #616161;
 }
 
@@ -121,9 +139,55 @@ section.rw-section.rw-section--services {
   border: 1px solid #1E88E5;
   border-radius: 3px;
   box-sizing: border-box;
-  cursor: pointer;
   white-space: nowrap;
+  text-decoration: none;
 }
+
+.rw-service--loading {
+  --loader-width: 100%;
+}
+
+@keyframes reservationServiceLoading {
+  0%{
+      background-position: -468px 0
+  }
+  100%{
+      background-position: 468px 0
+  }
+}
+
+.rw-service--loading .rw-service__price,
+.rw-service--loading .rw-service__name,
+.rw-service--loading .rw-service__duration,
+.rw-service--loading .rw-service__slot-time {
+  position: relative;
+  color: transparent;
+  border-color: transparent;
+}
+
+.rw-service--loading .rw-service__price:before,
+.rw-service--loading .rw-service__name:before,
+.rw-service--loading .rw-service__duration:before,
+.rw-service--loading .rw-service__slot-time:before {
+  position: absolute;
+  display: block;
+  content: '';
+  top: 0;
+  left: 0;
+  width: 100%;
+  width: var(--loader-width);
+  height: 75%;
+  border-radius: 24px;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: reservationServiceLoading;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  background-size: 800px 104px;
+}
+
 
 
 /**
@@ -137,6 +201,7 @@ section.rw-section.rw-section--services {
 
 .reservation-details__date {
   flex: 0 0 auto;
+  text-align: center;
 }
 
 .reservation-details__day {
