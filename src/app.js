@@ -18,6 +18,8 @@ const salonServices = require('./controllers/salon-services');
 const widgets = require('./controllers/widgets');
 const onboarding = require('./controllers/onboarding');
 
+const widgetRouter = require('./controllers/widgets/router')
+
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
 // nunjucks filters
@@ -53,6 +55,7 @@ router.get('/', welcome)
   .get('/widgets/reservation/:salonId', widgets.reservation)
   .get('/widgets/reservation/:salonId/confirm', widgets.reservationConfirm)
   .get('/widgets/reservation/:salonId/preview', widgets.reservationPreview)
+  .use('/widgets/', widgetRouter.routes(), widgetRouter.allowedMethods())
 
   .get('/onboarding', passport.onlyAuthenticated, onboarding)
   .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
