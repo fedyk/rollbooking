@@ -1,16 +1,22 @@
-const { google } = require('googleapis')
-const { connect } = require('../../../lib/database')
-const { authorize } = require('../../../lib/googleapis')
-const getReservationWidgetData = require('../../../sagas/get-reservation-widget-data')
-const getReservationConfirmData = require('../../../sagas/get-reservation-confirm-data')
-const debug = require('debug')('controllers:widgets')
+const { google } = require('googleapis');
+const { connect } = require('../../../lib/database');
+const { authorize } = require('../../../lib/googleapis');
+const getReservationWidgetServices = require('../../../sagas/widgets/reservation/get-services');
+const debug = require('debug')('controllers:widgets');
 
 module.exports = getServices;
 
 async function getServices(ctx) {
-  // const salonId = parseInt(ctx.params.salonId)
-  // const client = await connect()
-  // const googleAuth = await authorize()
+  const salonId = parseInt(ctx.params.salonId);
+  const params = parseParams(ctx.query);
+  const client = await connect();
+  const googleAuth = await authorize();
+  const viewLocal = {
+    error: null,
+    services: [],
+    slots: [],
+  }
+
   // const viewLocal = {
   //   error: null,
   //   salonId,
@@ -20,19 +26,20 @@ async function getServices(ctx) {
   //   salonServices: [],
   // }
 
-  // try {
-  //   debug('fetch data for widget')
+  try {
+    debug('fetch services data for the widget')
 
-  //   Object.assign(viewLocal, await getReservationWidgetData(client, googleAuth, salonId))
-  // }
-  // catch (e) {
-  //   viewLocal.error = e;
-  // }
+    Object.assign(viewLocal, await getReservationWidgetServices(client, googleAuth, salonId))
+  }
+  catch (e) {
+    viewLocal.error = e;
+  }
 
   // client.release()
 
   // ctx.render('widgets/reservation.html', viewLocal)
   ctx.body = {
+    servicesHTML: '',
     test: 1
   };
 }
@@ -80,3 +87,19 @@ async function getServices(ctx) {
 //     salonId
 //   })
 // }
+
+/**
+ * 
+ * @param {object} params 
+ */
+function parseParams(params) {
+  const date = params.date || params.d || null;
+  const masterId = params.masterId || params.m || null;
+  const serviceId = params.serviceId || params.s || null;
+  
+  return {
+    date,
+    masterId,
+    serviceId
+  }
+}
