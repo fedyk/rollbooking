@@ -5,6 +5,7 @@ const dateToLocalTime = require('../utils/date-to-local-time');
 const getServiceReservationUrl = require('../utils/get-service-reservation-url');
 const getDateDay = require('../utils/get-date-day');
 const getDateMonth = require('../utils/get-date-month');
+const getErrorMessage = require('../utils/get-error-message');
 
 /**
  * @type {Array<[filterName: string, filter: Function]>}
@@ -19,4 +20,5 @@ module.exports = [
   ['getServiceReservationUrl', getServiceReservationUrl],
   ['getDateDay', getDateDay],
   ['getDateMonth', getDateMonth],
+  ['getErrorMessage', getErrorMessage],
 ];

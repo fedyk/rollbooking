@@ -13,18 +13,9 @@ async function getServices(ctx) {
   const googleAuth = await authorize();
   const viewLocal = {
     error: null,
-    services: [],
-    slots: [],
+    salonServices: [],
+    salonServicesSlots: [],
   }
-
-  // const viewLocal = {
-  //   error: null,
-  //   salonId,
-  //   masterId: null,
-  //   salon: null,
-  //   salonUsers: [],
-  //   salonServices: [],
-  // }
 
   try {
     debug('fetch services data for the widget')
@@ -33,15 +24,13 @@ async function getServices(ctx) {
   }
   catch (e) {
     viewLocal.error = e;
+
+    ctx.response.status = 500;
   }
 
-  // client.release()
+  client.release()
 
-  // ctx.render('widgets/reservation.html', viewLocal)
-  ctx.body = {
-    servicesHTML: '',
-    test: 1
-  };
+  ctx.render('widgets/reservation/get-services.njk', viewLocal)
 }
 
 // async function reservationConfirm(ctx) {

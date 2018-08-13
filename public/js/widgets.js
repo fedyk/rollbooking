@@ -9,17 +9,14 @@ function onFilterServices(formElement, event) {
   var serviceId = formElement.serviceId.value
   var timerId = setTimeout(startServicesLoading, 200);
 
-  fetchFilteredServices(salonId, date, masterId, serviceId).then(function(resp) {
-    var meta = resp.meta
-    var body = resp.body
-
+  fetchFilteredServices(salonId, date, masterId, serviceId).then(function(html) {
     clearInterval(timerId)
-
-    updateFilterServiceBody(body)
-
+    stopServicesLoading()
+    updateFilterServiceBody(html)
   })
   .catch(function(error) {
     clearInterval(timerId)
+    stopServicesLoading()
   })
 }
 
@@ -55,13 +52,10 @@ function onChangeService() {
 }
 
 function fetchFilteredServices(salonId, date, masterId, serviceId) {
-  var url = '/widget/reservation/' +  salonId + '/filter-services';
+  var url = '/widgets/reservation/' + salonId + '/get-services';
   var params = {
     credentials: 'same-origin',
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
 		body: JSON.stringify({
       d: date,
       m: masterId,
@@ -71,20 +65,14 @@ function fetchFilteredServices(salonId, date, masterId, serviceId) {
 
   return fetch(url, params)
     .then(fetchCheckStatus)
-    .then(fetchParseJSONMeta)
     .then(function(resp) {
-      return {
-        body: resp.body,
-        meta: resp.meta
-      }
-	})
+      return resp.text()
+	  })
 }
 
 function startServicesLoading() {
 
-  /**
-   * @type {HTMLDivElement[]}
-   */
+  /** @type {HTMLDivElement[]} */
   var servicesElements = document.getElementsByClassName('rw-service');
 
   for (let i = 0; i < servicesElements.length; i++) {
@@ -93,9 +81,7 @@ function startServicesLoading() {
 }
 
 function stopServicesLoading() {
-  /**
-   * @type {HTMLDivElement[]}
-   */
+  /** @type {HTMLDivElement[]} */
   var servicesElements = document.getElementsByClassName('rw-service');
 
   for (let i = 0; i < servicesElements.length; i++) {
@@ -104,17 +90,14 @@ function stopServicesLoading() {
 }
 
 /**
- * 
- * @param {string} body
+ * @param {string} innerHTML
  */
-function updateFilterServiceBody(body) {
+function updateFilterServiceBody(innerHTML) {
 
-  /**
-   * @type {HTMLDivElement}
-   */
+  /** @type {HTMLDivElement} */
   var containerElement = document.getElementById('reservation-services-container');
 
-  if (body && containerElement) {
-    containerElement.innerHTML = body
+  if (containerElement) {
+    containerElement.innerHTML = innerHTML
   }
 }
