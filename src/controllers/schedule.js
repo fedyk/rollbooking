@@ -5,35 +5,35 @@ const getSalonUsers = require('../sagas/get-salon-users');
 const updateSalonUserDetails = require('../sagas/update-salon-user-details');
 const removeSalonUser = require('../sagas/remove-salon-user');
 
-module.exports = schedule;
+// module.exports = schedule;
 module.exports.inviteUser = inviteUser;
 module.exports.getUserDetails = getUserDetails;
 module.exports.updateUserDetails = updateUserDetails;
 module.exports.removeUser = removeUser;
 
-async function schedule(ctx) {
-  const salonId = parseInt(ctx.params.salonId)
-  const client = await connect();
-  const { user } = ctx.state
-  const view = 'schedule/index.html'
-  const locals = {
-    salonId,
-    user
-  }
+// async function schedule(ctx) {
+//   const salonId = parseInt(ctx.params.salonId)
+//   const client = await connect();
+//   const { user } = ctx.state
+//   const view = 'schedule/index.html'
+//   const locals = {
+//     salonId,
+//     user
+//   }
 
-  try {
-    locals.salonUsers = await getSalonUsers(client, salonId)
-  }
-  catch(e) {
-    locals.error = e.message || 'Something went wrong. Please try later';
+//   try {
+//     locals.salonUsers = await getSalonUsers(client, salonId)
+//   }
+//   catch(e) {
+//     locals.error = e.message || 'Something went wrong. Please try later';
 
-    debug('Fail to get all needed data for rendering schedule page. Details: %O', e);
-  }
+//     debug('Fail to get all needed data for rendering schedule page. Details: %O', e);
+//   }
 
-  ctx.render('schedule/index.html', locals);
+//   ctx.render('schedule/index.html', locals);
 
-  client.release()
-}
+//   client.release()
+// }
 
 async function inviteUser(ctx) {
   const userData = ctx.request.body

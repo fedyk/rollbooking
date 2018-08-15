@@ -19,6 +19,7 @@ const widgets = require('./controllers/widgets');
 const onboarding = require('./controllers/onboarding');
 
 const widgetRouter = require('./controllers/widgets/router')
+const scheduleRouter = require('./controllers/schedule/router')
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
@@ -40,7 +41,7 @@ app.use(passport.session())
 // route definitions
 
 router.get('/', welcome)
-  .get('/schedule/:salonId', passport.onlyAuthenticated, schedule)
+  // .get('/schedule/:salonId', passport.onlyAuthenticated, schedule)
   .post('/schedule/:salonId/invite-user', passport.onlyAuthenticated, schedule.inviteUser)
   .get('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.getUserDetails)
   .post('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.updateUserDetails)
@@ -55,7 +56,9 @@ router.get('/', welcome)
   .get('/widgets/reservation/:salonId', widgets.reservation)
   .get('/widgets/reservation/:salonId/confirm', widgets.reservationConfirm)
   .get('/widgets/reservation/:salonId/preview', widgets.reservationPreview)
+
   .use('/widgets/', widgetRouter.routes(), widgetRouter.allowedMethods())
+  .use('/schedule/', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
 
   .get('/onboarding', passport.onlyAuthenticated, onboarding)
   .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
