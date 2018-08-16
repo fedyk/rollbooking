@@ -1,6 +1,6 @@
 const path = require('path');
 const nunjucks = require('nunjucks')
-const viewPath = path.join(__dirname, '/../views')
+const viewPath = path.join(__dirname, '../../views')
 const debug = require('debug')('lib:renderer');
 
 const env = nunjucks.configure(viewPath, {

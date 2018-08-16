@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/koa": "^2.0.46",
+    "@types/koa-router": "^7.0.31",
     "@types/node": "^10.7.0",
     "@types/pg": "^7.4.10",
     "jest": "^23.3.0",

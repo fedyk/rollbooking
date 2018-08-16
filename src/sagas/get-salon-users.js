@@ -1,16 +1,13 @@
 const debug = require('debug')('saga:get-salon-users')
 const { getUsersByIds } = require('../queries/users')
-const { getSalonUsers } = require('../queries/salons')
-
-module.exports = getSalonUsers;
-module.exports.getSalonUsers = getSalonUsers;
+const { getSalonUsers: getSalonUsersQuery } = require('../queries/salons')
 
 /**
  * @param {PoolClient} client
  * @param {number} salonId
  * @return {Array<{user: object, user_id: string, salon_id: string, data: object}>}
  */
-async function getSalonUsers(client, salonId, usersIds = null) {
+module.exports = async function(client, salonId) {
  
   if (!salonId || isNaN(salonId)) {
     throw new RangeError('Invalid salon id');
@@ -21,7 +18,7 @@ async function getSalonUsers(client, salonId, usersIds = null) {
   /**
    * @type {Array<{salon_id: string, user_id: string, data: object}}
    */
-  const salonUsers = await getSalonUsers(client, salonId)
+  const salonUsers = await getSalonUsersQuery(client, salonId)
 
   debug('map user ids')
   

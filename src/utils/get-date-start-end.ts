@@ -2,10 +2,15 @@
  * 
  * @param {Date} date
  */
-module.exports = function(date) {
+interface IResult {
+  start: Date;
+  end: Date;
+}
+
+export default function(date: Date): IResult {
   const start = new Date(date.getTime());
   const end = new Date(date.getTime());
-  const methods = ['setHours', 'setMinutes', 'setSeconds', ]
+
   start.setHours(0, 0, 0, 0)
   end.setHours(24, 59, 59, 999)
 

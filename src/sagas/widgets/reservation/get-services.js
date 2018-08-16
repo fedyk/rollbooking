@@ -1,12 +1,10 @@
-const { getSalonById } = require('../../queries/salons')
+const { getSalonById } = require('../../../queries/salons')
 const getSalonUsers = require('../../get-salon-users')
 const getSalonService = require('../../get-salon-service')
 const getSalonServices = require('../../get-salon-services')
-const getSalonUsers = require('../../get-salon-users')
 const getDateStartEnd = require('../../../utils/get-date-start-end')
-const getUserCalendarId = require('../utils/get-user-calendar-id')
+const getUserCalendarId = require('../../../utils/get-user-calendar-id')
 const debug = require('debug')('saga:widgets')
-
 
 /**
  * @param {PoolClient} client

@@ -1,33 +1,45 @@
 import { google } from 'googleapis'
+import { calendar_v3 } from 'googleapis'
 import { OAuth2Client } from 'google-auth-library'
 import { Client } from 'pg'
 import debugFactory from 'debug'
 import { getSalonById } from '../../queries/salons'
-import { getSalonUsers } from '../../sagas/get-salon-users'
-import { getSalonServices } from '../../sagas/get-salon-services'
 import { getUsersCalendarId } from '../../utils/get-user-calendar-id'
+import getCalendarEvents from '../../sagas/get-calendar-events'
+import getDateStartEndDay from '../../utils/get-date-start-end'
+import Salon from '../../models/salon';
+import IUser from '../../models/user';
+
+const getSalonServices = require('../../sagas/get-salon-services')
+const getSalonUsers = require('../../sagas/get-salon-users')
 
 const debug = debugFactory('saga:get-schedule-events')
 
 // const { getUsersByIds } = require('../queries/users')
 // const { getSalonUsers } = require('../queries/salons')
 
-export interface GetScheduleData$Params {
+export interface Params {
   client: Client
   googleAuth: OAuth2Client
   salonId: number
+  currentDate: Date
 }
 
-export interface GetScheduleData$Result {
-  salon: any
+export interface Result {
+  salon: Salon,
+  salonUsers: any
+  salonServices: any
+  salonUsersEvents: {
+    [userId: string]: calendar_v3.Schema$Events
+  }
 }
 
-module.exports = async (params: GetScheduleData$Params): Promise<GetScheduleData$Result> => {
-  const { client, salonId, googleAuth } = params; 
+module.exports = async (params: Params): Promise<Result> => {
+  const { client, salonId } = params; 
 
   debug('fetch salon information')
 
-  const salon = getSalonById(client, salonId)
+  const salon = await getSalonById(client, salonId) as Salon;
 
   debug('fetch salon users')
 
@@ -46,66 +58,27 @@ module.exports = async (params: GetScheduleData$Params): Promise<GetScheduleData
 
   debug('fetch users events')
   
-  const userCalendarIds = salonUsers.map(v => getUsersCalendarId(v));
-  const salonUsersEvents = await getCalendarEvents(calendar, userCalendarIds)
+  const salonUsersEvents: { [userId: string]: calendar_v3.Schema$Events } = {};
+  const { start, end } = getDateStartEndDay(params.currentDate)
 
-  // const items = calendarIds.map(id => ({ id }))
-  
-  // const calendar = google.calendar({
-  //   version: 'v3',
-  //   auth: params.googleAuth
-  // });
+  await Promise.all(
+    salonUsers.map(salonUser => {
+      const calendarId = getUsersCalendarId(salonUser);
+      const user = salonUser.user as IUser;
 
-  // const eventsList = await calendar.events.list({
-  //   requestBody: {
-  //     timeMin: timeMin.toISOString(),
-  //     timeMax: timeMax.toISOString(),
-  //     timeZone: timeZone,
-  //     calendarId: calendarId
-  //   }
-  // })
+      return getCalendarEvents(calendar, {
+        calendarId: calendarId,
+        timeMin: start.toISOString(),
+        timeMax: end.toISOString(),
+        timeZone: salon.timezone
+      }).then(events => salonUsersEvents[user.id] = events.data);
+    })
+  );
 
   return {
-    salon: null
+    salon,
+    salonUsers,
+    salonServices,
+    salonUsersEvents
   }
- 
-  
-
-  // debug('get list of salon\'s user ids')
-
-  // /**
-  //  * @type {Array<{salon_id: string, user_id: string, data: object}}
-  //  */
-  // const salonUsers = await getSalonUsers(client, salonId)
-
-  // debug('map user ids')
-  
-  // /**
-  //  * @type {Array<string>}
-  //  */
-  // const usersIds = salonUsers.map(v => v.user_id);
-
-  // if (usersIds.length === 0) {
-  //   return []
-  // }
-
-  // debug('fetch users from db')
-
-  // /**
-  //  * @type {Array<object>}
-  //  */
-  // const users = await getUsersByIds(client, usersIds)
-
-  // debug('hash users by id')
-
-  // /**
-  //  * @type {Map<string, object>}
-  //  */
-  // const usersHashedById = users.reduce((hashMap, user) => hashMap.set(user.id, user), new Map())
-
-  // debug('map user with meta')
-
-  // return salonUsers.map(v => {
-  //   return v.user = usersHashedById.get(v.user_id), v;
-  // })
 }
