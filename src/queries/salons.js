@@ -86,6 +86,20 @@ module.exports.getSalonServices = async (client, salonId) => {
 }
 
 /**
+ * @param {PoolClient} client
+ * @param {number} salonId
+ * @param {number} serviceId
+ * @return {Array<{id: number, salon_id: number, data: object}>}
+ */
+module.exports.getSalonService = async (client, salonId, serviceId) => {
+  const query = `SELECT * FROM salon_services WHERE salon_id=$1 and id=$2`;
+
+  const { rows } = await client.query(query, [salonId, serviceId]);
+
+  return rows
+}
+
+/**
  * @param {PoolClient} client 
  * @param {Object} service
  */

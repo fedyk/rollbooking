@@ -1,6 +1,12 @@
+const { getSalonById } = require('../../queries/salons')
+const getSalonUsers = require('../../get-salon-users')
+const getSalonService = require('../../get-salon-service')
 const getSalonServices = require('../../get-salon-services')
 const getSalonUsers = require('../../get-salon-users')
+const getDateStartEnd = require('../../../utils/get-date-start-end')
+const getUserCalendarId = require('../utils/get-user-calendar-id')
 const debug = require('debug')('saga:widgets')
+
 
 /**
  * @param {PoolClient} client
@@ -9,16 +15,42 @@ const debug = require('debug')('saga:widgets')
  * @return {Object<{id: number, data: object}>}
  */
 module.exports = async function getServices(client, googleAuth, salonId, date, serviceId, masterId) {
+  const salonMasters = [];
+  const salonServices = [];
+  const salonServicesSlots = [];
+
+  debug('fetch salon info')
+
+  const salon = await getSalonById(client, salonId);
+
+  debug('fetch info about masters')
+
+  const salonUsers = await getSalonUsers(client, salonId);
+
+  if (masterId) {
+    salonMasters.push(salonUsers.find(v => v.id == masterId));
+  }
+  else {
+    salonMasters.push(...salonUsers);
+  }
 
   debug('fetch salon services')
 
-  let salonServices = await getSalonServices(client, salonId);
-  
-  debug('filter needed services')
-
   if (serviceId) {
-    salonServices = salonServices.filter(v => v.id == serviceId);
+    salonServices.push(await getSalonService(client, salonId, serviceId));
   }
+  else {
+    salonServices.push(...await getSalonServices(client, salonId));
+  }
+
+  debug('define ids of calendars for freebusy')
+
+  const calendarIds = salonMasters.map(v => getUserCalendarId(v))
+
+  debug('fetch freebusy for masters')
+
+  const { start, end } = getDateStartEnd(date);
+  const salonFreebusy = await getSalonFreebusy(googleAuth, start, end, salon.timezone || 'UTC', calendarIds);
   
   // debug('fetch salon users')
   

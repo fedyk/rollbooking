@@ -2,12 +2,15 @@ const debug = require('debug')('saga:get-salon-users')
 const { getUsersByIds } = require('../queries/users')
 const { getSalonUsers } = require('../queries/salons')
 
+module.exports = getSalonUsers;
+module.exports.getSalonUsers = getSalonUsers;
+
 /**
  * @param {PoolClient} client
  * @param {number} salonId
  * @return {Array<{user: object, user_id: string, salon_id: string, data: object}>}
  */
-module.exports = async function(client, salonId) {
+async function getSalonUsers(client, salonId, usersIds = null) {
  
   if (!salonId || isNaN(salonId)) {
     throw new RangeError('Invalid salon id');

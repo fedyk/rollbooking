@@ -1,14 +1,13 @@
 import { google } from 'googleapis'
 import { OAuth2Client } from 'google-auth-library'
 import { Client } from 'pg'
-import d from 'debug'
+import debugFactory from 'debug'
 import { getSalonById } from '../../queries/salons'
-import getSalonUsers from '../../sagas/get-salon-users'
-import getSalonServices from '../../sagas/get-salon-services'
-import getUsersCalendarId from '../../utils/get-user-calendar-id'
+import { getSalonUsers } from '../../sagas/get-salon-users'
+import { getSalonServices } from '../../sagas/get-salon-services'
+import { getUsersCalendarId } from '../../utils/get-user-calendar-id'
 
-
-const debug = d('saga:get-schedule-events')
+const debug = debugFactory('saga:get-schedule-events')
 
 // const { getUsersByIds } = require('../queries/users')
 // const { getSalonUsers } = require('../queries/salons')
