@@ -1,7 +1,15 @@
 import { google } from 'googleapis'
 import { OAuth2Client } from 'google-auth-library'
 import { Client } from 'pg'
-const debug = require('debug')('saga:get-schedule-events')
+import d from 'debug'
+import { getSalonById } from '../../queries/salons'
+import getSalonUsers from '../../sagas/get-salon-users'
+import getSalonServices from '../../sagas/get-salon-services'
+import getUsersCalendarId from '../../utils/get-user-calendar-id'
+
+
+const debug = d('saga:get-schedule-events')
+
 // const { getUsersByIds } = require('../queries/users')
 // const { getSalonUsers } = require('../queries/salons')
 
@@ -16,7 +24,31 @@ export interface GetScheduleData$Result {
 }
 
 module.exports = async (params: GetScheduleData$Params): Promise<GetScheduleData$Result> => {
+  const { client, salonId, googleAuth } = params; 
 
+  debug('fetch salon information')
+
+  const salon = getSalonById(client, salonId)
+
+  debug('fetch salon users')
+
+  const salonUsers = await getSalonUsers(client, salonId)
+
+  debug('fetch salon services')
+
+  const salonServices = await getSalonServices(client, salonId)
+
+  debug('factory calendar sdk')
+
+  const calendar = google.calendar({
+    version: 'v3',
+    auth: params.googleAuth
+  });
+
+  debug('fetch users events')
+  
+  const userCalendarIds = salonUsers.map(v => getUsersCalendarId(v));
+  const salonUsersEvents = await getCalendarEvents(calendar, userCalendarIds)
 
   // const items = calendarIds.map(id => ({ id }))
   
