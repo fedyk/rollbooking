@@ -1,5 +1,4 @@
-/** @param {Error} error */
-module.exports = function getErrorMessage(error) {
+export default function getErrorMessage(error: Error) {
   if (error && error.message) {
     return error.message;
   }

@@ -3,7 +3,8 @@ interface User {
   google_id: string
   google_meta: object
   meta: {
-
+    name?: string
+    role?: string
   }
   email: string
   first_name: string

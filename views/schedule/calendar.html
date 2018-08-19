@@ -1,12 +1,11 @@
 <div class="calendar">
   <div class="calendar__head">
     <div class="calendar__head-columns">
-      <div class="calendar__head-column">
-        {% include "./calendar-worker.html" %}
-      </div>
-      <div class="calendar__head-column">
-        {% include "./calendar-worker.html" %}
-      </div>
+      {% for salonUser in salonUsers %}
+        <div class="calendar__head-column">
+          {% include "./calendar-worker.html" %}
+        </div>
+      {% endfor %}
     </div>
   </div><!-- /.calendar__head -->
 
@@ -20,22 +19,16 @@
         </div><!-- /.calendar__hours -->
 
         <div class="calendar__timelines">
-          <div class="calendar__timeline">
-            <div class="calendar__lines">
-              {% include "./calendar-lines.html" %}
-            </div>
-            <div class="calendar__events">
-              {% include "./calendar-events.html" %}
-            </div>
-          </div><!-- /.calendar__timeline -->
-          <div class="calendar__timeline">
-            <div class="calendar__lines">
-              {% include "./calendar-lines.html" %}
-            </div>
-            <div class="calendar__events">
-              {% include "./calendar-events.html" %}
-            </div>
-          </div>
+          {% for salonUser in salonUsers %}
+            <div class="calendar__timeline">
+              <div class="calendar__lines">
+                {% include "./calendar-lines.html" %}
+              </div>
+              <div class="calendar__events">
+                {% include "./calendar-events.html" %}
+              </div>
+            </div><!-- /.calendar__timeline -->
+          {% endfor %}
         </div>
       </div><!-- /.calendar__inner -->
     </div><!-- /.calendar__scroll-bar -->

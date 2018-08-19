@@ -15,9 +15,6 @@ const getSalonUsers = require('../../sagas/get-salon-users')
 
 const debug = debugFactory('saga:get-schedule-events')
 
-// const { getUsersByIds } = require('../queries/users')
-// const { getSalonUsers } = require('../queries/salons')
-
 export interface Params {
   client: Client
   googleAuth: OAuth2Client

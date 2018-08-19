@@ -1,6 +1,6 @@
 const { URLSearchParams } = require('url');
 
-module.exports = function getServiceReservationUrl(serviceId, salonId, masterId, time) {
+export default function getServiceReservationUrl(serviceId: number, salonId: number, masterId: number, time: Date): string {
   const params = new URLSearchParams({
     s: serviceId != null ? serviceId : '',
     m: masterId != null ? masterId : '',

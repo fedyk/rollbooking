@@ -24,6 +24,7 @@ env.addGlobal('__', function(text) {
 })
 
 module.exports = middleware;
+module.exports.renderer = renderer;
 module.exports.addFilter = addFilter;
 
 function middleware() {
@@ -46,6 +47,12 @@ function middleware() {
 
     return ctx.render = render, ctx.json = json, next()
   }
+}
+
+function renderer(path, locals) {
+  return new Promise((resolve, reject) => {
+    nunjucks.render(path, locals, (err, resp) => err ? reject(err) : resolve(resp))
+  })
 }
 
 function addFilter(name, func, async = false) {

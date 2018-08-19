@@ -1,6 +1,7 @@
 const debug = require('debug')('controller:schedule');
 const { connect } = require('../../lib/database');
 const { authorize } = require('../../lib/googleapis');
+const { renderer } = require('../../lib/render')
 const getScheduleData = require('../../sagas/schedule/get-schedule-data')
 
 module.exports = schedule;
@@ -40,7 +41,7 @@ async function schedule(ctx) {
     debug('Fail to get all needed data for rendering schedule page. Details: %O', e);
   }
 
-  ctx.render('schedule/index.html', locals);
+  ctx.body = await renderer('schedule/index.html', locals)
 
   client.release()
 }

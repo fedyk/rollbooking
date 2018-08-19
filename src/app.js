@@ -6,7 +6,7 @@ const render = require('./lib/render');
 const session = require('./lib/session');
 const passport = require('./lib/passport');
 const bodyParser = require('koa-bodyparser');
-const renderFilters = require('./lib/render-filters');
+const { renderFilters } = require('./lib/render-filters');
 
 const Koa = require('koa');
 const app = module.exports = new Koa();
@@ -24,7 +24,6 @@ const scheduleRouter = require('./controllers/schedule/router')
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
 // nunjucks filters
-
 renderFilters.forEach(([filterName, filter]) => {
   render.addFilter(filterName, filter)
 })
@@ -32,7 +31,7 @@ renderFilters.forEach(([filterName, filter]) => {
 // middleware
 
 app.use(bodyParser())
-app.use(render())
+app.use(render()) // todo: remove this middleware
 app.use(session(app))
 app.use(serve(path.join(__dirname, '../public')))
 app.use(passport.initialize())
