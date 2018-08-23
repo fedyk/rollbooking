@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const schedule = require('./index')
+const { schedule } = require('./index')
 // const getReservationServices = require('./reservation/get-services');
 const router = new Router();
 

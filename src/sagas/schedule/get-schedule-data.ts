@@ -31,7 +31,7 @@ export interface Result {
   }
 }
 
-module.exports = async (params: Params): Promise<Result> => {
+export const getScheduleData = async (params: Params): Promise<Result> => {
   const { client, salonId } = params; 
 
   debug('fetch salon information')

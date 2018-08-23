@@ -18,7 +18,7 @@
 {% block content %}
   <div class="schedule">
     <div class="schedule__header">
-       {% include "./../partials/header.html" %}
+      {% include "./../partials/header.html" %}
     </div>
     <div class="schedule__body">
       <div class="schedule__sidebar">
@@ -30,5 +30,8 @@
       </div><!-- /.schedule__calendar -->
     </div>
   </div>
-{% endblock %}
 
+  <script>
+  window._initial_state = {{ { events: salonUsersEvents } | dump | safe }}
+  </script>
+{% endblock %}
