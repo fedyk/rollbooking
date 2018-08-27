@@ -1,14 +1,14 @@
 import { google } from 'googleapis'
 import { calendar_v3 } from 'googleapis'
 import { OAuth2Client } from 'google-auth-library'
-import { Client } from 'pg'
+import { PoolClient } from 'pg'
 import debugFactory from 'debug'
 import { getSalonById } from '../../queries/salons'
 import { getUsersCalendarId } from '../../utils/get-user-calendar-id'
 import getCalendarEvents from '../../sagas/get-calendar-events'
 import getDateStartEndDay from '../../utils/get-date-start-end'
 import Salon from '../../models/salon';
-import IUser from '../../models/user';
+import User from '../../models/user';
 
 const getSalonServices = require('../../sagas/get-salon-services')
 const getSalonUsers = require('../../sagas/get-salon-users')
@@ -16,7 +16,7 @@ const getSalonUsers = require('../../sagas/get-salon-users')
 const debug = debugFactory('saga:get-schedule-events')
 
 export interface Params {
-  client: Client
+  client: PoolClient
   googleAuth: OAuth2Client
   salonId: number
   currentDate: Date
@@ -61,7 +61,7 @@ export const getScheduleData = async (params: Params): Promise<Result> => {
   await Promise.all(
     salonUsers.map(salonUser => {
       const calendarId = getUsersCalendarId(salonUser);
-      const user = salonUser.user as IUser;
+      const user = salonUser.user as User;
 
       return getCalendarEvents(calendar, {
         calendarId: calendarId,

@@ -1,39 +1,42 @@
+import { Context } from "koa";
 import { getScheduleData } from '../../sagas/schedule/get-schedule-data'
 
-const debug = require('debug')('controller:schedule');
 import { connect } from '../../lib/database'
 import { authorize } from '../../lib/googleapis'
-import { renderer } from '../../lib/render'
-import { ScheduleData } from '../../view-models/schedule/schedule-data'
+import { renderer } from "../../lib/render"
+import UserModel from "../../models/user";
+import { ScheduleData } from "../../view-models/schedule/schedule-data"
 
-export async function schedule(ctx) {
+const debug = require('debug')('controller:schedule');
+
+export async function schedule(ctx: Context) {
   const salonId = parseInt(ctx.params.salonId)
   const client = await connect();
   const googleAuth = await authorize();
-  const currentDate = ctx.query.date ? new Date(ctx.query.date) : new Date()
-  const { user } = ctx.state;
-  let scheduleData;
+  const currentDate = ctx.query.date ? new Date(ctx.query.date) : new Date();
+  const user = ctx.state.user as UserModel;
+  const viewData: ScheduleData = {
+    salonId,
+    user
+  }
 
   try {
-    const scheduleData = await getScheduleData({
+    const data = await getScheduleData({
       client,
       googleAuth,
       salonId,
       currentDate
     })
+
+    viewData.salon = data.salon;
+    viewData.salonUsers = data.salonUsers;
+    viewData.salonEvents = data.salonUsersEvents;
   }
   catch(e) {
-    throw e
+    viewData.error = e;
   }
-
-  const viewData: ScheduleData = {
-    salonId: salonId,
-    salon: scheduleData.salon,
-    salonEvents: scheduleData.salonEvents,
-    salonUsers: scheduleData.salonUsers
-  }
-
-  ctx.body = await renderer('schedule/index.html', viewData)
 
   client.release()
+
+  ctx.body = await renderer('schedule/index.html', viewData);
 }

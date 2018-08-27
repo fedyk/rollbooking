@@ -5,6 +5,10 @@ if (result.error) {
   throw result.error
 }
 
+if (!process.env.PORT) {
+  console.log('No port config. Set PORT environment variable(default is 3000).');
+}
+
 if (!process.env.DATABASE_URL) {
   console.log('No database config. Set DATABASE_URL environment variable.');
 }

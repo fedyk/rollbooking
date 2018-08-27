@@ -1,12 +1,17 @@
-const passport = require('koa-passport')
-const router = require('koa-router')()
-const { connect } = require('./database')
-const GoogleStrategy = require('passport-google-oauth20').Strategy
-const { getUserById, getUserByGoogleId, createUser } = require('../queries/users')
-const { mapGoogleProfileToUser } = require('../mappers/users')
+import * as passport from "koa-passport";
+import * as Router from "koa-router";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { connect } from "./database";
+
+// const GoogleStrategy = require('passport-google-oauth20').Strategy
+// const { connect } = require('./database')
+import { getUserById, getUserByGoogleId, createUser } from "../queries/users";
+import { mapGoogleProfileToUser } from "../mappers/users";
+
+export const router = new Router()
 const scope = ['email', 'profile']
 
-passport.serializeUser(async function(user, done) {
+passport.serializeUser(async function(user: any, done) {
   done(null, user.id)
 })
 
@@ -63,7 +68,6 @@ router.get('/logout', ctx => {
   ctx.redirect('/login')
 });
 
-module.exports.router = router;
-module.exports.initialize = () => passport.initialize();
-module.exports.session = () => passport.session();
-module.exports.onlyAuthenticated = async (ctx, next) => !ctx.isAuthenticated() ? ctx.redirect('/login') : next()
+export const initialize = () => passport.initialize();
+export const session = () => passport.session();
+export const onlyAuthenticated = async (ctx, next) => !ctx.isAuthenticated() ? ctx.redirect('/login') : next()

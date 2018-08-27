@@ -1,7 +1,9 @@
-const readline = require('readline');
-const { google } = require('googleapis');
-const debug = require('debug')('lib:googleapis');
-const { instance: redisInstance } = require('./redis');
+import * as readline from 'readline';
+import { google } from 'googleapis';
+import debugFactory from 'debug'
+import { instance as redisInstance } from './redis';
+
+const debug = debugFactory('lib:googleapis');
 
 /**
  * More information here:
@@ -19,7 +21,7 @@ const TOKEN_KEY = 'google:api:token';
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
  */
-async function authorize() {
+export async function authorize() {
   const client_id = process.env.GOOGLE_API_CLIENT_ID;
   const client_secret = process.env.GOOGLE_API_CLIENT_SECRET;
   const redirect_uris = process.env.GOOGLE_API_REDIRECT_URIS.split(',');
@@ -30,7 +32,7 @@ async function authorize() {
   try {
     token = await redis.get(TOKEN_KEY);
 
-    token = JSON.parse(token);
+    token = JSON.parse(token as string);
 
     if (!token) throw new Error('No token in store');
   }
@@ -50,7 +52,7 @@ async function authorize() {
  * execute the given callback with the authorized OAuth2 client.
  * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
  */
-async function getAccessToken(oAuth2Client) {
+export async function getAccessToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,
@@ -77,6 +79,3 @@ async function getAccessToken(oAuth2Client) {
     });
   });
 }
-
-module.exports.authorize = authorize
-module.exports.getAccessToken = getAccessToken

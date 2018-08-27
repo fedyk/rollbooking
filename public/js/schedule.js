@@ -1,10 +1,9 @@
-/**
- * Main schedule module
- */
-var schedule = function() {
+function schedule() {
+  var $calendar = $('#calendar').fullCalendar({
 
-  return {
+  });
+}
 
-  }
-  
-}();
+$(function() {
+  schedule();
+});
