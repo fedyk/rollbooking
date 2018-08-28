@@ -6,6 +6,7 @@ import { authorize } from '../../lib/googleapis'
 import { renderer } from "../../lib/render"
 import UserModel from "../../models/user";
 import { ScheduleData } from "../../view-models/schedule/schedule-data"
+import { salonUsersToResources } from "../../utils/fullcalendar"
 
 const debug = require('debug')('controller:schedule');
 
@@ -30,7 +31,8 @@ export async function schedule(ctx: Context) {
 
     viewData.salon = data.salon;
     viewData.salonUsers = data.salonUsers;
-    viewData.salonEvents = data.salonUsersEvents;
+    viewData.resources = salonUsersToResources(data.salonUsers);
+    // viewData.salonEvents = data.salonUsersEvents;
   }
   catch(e) {
     viewData.error = e;

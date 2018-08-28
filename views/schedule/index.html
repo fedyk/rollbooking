@@ -10,15 +10,49 @@
   <link href="/css/calendar.css?1" rel="stylesheet">
   <link href="/css/date-picker.css?1" rel="stylesheet">
   <link href="/vendor/fullcalendar/fullcalendar.css" rel="stylesheet">
+  <link href="/vendor/fullcalendar/scheduler.css" rel="stylesheet">
 
-  <script src="/public/vendor/jquery/jquery-3.3.1.min.js"></script>
-  <script src="/public/vendor/moment/moment.min.js"></script>
+  <script src="/vendor/jquery/jquery-3.3.1.min.js"></script>
+  <script src="/vendor/moment/moment.min.js"></script>
   <script src="/vendor/fullcalendar/fullcalendar.js"></script>
+  <script src="/vendor/fullcalendar/scheduler.js?1"></script>
 
   <script src="/material-components-web/material-components-web.js"></script>
   <script src="/js/calendar.js?1"></script>
-  <script src="/js/schedule.js?1"></script>
 
+  <script>
+    $(function initCalendar() {
+      var $calendar = $('#calendar').fullCalendar({
+        editable: true,
+        selectable: true,
+        selectHelper: true,
+        allDay: false,
+        select: open,
+        schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+        defaultView: 'agendaDay',
+        events: "/schedule/{{ salonId }}/get-events",
+        resources: {{ resources | dump | safe }},
+        timezone: "{{ salon | getSalonTimezone }}"
+      });
+
+      function onSelectEvent(start, end) {
+        
+
+        $.post("/schedule/{{ salonId }}/create-event", event)
+        var title = prompt('Event Title:');
+        var eventData;
+        if (title) {
+          eventData = {
+            title: title,
+            start: start,
+            end: end
+          };
+          $('#calendar').fullCalendar('renderEvent', eventData, true);
+        }
+        $('#calendar').fullCalendar('unselect');
+      }
+    });
+  </script>
 
 {% endblock %}
 
@@ -33,12 +67,8 @@
       </div><!-- /.schedule__sidebar -->
 
       <div class="schedule__calendar">
-        {% include "./calendar.html" %}
+        {% include "./full-calendar.html" %}
       </div><!-- /.schedule__calendar -->
     </div>
   </div>
-
-  <script>
-  window._initial_state = {{ { events: salonUsersEvents } | dump | safe }}
-  </script>
 {% endblock %}

@@ -53,6 +53,10 @@ export function renderer(path, locals) {
   })
 }
 
+export function json(data: any): string {
+  return JSON.stringify(data);
+}
+
 export function addFilter(name, func, async = false) {
   return env.addFilter(name, func, async)
 }
