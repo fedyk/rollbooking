@@ -1,13 +1,17 @@
-const debug = require('debug')('saga:get-salon-users')
-const { getUsersByIds } = require('../queries/users')
-const { getSalonUsers: getSalonUsersQuery } = require('../queries/salons')
+import debugFactory from 'debug'
+import { getUsersByIds } from '../queries/users'
+import { getSalonUsers as getSalonUsersQuery } from '../queries/salons'
+import { SalonUser } from '../models/salon-user';
+import { PoolClient } from 'pg';
+
+const debug = debugFactory('sagas:get-salon-users')
 
 /**
  * @param {PoolClient} client
  * @param {number} salonId
  * @return {Array<{user: object, user_id: string, salon_id: string, data: object}>}
  */
-module.exports = async function(client, salonId) {
+export async function getSalonUsers(client: PoolClient, salonId: number): Promise<SalonUser[]> {
  
   if (!salonId || isNaN(salonId)) {
     throw new RangeError('Invalid salon id');

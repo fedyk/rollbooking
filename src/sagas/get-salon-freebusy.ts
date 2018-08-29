@@ -1,4 +1,4 @@
-const { google } = require('googleapis')
+import { google, calendar_v3 } from 'googleapis';
 
 /**
  * @param {object} googleAuth
@@ -7,7 +7,7 @@ const { google } = require('googleapis')
  * @param {string} timeZone
  * @param {string[]} calendarIds
  */
-module.exports = async function getSalonFreebusy(googleAuth, timeMin, timeMax, timeZone, calendarIds) {
+export async function getSalonFreebusy(googleAuth, timeMin, timeMax, timeZone, calendarIds): Promise<calendar_v3.Schema$FreeBusyResponse> {
   const calendar = google.calendar({
     version: 'v3',
     auth: googleAuth

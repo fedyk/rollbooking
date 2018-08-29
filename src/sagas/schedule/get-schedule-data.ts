@@ -8,10 +8,9 @@ import { getUsersCalendarId } from '../../utils/get-user-calendar-id'
 import getCalendarEvents from '../../sagas/get-calendar-events'
 import getDateStartEndDay from '../../utils/get-date-start-end'
 import Salon from '../../models/salon';
-import User from '../../models/user';
-
-const getSalonServices = require('../../sagas/get-salon-services')
-const getSalonUsers = require('../../sagas/get-salon-users')
+import { User } from '../../models/user';
+import { getSalonServices } from '../get-salon-services'
+import { getSalonUsers } from '../get-salon-users'
 
 const debug = debugFactory('saga:get-schedule-events')
 

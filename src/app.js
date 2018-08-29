@@ -3,10 +3,11 @@ const serve = require('koa-static');
 const router = require('koa-router')();
 const config = require('./lib/config');
 const { addFilter, middleware } = require('./lib/render');
-const session = require('./lib/session');
+const { session } = require('./lib/session');
 const passport = require('./lib/passport');
 const bodyParser = require('koa-bodyparser');
 const { renderFilters } = require('./lib/render-filters');
+// const helmet = require("koa-helmet"); // todo
 
 const Koa = require('koa');
 const app = module.exports = new Koa();

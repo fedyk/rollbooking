@@ -1,12 +1,14 @@
-const getSalonServices = require('./get-salon-services')
-const getSalonUsers = require('./get-salon-users')
-const debug = require('debug')('saga:get-reservation-confirm-data')
+import { getSalonServices } from './get-salon-services';
+import { getSalonUsers } from './get-salon-users';
+import debugFactory from "debug";
+
+const debug = debugFactory('sagas:get-reservation-confirm-data')
 
 /**
  * 
  * @param {PgClient} client 
  */
-module.exports = async function getReservationConfirmData(client, googleAuth, salonId, masterId, serviceId, time) {
+export async function getReservationConfirmData(client, googleAuth, salonId, masterId, serviceId, time) {
 
   debug('fetch salon services')
 

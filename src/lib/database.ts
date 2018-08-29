@@ -10,7 +10,7 @@ pool.on('error', (err) => {
   process.exit(-1)
 })
 
-export function extractQueryParams<T>(data: { [key: string]: T }): {
+export function extractQueryParams<T>(data: object): {
   keys: string[];
   params: string[];
   values: T[]

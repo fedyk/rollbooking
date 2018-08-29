@@ -1,4 +1,5 @@
-import User from '../models/user'
+import { User } from '../models/user'
+import { getProperty } from './get-property';
 
 export default function (user) {
   if (user && user.user) {
@@ -8,18 +9,13 @@ export default function (user) {
   return getUserName(user as User)  
 }
 
-function getUserName(user: User): string {
-  if (user.first_name || user.last_name) {
-    return `${user.first_name} ${user.last_name}`.trim()
+export function getUserName(user: User): string {
+  // user.properties.general.name
+  const name = getProperty(user.properties, 'general', 'name')
+
+  if (name) {
+    return name;
   }
 
-  if (user.meta && user.meta.name) {
-    return user.meta.name
-  }
-
-  if (user.email) {
-    return user.email
-  }
-
-  return `User`;
+  return user.email;
 }

@@ -1,11 +1,13 @@
-const DateRange = require('../lib/date-range')
-const { getSalonById } = require('../queries/salons')
-const getSalonUsers = require('./get-salon-users')
-const getSalonServices = require('./get-salon-services')
-const getSalonFreebusy = require('./get-salon-freebusy')
-const getUserCalendarId = require('../utils/get-user-calendar-id')
-const { addMonth, addDay } = require('../utils/date')
-const debug = require('debug')('saga:get-reservation-widget-data')
+import debugFactory from "debug"
+import { DateRange } from '../lib/date-range'
+import { getSalonById } from '../queries/salons'
+import { getSalonUsers } from './get-salon-users'
+import { getSalonServices } from './get-salon-services'
+import { getSalonFreebusy } from './get-salon-freebusy'
+import { getUserCalendarId } from '../utils/get-user-calendar-id'
+import { addMonth, addDay } from '../utils/date'
+
+const debug = debugFactory('sagas:get-reservation-widget-data')
 
 /**
  * @typedef {object} ReservationWidgetData

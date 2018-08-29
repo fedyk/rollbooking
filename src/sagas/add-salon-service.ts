@@ -1,18 +1,14 @@
-const assert = require('assert')
-const debug = require('debug')('saga:add-salon-service')
-const { updateServiceToSalon } = require('../queries/salons')
+import * as assert from "assert";
+import debugFactory from "debug";
+import { addServiceToSalon } from '../queries/salons'
+import { PoolClient } from "pg";
+import { SalonService } from "../models/salon-service";
 
-/**
- * @param {PoolClient} client
- * @param {number} salonId
- * @param {number} service
- * @param {Object} service
- * @return {Object<{id: number, data: object}>}
- */
-module.exports = async function(client, salonId, serviceId, service) {
+const debug = debugFactory('sagas:add-salon-service');
+
+export async function addSalonService(client: PoolClient, salonId: Number, service: SalonService): Promise<SalonService> {
 
   debug('validate input data')
-
   assert.ok(client, 'PoolClient is not provided')
   assert.ok(salonId, 'Salon id is required')
   assert.ok(service, 'Salon id is required')
@@ -27,10 +23,12 @@ module.exports = async function(client, salonId, serviceId, service) {
   assert.ok(typeof service.description === 'string', 'Description should be a string')
   assert.ok(service.description.length < 1024, 'Description is too long')
 
-  debug('update service values in storage')
+  debug('insert new service in storage')
  
-  return await updateServiceToSalon(client, salonId, serviceId, {
+  return await addServiceToSalon(client, {
+    salon_id: salonId,
     data: service,
-    updated: new Date(),
+    created: new Date(),
+    updated: new Date()
   })
 }

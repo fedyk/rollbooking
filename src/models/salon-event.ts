@@ -1,10 +1,11 @@
-import User from './user'
+import { User } from './user'
 
-interface SalonEvent {
+export interface SalonEvent {
   id: string;
   name: string;
   start: Date;
-  duration: number;
+  end: Date;
+  masterId: number;
 }
 
 export default SalonEvent

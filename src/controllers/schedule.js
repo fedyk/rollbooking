@@ -15,7 +15,7 @@ module.exports.removeUser = removeUser;
 //   const salonId = parseInt(ctx.params.salonId)
 //   const client = await connect();
 //   const { user } = ctx.state
-//   const view = 'schedule/index.html'
+//   const view = 'schedule/index.njk'
 //   const locals = {
 //     salonId,
 //     user
@@ -30,7 +30,7 @@ module.exports.removeUser = removeUser;
 //     debug('Fail to get all needed data for rendering schedule page. Details: %O', e);
 //   }
 
-//   ctx.render('schedule/index.html', locals);
+//   ctx.render('schedule/index.njk', locals);
 
 //   client.release()
 // }

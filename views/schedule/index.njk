@@ -23,21 +23,19 @@
   <script>
     $(function initCalendar() {
       var $calendar = $('#calendar').fullCalendar({
+        schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
         editable: true,
         selectable: true,
         selectHelper: true,
         allDay: false,
         select: open,
-        schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
         defaultView: 'agendaDay',
         events: "/schedule/{{ salonId }}/get-events",
-        resources: {{ resources | dump | safe }},
-        timezone: "{{ salon | getSalonTimezone }}"
+        resources: JSON.parse("{{ resources | dump | safe }}"),
+        timezone: "{{ salon | getSalonTimezone }}",
       });
 
       function onSelectEvent(start, end) {
-        
-
         $.post("/schedule/{{ salonId }}/create-event", event)
         var title = prompt('Event Title:');
         var eventData;
@@ -71,4 +69,6 @@
       </div><!-- /.schedule__calendar -->
     </div>
   </div>
+
+   {% include "./user-modal.html" %}
 {% endblock %}

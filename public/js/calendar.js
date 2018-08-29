@@ -324,9 +324,34 @@ function userDialogSingleton() {
 }
 
 
+/**
+ * Event Dialog
+ * Implemented as a factory
+ */
+function EventDialog() {
+	const $$root = document.querySelector('#event-dialog');
+	const dialog = new MDCDialog($$root)
+
+	return {
+		createEvent: createEvent,
+	}
+
+	function createEvent(params) {
+		dialog.show()
+	}
+}
+
 // Expose UserDialog as a singleton
 Object.defineProperty(calendar, 'userDialog', {
 	get: userDialogSingleton
+});
+
+// Expose EventDialog as a singleton
+let eventDialogSingleton;
+Object.defineProperty(calendar, 'eventDialog', {
+	get: function() {
+		return eventDialogSingleton || (eventDialogSingleton = EventDialog())
+	}
 });
 
 return calendar

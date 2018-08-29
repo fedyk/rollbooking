@@ -1,12 +1,19 @@
-import User from './user'
+import { User } from './user'
 
-interface SalonUser {
+export interface SalonUserProperties {
+  general: {
+    role: string;
+  }
+  google: {
+    calendar_id: string
+  }
+}
+
+export interface SalonUser {
   user: User
   salon_id: number
   user_id: number;
-  data?: {
-
-  }
+  properties: SalonUserProperties
   created: Date
   updated: Date
 }

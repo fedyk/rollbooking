@@ -8,7 +8,7 @@ module.exports.up = async () => {
   (
     id serial,
     salon_id integer NOT NULL REFERENCES salons(id) ON DELETE CASCADE,
-    data json,
+    properties json,
     created TIMESTAMPTZ NOT NULL,
     updated TIMESTAMPTZ NOT NULL,
     CONSTRAINT salon_services_id_pkey PRIMARY KEY (id)

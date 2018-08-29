@@ -1,11 +1,13 @@
-const { google } = require('googleapis')
-const isEmail = require('../utils/is-email')
-const { authorize } = require('../lib/googleapis')
-const debug = require('debug')('saga:invite-user-to-salon')
-const { createSalon, addUserToSalon } = require('../queries/salons')
-const { getUserByEmail, createUser, getUserSalon } = require('../queries/users')
+import debugFactory from 'debug'
+import { google } from 'googleapis'
+import { isEmail } from '../utils/is-email';
+import { authorize } from '../lib/googleapis'
+import { addUserToSalon } from '../queries/salons'
+import { getUserByEmail, createUser, getUserSalon } from '../queries/users'
+import { PoolClient } from 'pg';
+import { User } from '../models/user';
 
-module.exports = inviteUserToSalon;
+const debug = debugFactory('sagas:invite-user-to-salon')
 
 /**
  * @param {PoolClient} client
@@ -14,7 +16,7 @@ module.exports = inviteUserToSalon;
  * @param {number} currentUserId
  * @param {string} role
  */
-async function inviteUserToSalon(client, salonId, userData, currentUserId, role = 'member') {
+export async function inviteUserToSalon(client: PoolClient, salonId: number, userData: User, currentUserId: number, role = 'member') {
 
   debug('user data validation')
 

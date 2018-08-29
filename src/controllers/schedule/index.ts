@@ -4,7 +4,7 @@ import { getScheduleData } from '../../sagas/schedule/get-schedule-data'
 import { connect } from '../../lib/database'
 import { authorize } from '../../lib/googleapis'
 import { renderer } from "../../lib/render"
-import UserModel from "../../models/user";
+import { User } from "../../models/user";
 import { ScheduleData } from "../../view-models/schedule/schedule-data"
 import { salonUsersToResources } from "../../utils/fullcalendar"
 
@@ -15,7 +15,7 @@ export async function schedule(ctx: Context) {
   const client = await connect();
   const googleAuth = await authorize();
   const currentDate = ctx.query.date ? new Date(ctx.query.date) : new Date();
-  const user = ctx.state.user as UserModel;
+  const user = ctx.state.user as User;
   const viewData: ScheduleData = {
     salonId,
     user
@@ -40,5 +40,5 @@ export async function schedule(ctx: Context) {
 
   client.release()
 
-  ctx.body = await renderer('schedule/index.html', viewData);
+  ctx.body = await renderer('schedule/index.njk', viewData);
 }

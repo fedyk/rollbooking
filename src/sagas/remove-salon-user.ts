@@ -1,6 +1,9 @@
-const assert = require('assert')
-const debug = require('debug')('saga:remove-salon-user')
-const { removeUserFromSalon } = require('../queries/salons')
+import * as assert from "assert";
+import debugFactory from "debug"
+import { removeUserFromSalon } from '../queries/salons'
+import { PoolClient } from "pg";
+
+const debug = debugFactory('sagas:remove-salon-user');
 
 /**
  * @param {PoolClient} client
@@ -8,7 +11,7 @@ const { removeUserFromSalon } = require('../queries/salons')
  * @param {number} userId
  * @return {void}
  */
-module.exports = async function(client, salonId, userId) {
+export async function removeSalonUser(client: PoolClient, salonId: number, userId: number) {
  
   assert.ok(salonId, 'Invalid salonId')
   assert.ok(userId, 'Invalid userId')

@@ -2,9 +2,6 @@ import * as passport from "koa-passport";
 import * as Router from "koa-router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { connect } from "./database";
-
-// const GoogleStrategy = require('passport-google-oauth20').Strategy
-// const { connect } = require('./database')
 import { getUserById, getUserByGoogleId, createUser } from "../queries/users";
 import { mapGoogleProfileToUser } from "../mappers/users";
 
@@ -15,7 +12,7 @@ passport.serializeUser(async function(user: any, done) {
   done(null, user.id)
 })
 
-passport.deserializeUser(async function(id, done) {
+passport.deserializeUser(async function(id: number, done) {
   const client = await connect();
   try {
     const user = await getUserById(client, id)

@@ -1,10 +1,13 @@
-const { google } = require('googleapis')
-const { authorize } = require('../lib/googleapis')
-const debug = require('debug')('saga:create-salon-saga')
-const { updateUser } = require('../queries/users')
-const { createSalon, addUserToSalon } = require('../queries/salons')
+import { google } from 'googleapis'
+import { authorize } from '../lib/googleapis'
+import debugFactory from "debug";
+import { updateUser } from '../queries/users'
+import { createSalon, addUserToSalon } from '../queries/salons'
+import Salon from '../models/salon';
 
-async function createSalonSaga(data, user, client) {
+const debug = debugFactory('sagas:create-salon-saga')
+
+export async function createSalonSaga(data, user, client): Promise<Salon> {
 
   if (!isValid(data)) {
     throw new RangeError('Invalid data provided');
@@ -81,4 +84,3 @@ function isValid(data) {
   return true;
 }
 
-module.exports = createSalonSaga;

@@ -1,10 +1,12 @@
-const { getSalonById } = require('../../../queries/salons')
-const getSalonUsers = require('../../get-salon-users')
-const getSalonService = require('../../get-salon-service')
-const getSalonServices = require('../../get-salon-services')
-const getDateStartEnd = require('../../../utils/get-date-start-end')
-const getUserCalendarId = require('../../../utils/get-user-calendar-id')
-const debug = require('debug')('saga:widgets')
+import { getSalonById } from '../../../queries/salons'
+import { getSalonUsers } from '../../get-salon-users'
+import { getSalonService } from '../../get-salon-service'
+import { getSalonServices } from '../../get-salon-services'
+import { getDateStartEnd } from '../../../utils/get-date-start-end'
+import { getUserCalendarId } from '../../../utils/get-user-calendar-id'
+import debugFactory from "debug"
+
+const debug = debugFactory('sagas:widgets')
 
 /**
  * @param {PoolClient} client
@@ -12,7 +14,7 @@ const debug = require('debug')('saga:widgets')
  * @param {Object} service
  * @return {Object<{id: number, data: object}>}
  */
-module.exports = async function getServices(client, googleAuth, salonId, date, serviceId, masterId) {
+export async function getServices(client, googleAuth, salonId, date, serviceId, masterId) {
   const salonMasters = [];
   const salonServices = [];
   const salonServicesSlots = [];
@@ -63,13 +65,3 @@ module.exports = async function getServices(client, googleAuth, salonId, date, s
     // master
   }
 }
-
-// function findNeededUser(salonUsers, masterId) {
-//   if (typeof masterId == 'number') {
-//     return salonUsers.find(v => v.user_id === masterId);
-//   }
-//   else if (salonUsers.length > 0) {
-//     return salonUsers[0];
-//   }
-//   return null
-// }

@@ -1,19 +1,16 @@
-const { extractQueryParams } = require('./../lib/database')
+import { extractQueryParams } from '../lib/database'
+import { PoolClient } from 'pg';
+import Salon from '../models/salon';
+import { SalonUser } from '../models/salon-user';
+import { SalonService } from '../models/salon-service';
 
-/**
- * @typedef {Object} {SalonUser}
- * @property {number} salon_id
- * @property {number} user_id
- * @property {object} data
- */
-
-module.exports.getSalonById = async (client, id) => {
+export async function getSalonById(client: PoolClient, id: number): Promise<Salon> {
   const { rows } = await client.query('SELECT * FROM salons WHERE id=$1 LIMIT 1', [id])
 
   return rows.length > 0 ? rows[0] : null
 }
 
-module.exports.createSalon = async (client, salon) => {
+export async function createSalon(client: PoolClient, salon: number): Promise<Salon> {
   const keys = Object.keys(salon)
   const params = keys.map((v, i) => `$` + (i + 1))
   const values = Object.values(salon)
@@ -24,7 +21,7 @@ module.exports.createSalon = async (client, salon) => {
   return rows.length > 0 ? rows[0] : null
 }
 
-module.exports.addUserToSalon = async (client, salonUser) => {
+export async function addUserToSalon(client: PoolClient, salonUser: SalonUser): Promise<SalonUser> {
   const { keys, params, values } = extractQueryParams(salonUser)
   const query = `INSERT INTO salon_users (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
 
@@ -33,14 +30,8 @@ module.exports.addUserToSalon = async (client, salonUser) => {
   return rows.length > 0 ? rows[0] : null
 }
 
-/**
- * @param {PoolClient} client 
- * @param {number} userId 
- * @param {number} salonId
- * @param {object} newValues
- * @return {SalonUser}
- */
-module.exports.updateUserToSalon = async function(client, userId, salonId, newValues) {
+
+export async function updateUserToSalon(client: PoolClient, userId: number, salonId: number, newValues: SalonUser): Promise<SalonUser> {
   const { keys, params, values } = extractQueryParams(newValues)
   const query = `UPDATE salon_users
     SET (${keys.join(',')}) = ROW(${params.join(', ')})
@@ -57,14 +48,14 @@ module.exports.updateUserToSalon = async function(client, userId, salonId, newVa
  * @param {number} userId 
  * @param {number} salonId
  */
-module.exports.removeUserFromSalon = async function(client, userId, salonId, newValues) {
+export async function removeUserFromSalon(client: PoolClient, userId: number, salonId: number): Promise<any> {
   const query = `DELETE FROM salon_users WHERE user_id = $1 AND salon_id = $2;`
   const { rows } = await client.query(query, [userId, salonId]);
 
   return rows;
 }
 
-module.exports.getSalonUsers = async (client, salonId) => {
+export async function getSalonUsers(client: PoolClient, salonId): Promise<SalonUser[]> {
   const query = `SELECT * FROM salon_users WHERE salon_id=$1`;
 
   const { rows } = await client.query(query, [salonId]);
@@ -77,7 +68,7 @@ module.exports.getSalonUsers = async (client, salonId) => {
  * @param {number} salonId
  * @return {Array<{id: number, salon_id: number, data: object}>}
  */
-module.exports.getSalonServices = async (client, salonId) => {
+export async function getSalonServices(client: PoolClient, salonId): Promise<SalonService[]> {
   const query = `SELECT * FROM salon_services WHERE salon_id=$1`;
 
   const { rows } = await client.query(query, [salonId]);
@@ -85,40 +76,24 @@ module.exports.getSalonServices = async (client, salonId) => {
   return rows
 }
 
-/**
- * @param {PoolClient} client
- * @param {number} salonId
- * @param {number} serviceId
- * @return {Array<{id: number, salon_id: number, data: object}>}
- */
-module.exports.getSalonService = async (client, salonId, serviceId) => {
+export async function getSalonService(client: PoolClient, salonId: number, serviceId: number): Promise<SalonService> {
   const query = `SELECT * FROM salon_services WHERE salon_id=$1 and id=$2`;
 
   const { rows } = await client.query(query, [salonId, serviceId]);
 
-  return rows
+  return rows.length > 0 ? rows[0] : null
 }
 
-/**
- * @param {PoolClient} client 
- * @param {Object} service
- */
-module.exports.addServiceToSalon = async (client, service) => {
+export async function addSalonService(client: PoolClient, service): Promise<any> {
   const { keys, params, values } = extractQueryParams(service)
   const query = `INSERT INTO salon_services (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
 
   const { rows } = await client.query(query, values);
 
-  return rows.length > 0 ? rows[0] : null
+  getSalonService
 }
 
-/**
- * @param {PoolClient} client 
- * @param {number} salonId
- * @param {number} serviceId
- * @param {Object} service
- */
-module.exports.updateServiceToSalon = async (client, salonId, serviceId, service) => {
+export async function updateSalonService(client: PoolClient, salonId: number, serviceId: number, service: SalonService): Promise<SalonService> {
   const { keys, params, values } = extractQueryParams(service)
   const query = `UPDATE salon_services
     SET (${keys.join(',')}) = ROW(${params.join(', ')})
@@ -135,10 +110,22 @@ module.exports.updateServiceToSalon = async (client, salonId, serviceId, service
  * @param {number} salonId
  * @param {number} serviceId
  */
-module.exports.removeServiceFromSalon = async (client, salonId, serviceId) => {
+export async function removeServiceFromSalon(client: PoolClient, salonId, serviceId): Promise<any> {
   const query = `DELETE FROM salon_services WHERE salon_id = $1 AND id = $2;`
 
   const { rows } = await client.query(query, [salonId, serviceId]);
 
   return rows;
+}
+
+export async function getUserSalons(client: PoolClient, userId: number): Promise<SalonUser[]> {
+  const { rows } = await client.query('SELECT * FROM salon_users WHERE user_id=$1', [userId])
+
+  return rows
+}
+
+export async function getUserSalon(client: PoolClient, userId: number, salonId: number): Promise<SalonUser> {
+  const { rows } = await client.query('SELECT * FROM salon_users WHERE user_id=$1 AND salon_id=$2 LIMIT 1', [userId, salonId])
+
+  return rows.length > 0 ? rows[0] : null
 }

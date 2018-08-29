@@ -1,23 +1,14 @@
-const assert = require('assert')
-const debug = require('debug')('saga:update-salon-user-details')
-const { getUserById, getUserSalon, updateUser } = require('../queries/users')
-const { updateUserToSalon } = require('../queries/salons')
+import { PoolClient } from "pg";
+import * as assert from "assert";
+import debugFactory from "debug";
 
-/**
- * The details for salon user
- * @typedef {Object} UserDetails
- * @property {string} name
- * @property {string} role
- */
+import { getUserById, getUserSalon, updateUser } from '../queries/users'
+import { updateUserToSalon } from '../queries/salons'
+import { UserProperties } from "../models/user";
 
-/**
- * @param {PoolClient} client
- * @param {number} salonId
- * @param {number} userId
- * @param {UserDetails} userDetails
- * @return {UserDetails}
- */
-module.exports = async function(client, salonId, userId, userDetails) {
+const debug = debugFactory('sagas:update-salon-user-details');
+
+export async function updateSalonUserDetails(client: PoolClient, salonId: number, userId: number, userDetails: UserProperties): Promise<UserProperties> {
 
   assert.ok(userId, 'Invalid user')
   assert.ok(salonId, 'Invalid salon')

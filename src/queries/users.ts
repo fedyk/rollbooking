@@ -1,28 +1,25 @@
-const { extractQueryParams } = require('./../lib/database')
+import { PoolClient } from 'pg';
+import { User } from '../models/user';
 
-module.exports.getUserById = async (client, id) => {
+export async function getUserById(client: PoolClient, id: number): Promise<User> {
   const { rows } = await client.query('SELECT * FROM users WHERE id=$1 LIMIT 1', [id])
 
   return rows.length > 0 ? rows[0] : null
 }
 
-/**
- * @param {PGClient} client 
- * @param {string} email
- */
-module.exports.getUserByEmail = async (client, email) => {
+export async function getUserByEmail(client: PoolClient, email: string): Promise<User> {
   const { rows } = await client.query('SELECT * FROM users WHERE email=$1 LIMIT 1', [email])
 
   return rows.length > 0 ? rows[0] : null
 }
 
-module.exports.getUserByGoogleId = async (client, googleId) => {
+export async function getUserByGoogleId(client: PoolClient, googleId: string): Promise<User> {
   const { rows } = await client.query('SELECT * FROM users WHERE google_id=$1 LIMIT 1', [googleId])
 
   return rows.length > 0 ? rows[0] : null
 }
 
-module.exports.createUser = async (client, user) => {
+export async function createUser(client: PoolClient, user: User): Promise<User> {
   const keys = Object.keys(user)
   const params = keys.map((v, i) => `$` + (i + 1))
   const values = Object.values(user)
@@ -33,7 +30,7 @@ module.exports.createUser = async (client, user) => {
   return rows.length > 0 ? rows[0] : null
 }
 
-module.exports.updateUser = async (client, user, id) => {
+export async function updateUser(client: PoolClient, userId: number, user: User): Promise<User> {
   const keys = Object.keys(user)
   const params = keys.map((v, i) => `$` + (i + 1))
   const values = Object.values(user)
@@ -44,26 +41,7 @@ module.exports.updateUser = async (client, user, id) => {
   return rows.length > 0 ? rows[0] : null
 }
 
-module.exports.getUserSalons = async (client, userId) => {
-  const { rows } = await client.query('SELECT * FROM salon_users WHERE user_id=$1', [userId])
-
-  return rows
-}
-
-/**
- * 
- * @param {PGClient} client 
- * @param {number} userId 
- * @param {number} salonId
- * @return {Object}
- */
-module.exports.getUserSalon = async (client, userId, salonId) => {
-  const { rows } = await client.query('SELECT * FROM salon_users WHERE user_id=$1 AND salon_id=$2 LIMIT 1', [userId, salonId])
-
-  return rows.length > 0 ? rows[0] : null
-}
-
-module.exports.getUsersByIds = async (client, usersIds) => {
+export async function getUsersByIds(client: PoolClient, usersIds: number[]): Promise<User[]> {
   const { rows } = await client.query('SELECT * FROM users WHERE id = ANY($1)', [usersIds])
 
   return rows

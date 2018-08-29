@@ -1,14 +1,10 @@
-const assert = require('assert')
-const debug = require('debug')('saga:add-salon-service')
-const { removeServiceFromSalon } = require('../queries/salons')
+import * as assert from "assert";
+import debugFactory from "debug"
+import { removeServiceFromSalon } from '../queries/salons'
 
-/**
- * @param {PoolClient} client
- * @param {number} salonId
- * @param {number} salonId
- * @return {Object<{id: number, data: object}>}
- */
-module.exports = async function(client, salonId, serviceId) {
+const debug = debugFactory('sagas:add-salon-service')
+
+export async function removeSalonService(client, salonId, serviceId) {
 
   debug('validate input data')
 

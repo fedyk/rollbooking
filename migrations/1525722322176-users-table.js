@@ -8,15 +8,13 @@ module.exports.up = async () => {
   (
     id serial,
     google_id varchar(32) NULL DEFAULT NULL,
-    google_meta json,
-    meta json,
+    properties json,
     email varchar(254) NOT NULL,
-    first_name varchar(32),
-    last_name varchar(32),
     "password" varchar(64),
-    timezone varchar(64),
     logins integer NOT NULL DEFAULT 0,
     last_login TIMESTAMPTZ,
+    created TIMESTAMPTZ NOT NULL,
+    updated TIMESTAMPTZ NOT NULL
     CONSTRAINT users_id_pkey PRIMARY KEY (id),
     CONSTRAINT users_email_key UNIQUE (email),
     CONSTRAINT users_google_id_key UNIQUE (google_id),
