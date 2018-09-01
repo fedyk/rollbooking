@@ -9,6 +9,10 @@ export interface UserProperties {
     name?: string;
     role?: string;
     timezone?: string;
+  },
+  invitation?: {
+    from_user_id: number;
+    to_salon_id: number;
   }
 }
 

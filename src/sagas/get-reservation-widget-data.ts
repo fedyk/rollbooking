@@ -6,6 +6,7 @@ import { getSalonServices } from './get-salon-services'
 import { getSalonFreebusy } from './get-salon-freebusy'
 import { getUserCalendarId } from '../utils/get-user-calendar-id'
 import { addMonth, addDay } from '../utils/date'
+import { getProperty } from "../utils/get-property";
 
 const debug = debugFactory('sagas:get-reservation-widget-data')
 
@@ -46,7 +47,12 @@ module.exports = async function getReservationWidgetData(client, googleAuth, sal
   const timeMin = new Date()
   const timeMax = addMonth(new Date(), 1)
   const calendarIds = salonUsers.map(user => getUserCalendarId(user))
-  const salonFreebusy = await getSalonFreebusy(googleAuth, timeMin, timeMax, salon.timezone || 'UTC', calendarIds)
+  const salonFreebusy = await getSalonFreebusy(
+    googleAuth,
+    timeMin,
+    timeMax,
+    getProperty(salon.properties, 'general', 'timezone', 'UTC'),
+    calendarIds)
 
   debug('calculate available dates')
 
@@ -100,7 +106,7 @@ function getServicesSlots(salonServices, salonSchedule, salonFreebusy) {
 
   for (let key in freeRanges) {
     freeRanges[key] = freeRanges[key].concat(salonSchedule.exclude(
-      salonFreebusy.calendars[key].busy.map(v => DateRange(v))
+      salonFreebusy.calendars[key].busy.map(({ start, end }) => new DateRange(start, end))
     ))
   }
 

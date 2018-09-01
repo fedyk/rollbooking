@@ -2,10 +2,12 @@ import debugFactory from 'debug'
 import { google } from 'googleapis'
 import { isEmail } from '../utils/is-email';
 import { authorize } from '../lib/googleapis'
-import { addUserToSalon } from '../queries/salons'
-import { getUserByEmail, createUser, getUserSalon } from '../queries/users'
+import { addSalonUser, getSalonUser } from '../queries/salons'
+import { getUserByEmail, createUser } from '../queries/users'
 import { PoolClient } from 'pg';
 import { User } from '../models/user';
+import { SalonUser, SalonUserRole } from '../models/salon-user';
+import { getProperty } from '../utils/get-property';
 
 const debug = debugFactory('sagas:invite-user-to-salon')
 
@@ -16,51 +18,47 @@ const debug = debugFactory('sagas:invite-user-to-salon')
  * @param {number} currentUserId
  * @param {string} role
  */
-export async function inviteUserToSalon(client: PoolClient, salonId: number, userData: User, currentUserId: number, role = 'member') {
+export async function inviteUserToSalon(
+  client: PoolClient,
+  salonId: number,
+  user: User,
+  currentUserId: number,
+  role: SalonUserRole
+): Promise<SalonUser> { 
 
-  debug('user data validation')
-
-  /**
-   * @type {string|null}
-   */
-  const error = validate(userData);
-
-  if (error !== null) {
-    throw new Error(error);
-  }
+  assert(typeof user !== 'object', 'Invalid data')
+  assert(!user.email || !user.email.trim(), 'Email is required')
+  assert(!isEmail(user.email), 'Invalid email')
+  assert(!getProperty(user.properties, 'general', 'timezone'), 'Invalid timezone')
 
   debug('find user with requested email')
 
-  let userModel = await getUserByEmail(client, userData.email)
+  let userModel = await getUserByEmail(client, user.email)
 
   if (!userModel) {
     debug('create a new user')
 
-    userModel = await createUser(client, {
-      email: userData.email,
-      meta: {
-        name: userData.name,
-        invited: true,
-        invitedByUserId: currentUserId,
-        invitedToSalon: salonId,
-        invitedWithRole: role
-      },
-      timezone: userData.timezone,
+    const userData = Object.assign({}, user);
+
+    userData.properties.invitation = Object.assign(userData.properties.invitation, {
+      from_user_id: currentUserId,
+      to_salon_id: salonId
     })
+
+    userModel = await createUser(client, userData)
   }
   else {
     debug('check if user has no relation with salon')
 
-    const userToSalon = await getUserSalon(client, userModel.id, salonId)
+    const userToSalon = await getSalonUser(client, salonId, userModel.id)
 
-    if (userToSalon) {
-      throw new Error('User already added')
-    }
+    assert(!userToSalon, 'User already added')
   }
 
-  debug('autorize in google')
+  debug('authorize in google')
 
   const auth = await authorize()
+
   const calendar = google.calendar({
     version: 'v3',
     auth
@@ -70,53 +68,34 @@ export async function inviteUserToSalon(client: PoolClient, salonId: number, use
 
   const calendarResource = {
     summary: `Calendar ${salonId}:${userModel.id}`,
-    timeZone: userData.timezone
+    timeZone: getProperty(userModel.properties, 'general', 'timezone'),
   }
 
   const { data: createdCalendar } = await calendar.calendars.insert({
-    resource: calendarResource,
+    requestBody: calendarResource,
     auth
   })
 
   debug('create new relation between user & salon')
 
-  const salonToUser = {
+  const salonUser: SalonUser = {
     user_id: userModel.id,
     salon_id: salonId,
-    data: {
-      role,
-      calendarId: createdCalendar.id,
-      calendarEtag: calendarResource.etag,
-      calendarKind: calendarResource.kind,
-      timezone: userData.timezone,
+    properties: {
+      general: {
+        role: role,
+        timezone: getProperty(userModel, 'general', 'timezone'),
+      },
+      google: {
+        calendar_id: createdCalendar.id,
+        calendar_etag: createdCalendar.etag,
+        calendar_kind: createdCalendar.kind,
+      }
     },
     created: new Date(),
     updated: new Date(),
   }
 
-  await addUserToSalon(client, salonToUser)
-}
-
-// Private
-
-function validate(userData) {
-
-  if (typeof userData !== 'object') {
-    return 'Invalid data'
-  }
-
-  if (!userData.email || !userData.email.trim()) {
-    return 'Email is required'
-  }
-
-  if (!isEmail(userData.email)) {
-    return 'Invalid email'
-  }
-
-  if (!userData.timezone) {
-    return 'Invalid timezone'
-  }
-
-  return null;
+  return await addSalonUser(client, salonUser)
 }
 

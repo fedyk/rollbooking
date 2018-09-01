@@ -1,7 +1,7 @@
 export class DateRange {
   start: Date;
   end: Date;
-
+ 
   constructor(start: any, end: any) {
     this.start = this.parseDateTime(start);
     this.end = this.parseDateTime(end);

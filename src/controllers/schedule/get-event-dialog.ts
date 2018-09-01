@@ -4,7 +4,7 @@ import { connect } from '../../lib/database'
 import { authorize } from '../../lib/googleapis'
 import { renderer } from "../../lib/render"
 import { EventDialog } from "../../view-models/schedule/event-dialog"
-import * as getSalonUsers from "../../sagas/get-salon-users";
+import { getSalonUsers } from "../../sagas/get-salon-users";
 import { getMasterEvent } from "../../sagas/get-master-event";
 
 const debug = require('debug')('controller:schedule:get-events');

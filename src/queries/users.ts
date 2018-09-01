@@ -36,7 +36,7 @@ export async function updateUser(client: PoolClient, userId: number, user: User)
   const values = Object.values(user)
   const query = `UPDATE users SET (${keys.join(', ')}) = ROW(${params.join(', ')}) WHERE id = $${params.length + 1} RETURNING *;`;
 
-  const { rows } = await client.query(query, values.concat(id));
+  const { rows } = await client.query(query, values.concat(userId));
 
   return rows.length > 0 ? rows[0] : null
 }

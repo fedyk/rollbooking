@@ -1,52 +1,32 @@
 import { PoolClient } from "pg";
 import * as assert from "assert";
 import debugFactory from "debug";
-
-import { getUserById, getUserSalon, updateUser } from '../queries/users'
-import { updateUserToSalon } from '../queries/salons'
-import { UserProperties } from "../models/user";
+import * as deepMerge from "deepmerge";
+import { updateSalonUser, getSalonUser } from '../queries/salons'
+import { SalonUserProperties, SalonUser } from "../models/salon-user";
 
 const debug = debugFactory('sagas:update-salon-user-details');
 
-export async function updateSalonUserDetails(client: PoolClient, salonId: number, userId: number, userDetails: UserProperties): Promise<UserProperties> {
+export async function updateSalonUserProperties(
+  client: PoolClient,
+  userId: number,
+  salonId: number,
+  userProperties: SalonUserProperties
+): Promise<SalonUser> {
 
-  assert.ok(userId, 'Invalid user')
-  assert.ok(salonId, 'Invalid salon')
-  assert.ok(userDetails, 'Invalid data')
-  assert.ok(userDetails.name, 'Missed user name')
-  assert.ok(userDetails.role, 'Missed user role')
-
-  debug('get user by id = %s', userId)
-
-  let user = await getUserById(client, userId)
-
-  assert.ok(user, `User doe's not exist`)
+  assert.ok(userId, 'Missed user id')
+  assert.ok(salonId, 'Missed salon id')
+  assert.ok(userProperties, 'Missed user properties to update')
 
   debug('get user salon relations for userId=%s, salonId=%s', userId, salonId)
 
-  let userSalon = await getUserSalon(client, userId, salonId)
+  const salonUser = await getSalonUser(client, userId, salonId);
 
-  assert.ok(userSalon, 'Salon has no user in the list')
+  assert.ok(salonUser, 'Salon and user has no relations')
 
   debug('update user name in meta')
 
-  const meta = Object.assign({}, user.meta, {
-    name: userDetails.name
-  })
+  const properties = deepMerge(salonUser.properties, userProperties)
 
-  user = await updateUser(client, { meta }, userId)
-
-  debug('update user role in meta')
-
-  const data = Object.assign({}, userSalon.data, {
-    role: userDetails.role
-  })
-
-  userSalon = await updateUserToSalon(client, userId, salonId, { data })
-
-  return {
-    name: user.meta.name,
-    email: user.email,
-    role: userSalon.data.role
-  }
+  return await updateSalonUser(client, salonId, userId, { ...salonUser, properties });
 }

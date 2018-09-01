@@ -4,9 +4,9 @@ import { google } from 'googleapis'
 import { PoolClient } from 'pg';
 import { OAuth2Client } from 'google-auth-library'
 import { SalonEvent } from '../models/salon-event';
-import { getUserSalon } from "../queries/users";
 import { getProperty } from '../utils/get-property';
 import { schemaToEvent } from '../mappers/google/schema-to-event';
+import { getSalonUser } from '../queries/salons';
 
 const debug = debugFactory('sagas:get-master-event');
 
@@ -23,7 +23,7 @@ export async function getMasterEvent(params: getSalonEvent$Params): Promise<Salo
 
   debug('fetch salon-master relation record');
 
-  const userSalonRelation = await getUserSalon(client, masterId, salonId);
+  const userSalonRelation = await getSalonUser(client, salonId, masterId);
 
   assert(userSalonRelation, 'Invalid master');
 

@@ -10,7 +10,7 @@ export async function getSalonById(client: PoolClient, id: number): Promise<Salo
   return rows.length > 0 ? rows[0] : null
 }
 
-export async function createSalon(client: PoolClient, salon: number): Promise<Salon> {
+export async function createSalon(client: PoolClient, salon: Salon): Promise<Salon> {
   const keys = Object.keys(salon)
   const params = keys.map((v, i) => `$` + (i + 1))
   const values = Object.values(salon)
@@ -21,7 +21,7 @@ export async function createSalon(client: PoolClient, salon: number): Promise<Sa
   return rows.length > 0 ? rows[0] : null
 }
 
-export async function addUserToSalon(client: PoolClient, salonUser: SalonUser): Promise<SalonUser> {
+export async function addSalonUser(client: PoolClient, salonUser: SalonUser): Promise<SalonUser> {
   const { keys, params, values } = extractQueryParams(salonUser)
   const query = `INSERT INTO salon_users (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
 
@@ -31,7 +31,12 @@ export async function addUserToSalon(client: PoolClient, salonUser: SalonUser): 
 }
 
 
-export async function updateUserToSalon(client: PoolClient, userId: number, salonId: number, newValues: SalonUser): Promise<SalonUser> {
+export async function updateSalonUser(
+  client: PoolClient,
+  salonId: number,
+  userId: number,
+  newValues: SalonUser
+): Promise<SalonUser> {
   const { keys, params, values } = extractQueryParams(newValues)
   const query = `UPDATE salon_users
     SET (${keys.join(',')}) = ROW(${params.join(', ')})
@@ -84,13 +89,13 @@ export async function getSalonService(client: PoolClient, salonId: number, servi
   return rows.length > 0 ? rows[0] : null
 }
 
-export async function addSalonService(client: PoolClient, service): Promise<any> {
+export async function addSalonService(client: PoolClient, service: SalonService): Promise<any> {
   const { keys, params, values } = extractQueryParams(service)
   const query = `INSERT INTO salon_services (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
 
   const { rows } = await client.query(query, values);
 
-  getSalonService
+  return rows.length > 0 ? rows[0] : null
 }
 
 export async function updateSalonService(client: PoolClient, salonId: number, serviceId: number, service: SalonService): Promise<SalonService> {
@@ -124,7 +129,7 @@ export async function getUserSalons(client: PoolClient, userId: number): Promise
   return rows
 }
 
-export async function getUserSalon(client: PoolClient, userId: number, salonId: number): Promise<SalonUser> {
+export async function getSalonUser(client: PoolClient, salonId: number, userId: number): Promise<SalonUser> {
   const { rows } = await client.query('SELECT * FROM salon_users WHERE user_id=$1 AND salon_id=$2 LIMIT 1', [userId, salonId])
 
   return rows.length > 0 ? rows[0] : null
