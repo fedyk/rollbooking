@@ -47,7 +47,7 @@ export function middleware() {
   }
 }
 
-export function renderer(path, locals) {
+export function renderer(path, locals = {}) {
   return new Promise((resolve, reject) => {
     render(path, locals, (err, resp) => err ? reject(err) : resolve(resp))
   })

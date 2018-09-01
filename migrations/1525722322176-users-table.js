@@ -1,5 +1,5 @@
-const config = require('../src/lib/config')
-const { connect } = require('../src/lib/database')
+const config = require('../built/lib/config')
+const { connect } = require('../built/lib/database')
 
 module.exports.up = async () => {
   const client = await connect()
@@ -14,7 +14,7 @@ module.exports.up = async () => {
     logins integer NOT NULL DEFAULT 0,
     last_login TIMESTAMPTZ,
     created TIMESTAMPTZ NOT NULL,
-    updated TIMESTAMPTZ NOT NULL
+    updated TIMESTAMPTZ NOT NULL,
     CONSTRAINT users_id_pkey PRIMARY KEY (id),
     CONSTRAINT users_email_key UNIQUE (email),
     CONSTRAINT users_google_id_key UNIQUE (google_id),

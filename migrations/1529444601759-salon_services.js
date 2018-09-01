@@ -1,5 +1,5 @@
-const config = require('../src/lib/config')
-const { connect } = require('../src/lib/database')
+const config = require('../built/lib/config')
+const { connect } = require('../built/lib/database')
 
 module.exports.up = async () => {
   const client = await connect()

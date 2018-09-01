@@ -26,7 +26,7 @@ class Store {
   }
 
   async load(fn) {
-    
+    debugger
     try {
       const client = await connect();
 

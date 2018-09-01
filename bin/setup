@@ -2,8 +2,8 @@
 'use strict'
 
 const { google } = require('googleapis');
-const config = require('../src/lib/config')
-const { authorize } = require('../src/lib/googleapis')
+const config = require('../built/lib/config')
+const { authorize } = require('../built/lib/googleapis')
 
 async function main() {
   const oAuth2Client = await authorize();

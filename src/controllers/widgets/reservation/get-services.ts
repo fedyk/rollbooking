@@ -1,12 +1,10 @@
-const { google } = require('googleapis');
-const { connect } = require('../../../lib/database');
-const { authorize } = require('../../../lib/googleapis');
-const getReservationWidgetServices = require('../../../sagas/widgets/reservation/get-services');
-const debug = require('debug')('controllers:widgets');
+import { Context } from 'koa';
+import { connect } from '../../../lib/database';
+import { authorize } from '../../../lib/googleapis';
+import { getServices as fetchServices } from '../../../sagas/widgets/reservation/get-services';
+// import debug from 'debug')('controllers:widgets';
 
-module.exports = getServices;
-
-async function getServices(ctx) {
+export async function getServices(ctx: Context) {
   const salonId = parseInt(ctx.params.salonId);
   const params = parseParams(ctx.query);
   const client = await connect();

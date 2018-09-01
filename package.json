@@ -39,7 +39,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest --forceExit --coverage --verbose",
-    "migrate:up": "migrate-up --store=./src/lib/migrations-store.js",
+    "migrate:up": "migrate-up --store=./built/lib/migrations-store.js",
     "setup": "./bin/setup"
   },
   "author": "Rollbooking Team",

@@ -16,8 +16,15 @@ export function extractQueryParams<T>(data: object): {
   values: T[]
 } {
   const keys = Object.keys(data);
-  const params = keys.map((v, i) => `$` + (i + 1));
   const values = Object.values(data);
+  const idIndex = keys.indexOf('id');
+
+  if (idIndex !== -1) {
+    keys.splice(idIndex, 1);
+    values.splice(idIndex, 1);
+  }
+
+  const params = keys.map((v, i) => `$` + (i + 1));
 
   return {
     keys,

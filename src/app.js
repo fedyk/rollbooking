@@ -12,7 +12,7 @@ const { renderFilters } = require('./lib/render-filters');
 const Koa = require('koa');
 const app = module.exports = new Koa();
 
-const auth = require('./controllers/auth');
+const { router: authRouter } = require('./controllers/auth/router');
 const welcome = require('./controllers/welcome');
 const schedule = require('./controllers/schedule');
 const salonServices = require('./controllers/salon-services');
@@ -20,7 +20,7 @@ const widgets = require('./controllers/widgets');
 const onboarding = require('./controllers/onboarding');
 
 const widgetRouter = require('./controllers/widgets/router')
-const scheduleRouter = require('./controllers/schedule/router')
+const { router: scheduleRouter } = require('./controllers/schedule/router')
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
@@ -57,13 +57,14 @@ router.get('/', welcome)
   .get('/widgets/reservation/:salonId/confirm', widgets.reservationConfirm)
   .get('/widgets/reservation/:salonId/preview', widgets.reservationPreview)
 
+  .use('/', authRouter.routes(), authRouter.allowedMethods())
   .use('/widgets/', widgetRouter.routes(), widgetRouter.allowedMethods())
   .use('/schedule/', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
 
   .get('/onboarding', passport.onlyAuthenticated, onboarding)
   .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
-  .get('/login', auth.login)
-  .get('/logout', auth.logout)
+  // .get('/login', auth.login)
+  // .get('/logout', auth.logout)
   .use('/auth', passport.router.routes());
 
 app.use(router.routes());
