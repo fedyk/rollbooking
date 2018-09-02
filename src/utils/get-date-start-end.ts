@@ -7,7 +7,7 @@ interface IResult {
   end: Date;
 }
 
-export default function(date: Date): IResult {
+export function getDateStartEnd(date: Date): IResult {
   const start = new Date(date.getTime());
   const end = new Date(date.getTime());
 

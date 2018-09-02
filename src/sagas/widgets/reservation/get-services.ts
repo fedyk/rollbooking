@@ -5,6 +5,11 @@ import { getSalonServices } from '../../get-salon-services'
 import { getDateStartEnd } from '../../../utils/get-date-start-end'
 import { getUserCalendarId } from '../../../utils/get-user-calendar-id'
 import debugFactory from "debug"
+import { PoolClient } from 'pg';
+import { OAuth2Client } from 'google-auth-library';
+import { getProperty } from '../../../utils/get-property';
+import { getSalonFreebusy } from "../../get-salon-freebusy";
+import { SalonService } from '../../../models/salon-service';
 
 const debug = debugFactory('sagas:widgets')
 
@@ -14,7 +19,14 @@ const debug = debugFactory('sagas:widgets')
  * @param {Object} service
  * @return {Object<{id: number, data: object}>}
  */
-export async function getServices(client, googleAuth, salonId, date, serviceId, masterId) {
+export async function getServices(
+  client: PoolClient,
+  googleAuth: OAuth2Client,
+  salonId: number,
+  date: Date,
+  serviceId: number,
+  masterId: number
+): Promise<SalonService[]> {
   const salonMasters = [];
   const salonServices = [];
   const salonServicesSlots = [];
@@ -28,7 +40,7 @@ export async function getServices(client, googleAuth, salonId, date, serviceId, 
   const salonUsers = await getSalonUsers(client, salonId);
 
   if (masterId) {
-    salonMasters.push(salonUsers.find(v => v.id == masterId));
+    salonMasters.push(salonUsers.find(v => v.user_id == masterId));
   }
   else {
     salonMasters.push(...salonUsers);
@@ -50,7 +62,14 @@ export async function getServices(client, googleAuth, salonId, date, serviceId, 
   debug('fetch freebusy for masters')
 
   const { start, end } = getDateStartEnd(date);
-  const salonFreebusy = await getSalonFreebusy(googleAuth, start, end, salon.timezone || 'UTC', calendarIds);
+  
+  const salonFreebusy = await getSalonFreebusy(
+    googleAuth,
+    start,
+    end,
+    getProperty(salon.properties, 'general', 'timezone', 'UTC'),
+    calendarIds
+  );
   
   // debug('fetch salon users')
   
@@ -60,8 +79,5 @@ export async function getServices(client, googleAuth, salonId, date, serviceId, 
   
   // const master = findNeededUser(salonUsers, masterId);
   
-  return {
-    salonServices
-    // master
-  }
+  return salonServices
 }

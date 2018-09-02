@@ -6,7 +6,7 @@ import debugFactory from 'debug'
 import { getSalonById } from '../../queries/salons'
 import { getUserCalendarId } from '../../utils/get-user-calendar-id'
 import getCalendarEvents from '../../sagas/get-calendar-events'
-import getDateStartEndDay from '../../utils/get-date-start-end'
+import { getDateStartEnd } from '../../utils/get-date-start-end'
 import Salon from '../../models/salon';
 import { User } from '../../models/user';
 import { getSalonServices } from '../get-salon-services'
@@ -56,7 +56,7 @@ export const getScheduleData = async (params: Params): Promise<Result> => {
   debug('fetch users events')
   
   const salonUsersEvents: { [userId: string]: calendar_v3.Schema$Events } = {};
-  const { start, end } = getDateStartEndDay(params.currentDate)
+  const { start, end } = getDateStartEnd(params.currentDate)
 
   await Promise.all(
     salonUsers.map(salonUser => {

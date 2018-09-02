@@ -67,7 +67,7 @@ export class DateRange {
     return new DateRange(this.start.getTime(), this.end.getTime())
   }
 
-  exclude(dateRange: DateRange): DateRange[] {
+  exclude(dateRange: DateRange | DateRange[]): DateRange[] {
     if (Array.isArray(dateRange)) {
       let result = [this.clone()]
 
