@@ -1,7 +1,6 @@
-const Router = require('koa-router');
-const getReservationServices = require('./reservation/get-services');
-const router = new Router();
+import * as Router from 'koa-router';
+import { getServices } from './reservation/get-services';
 
-router.post('reservation/:salonId/get-services', getReservationServices);
+export const router = new Router();
 
-module.exports = router;
+router.post('reservation/:salonId/get-services', getServices);

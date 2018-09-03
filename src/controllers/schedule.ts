@@ -1,41 +1,14 @@
-const { connect } = require('../lib/database');
-const debug = require('debug')('controller:schedule');
-const inviteUserToSalon = require('../sagas/invite-user-to-salon');
-const getSalonUsers = require('../sagas/get-salon-users');
-const updateSalonUserDetails = require('../sagas/update-salon-user-details');
-const removeSalonUser = require('../sagas/remove-salon-user');
+import { connect } from '../lib/database'
+import debugFactory from 'debug';
+import { inviteUserToSalon } from '../sagas/invite-user-to-salon'
+import { getSalonUsers } from '../sagas/get-salon-users'
+import { updateSalonUserProperties } from '../sagas/update-salon-user-properties';
+import { removeSalonUser } from '../sagas/remove-salon-user'
 
-// module.exports = schedule;
-module.exports.inviteUser = inviteUser;
-module.exports.getUserDetails = getUserDetails;
-module.exports.updateUserDetails = updateUserDetails;
-module.exports.removeUser = removeUser;
+const debug = debugFactory('controller:schedule');
 
-// async function schedule(ctx) {
-//   const salonId = parseInt(ctx.params.salonId)
-//   const client = await connect();
-//   const { user } = ctx.state
-//   const view = 'schedule/index.njk'
-//   const locals = {
-//     salonId,
-//     user
-//   }
 
-//   try {
-//     locals.salonUsers = await getSalonUsers(client, salonId)
-//   }
-//   catch(e) {
-//     locals.error = e.message || 'Something went wrong. Please try later';
-
-//     debug('Fail to get all needed data for rendering schedule page. Details: %O', e);
-//   }
-
-//   ctx.render('schedule/index.njk', locals);
-
-//   client.release()
-// }
-
-async function inviteUser(ctx) {
+export async function inviteUser(ctx) {
   const userData = ctx.request.body
   const currUser = ctx.state.user
   const salonId = parseInt(ctx.params.salonId)
@@ -65,7 +38,7 @@ async function inviteUser(ctx) {
   client.release();
 }
 
-async function getUserDetails(ctx) {
+export async function getUserDetails(ctx) {
   const getUserName = require('../utils/get-user-name')
   const getUserRole = require('../utils/get-user-role')
   const salonId = parseInt(ctx.params.salonId)
@@ -98,7 +71,7 @@ async function getUserDetails(ctx) {
   client.release()
 }
 
-async function updateUserDetails(ctx) {
+export async function updateUserDetails(ctx) {
   const userDetails = ctx.request.body
   const salonId = parseInt(ctx.params.salonId)
   const userId = parseInt(ctx.params.userId)
@@ -111,7 +84,7 @@ async function updateUserDetails(ctx) {
   }
 
   try {
-    await updateSalonUserDetails(client, salonId, userId, userDetails)
+    await updateSalonUserProperties(client, salonId, userId, userDetails)
 
     viewLocal.salonUsers = await getSalonUsers(client, salonId)
   }
@@ -125,7 +98,7 @@ async function updateUserDetails(ctx) {
 }
 
 
-async function removeUser(ctx) {
+export async function removeUser(ctx) {
   const salonId = parseInt(ctx.params.salonId)
   const userId = parseInt(ctx.params.userId)
   const client = await connect()

@@ -1,5 +1,5 @@
-const config = require('./config')
-const { connect } = require('./database')
+import './config';
+import { connect } from "./database";
 
 class Store {
 

@@ -1,15 +1,15 @@
-import { ok } from 'assert';
-import * as app from '../../../app';
-import * as supertest from 'supertest';
+import { ok } from "assert";
+import * as app from "../../app";
+import * as supertest from "supertest";
 
 const TEST_SALON_ID = process.env.TEST_SALON_ID || 1;
 const TEST_MASTER_ID = process.env.TEST_MASTER_ID || 1;
 const TEST_SERVICE_ID = process.env.TEST_SERVICE_ID || 1;
 
-describe('Widgets > Reservation > getServices', () => {
+describe('Schedule > Welcome', () => {
   const server = app.listen()
   const request = supertest.agent(server)
-  const url = `/widgets/reservation/${TEST_SALON_ID}/get-services`
+  const url = `/schedule//${TEST_SALON_ID}`
 
   afterAll(function () {
     server.close();
@@ -23,7 +23,7 @@ describe('Widgets > Reservation > getServices', () => {
         s: TEST_SERVICE_ID,
       })
       .expect(200)
-      .then(response => ok(response.body))
+      .then(response => assert(response.body))
     })
   })
 

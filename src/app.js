@@ -19,8 +19,8 @@ const salonServices = require('./controllers/salon-services');
 const widgets = require('./controllers/widgets');
 const onboarding = require('./controllers/onboarding');
 
-const widgetRouter = require('./controllers/widgets/router')
-const { router: scheduleRouter } = require('./controllers/schedule/router')
+const { router: widgetRouter } = require('./controllers/widgets/router');
+const { router: scheduleRouter } = require('./controllers/schedule/router');
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
