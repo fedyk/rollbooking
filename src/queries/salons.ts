@@ -11,9 +11,7 @@ export async function getSalonById(client: PoolClient, id: number): Promise<Salo
 }
 
 export async function createSalon(client: PoolClient, salon: Salon): Promise<Salon> {
-  const keys = Object.keys(salon)
-  const params = keys.map((v, i) => `$` + (i + 1))
-  const values = Object.values(salon)
+  const { keys, params, values } = extractQueryParams(salon);
   const query = `INSERT INTO salons (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
 
   const { rows } = await client.query(query, values);

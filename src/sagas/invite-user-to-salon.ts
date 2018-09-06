@@ -1,3 +1,4 @@
+import { ok } from "assert";
 import debugFactory from 'debug'
 import { google } from 'googleapis'
 import { isEmail } from '../utils/is-email';
@@ -26,10 +27,10 @@ export async function inviteUserToSalon(
   role: SalonUserRole
 ): Promise<SalonUser> { 
 
-  assert(typeof user !== 'object', 'Invalid data')
-  assert(!user.email || !user.email.trim(), 'Email is required')
-  assert(!isEmail(user.email), 'Invalid email')
-  assert(!getProperty(user.properties, 'general', 'timezone'), 'Invalid timezone')
+  ok(typeof user !== 'object', 'Invalid data')
+  ok(!user.email || !user.email.trim(), 'Email is required')
+  ok(!isEmail(user.email), 'Invalid email')
+  ok(!getProperty(user.properties, 'general', 'timezone'), 'Invalid timezone')
 
   debug('find user with requested email')
 
@@ -52,7 +53,7 @@ export async function inviteUserToSalon(
 
     const userToSalon = await getSalonUser(client, salonId, userModel.id)
 
-    assert(!userToSalon, 'User already added')
+    ok(!userToSalon, 'User already added')
   }
 
   debug('authorize in google')

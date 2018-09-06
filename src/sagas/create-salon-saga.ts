@@ -20,10 +20,7 @@ export async function createSalonSaga(client: PoolClient, salon: Salon, owner: U
 
   debug('create salon %s', salon.name)
 
-  salon = await createSalon(client, Object.assign({}, salon, {
-    created: new Date(),
-    updated: new Date(),
-  }));
+  salon = await createSalon(client, salon);
 
   const auth = await authorize()
 
@@ -75,7 +72,9 @@ export async function createSalonSaga(client: PoolClient, salon: Salon, owner: U
       }
     }
 
-    const updatedUser = deepMerge(owner, properties)
+    const updatedUser = deepMerge(owner, {
+      properties: properties
+    })
 
     await updateUser(client, owner.id, updatedUser)
   }

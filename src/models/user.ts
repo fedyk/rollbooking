@@ -1,8 +1,8 @@
 export interface UserProperties {
   google?: {
     accessToken?: string;
-    emails: any[];
-    scope?: string;
+    emails: string[];
+    scope?: string[];
     refreshToken?: string;
   };
   general: {
@@ -13,6 +13,9 @@ export interface UserProperties {
   invitation?: {
     from_user_id: number;
     to_salon_id: number;
+  },
+  salons?: {
+    default_salon_id?: number
   }
 }
 

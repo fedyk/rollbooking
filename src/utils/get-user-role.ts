@@ -1,14 +1,10 @@
 import { User } from '../models/user'
 import { getProperty } from './get-property';
+import { SalonUserRole } from '../models/salon-user';
 
-export default function(user: User): string {
+export function getUserRole(user: User): string {
   // return user.properties.general.role
-  const role = getProperty(user.properties, 'general', 'role');
+  const role = getProperty(user.properties, 'general', 'role') as SalonUserRole;
   
-  return role ? capitalizeFirstLetter(role) : ''
+  return role ? SalonUserRole[role] : '';
 }
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-

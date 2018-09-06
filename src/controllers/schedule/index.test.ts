@@ -23,7 +23,7 @@ describe('Schedule > Welcome', () => {
         s: TEST_SERVICE_ID,
       })
       .expect(200)
-      .then(response => assert(response.body))
+      .then(response => ok(response.body))
     })
   })
 

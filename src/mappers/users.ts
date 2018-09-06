@@ -10,11 +10,14 @@ export function mapGoogleProfileToUser(
   }
 ): User {
   const name = `${profile.name && profile.name.givenName} ${profile.name && profile.name.familyName}`.trim();
-  const email = profile.emails && profile.emails[0] || null;
+  const email = Array.isArray(profile.emails)
+    && profile.emails.length > 0
+    && profile.emails[0].value || null;
+
   const properties: UserProperties = {
     google: {
       scope,
-      emails: profile.emails,
+      emails: Array.isArray(profile.emails) ? profile.emails.map(v => v && v.value || v) : profile.emails,
       accessToken,
       refreshToken,
     },

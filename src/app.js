@@ -17,10 +17,11 @@ const welcome = require('./controllers/welcome');
 const schedule = require('./controllers/schedule');
 const salonServices = require('./controllers/salon-services');
 const widgets = require('./controllers/widgets');
-const onboarding = require('./controllers/onboarding');
+// const onboarding = require('./controllers/onboarding');
 
 const { router: widgetRouter } = require('./controllers/widgets/router');
 const { router: scheduleRouter } = require('./controllers/schedule/router');
+const { router: onboardingRouter } = require('./controllers/onboarding/router');
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
@@ -60,9 +61,10 @@ router.get('/', welcome)
   .use('/', authRouter.routes(), authRouter.allowedMethods())
   .use('/widgets/', widgetRouter.routes(), widgetRouter.allowedMethods())
   .use('/schedule/', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
+  .use('/onboarding', passport.onlyAuthenticated, onboardingRouter.routes(), onboardingRouter.allowedMethods())
 
-  .get('/onboarding', passport.onlyAuthenticated, onboarding)
-  .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
+  // .get('/onboarding', passport.onlyAuthenticated, onboarding)
+  // .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
   // .get('/login', auth.login)
   // .get('/logout', auth.logout)
   .use('/auth', passport.router.routes());

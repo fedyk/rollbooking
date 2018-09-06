@@ -1,5 +1,5 @@
 import getUserName from '../utils/get-user-name'
-import getUserRole from '../utils/get-user-role'
+import { getUserRole } from '../utils/get-user-role'
 import { getServiceName, getServicePrice, getServiceDuration } from '../utils/service'
 import dateToLocalTime from '../utils/date-to-local-time'
 import { getServiceReservationUrl } from '../utils/get-service-reservation-url'

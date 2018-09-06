@@ -1,5 +1,6 @@
 import { PoolClient } from 'pg';
 import { User } from '../models/user';
+import { extractQueryParams } from '../lib/database';
 
 export async function getUserById(client: PoolClient, id: number): Promise<User> {
   const { rows } = await client.query('SELECT * FROM users WHERE id=$1 LIMIT 1', [id])
@@ -20,10 +21,10 @@ export async function getUserByGoogleId(client: PoolClient, googleId: string): P
 }
 
 export async function createUser(client: PoolClient, user: User): Promise<User> {
-  const keys = Object.keys(user)
-  const params = keys.map((v, i) => `$` + (i + 1))
-  const values = Object.values(user)
-  const query = `INSERT INTO users (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;
+  const { keys, params, values } = extractQueryParams(user);
+  const query = `INSERT INTO users (${keys.join(', ')})
+    VALUES (${params.join(', ')})
+    RETURNING *`;
 
   const { rows } = await client.query(query, values);
 
@@ -31,10 +32,11 @@ export async function createUser(client: PoolClient, user: User): Promise<User> 
 }
 
 export async function updateUser(client: PoolClient, userId: number, user: User): Promise<User> {
-  const keys = Object.keys(user)
-  const params = keys.map((v, i) => `$` + (i + 1))
-  const values = Object.values(user)
-  const query = `UPDATE users SET (${keys.join(', ')}) = ROW(${params.join(', ')}) WHERE id = $${params.length + 1} RETURNING *;`;
+  const { keys, params, values } = extractQueryParams(user);
+  const query = `UPDATE users
+    SET (${keys.join(', ')}) = ROW(${params.join(', ')})
+    WHERE id = $${params.length + 1}
+    RETURNING *;`;
 
   const { rows } = await client.query(query, values.concat(userId));
 
