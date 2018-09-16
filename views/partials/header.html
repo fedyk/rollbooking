@@ -4,7 +4,7 @@
   </a>
 
   <div class="header__actions">
-    <a href="" class="header__profile-link">{{ user.first_name + ' ' + user.last_name }}</a>
+    <a href="/profile" class="header__profile-link">{{ user | getUserName }}</a>
   </div>
 </div>
 

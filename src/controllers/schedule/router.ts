@@ -7,5 +7,5 @@ export const router = new Router();
 
 router.get(':salonId', schedule);
 router.get(':salonId/get-events', getEvents);
-router.get(':salonId/get-event-dialog', getEventDialog);
+router.post(':salonId/get-event-dialog', getEventDialog);
 

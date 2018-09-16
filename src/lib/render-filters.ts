@@ -7,6 +7,7 @@ import getDateDay from '../utils/get-date-day'
 import getDateMonth from '../utils/get-date-month'
 import getErrorMessage from '../utils/get-error-message'
 import { getSalonTimezone } from '../utils/get-salon-timezone'
+import { toDate, toTime } from '../utils/date'
 
 export const renderFilters = [
   ['getUserName', getUserName],
@@ -20,4 +21,6 @@ export const renderFilters = [
   ['getDateMonth', getDateMonth],
   ['getErrorMessage', getErrorMessage],
   ['getSalonTimezone', getSalonTimezone],
+  ['toDate', toDate],
+  ['toTime', toTime],
 ]

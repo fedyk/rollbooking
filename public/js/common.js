@@ -120,3 +120,24 @@ function removeClass(el, className) {
     el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
   }
 }
+
+
+/**
+ * @param {object} obj
+ * @param {string} prefix
+ * @see https://stackoverflow.com/questions/1714786/query-string-encoding-of-a-javascript-object
+ */
+function toQueryString(obj, prefix) {
+  var str = [],
+    p;
+  for (p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      var k = prefix ? prefix + "[" + p + "]" : p,
+        v = obj[p];
+      str.push((v !== null && typeof v === "object") ?
+        serialize(v, k) :
+        encodeURIComponent(k) + "=" + encodeURIComponent(v));
+    }
+  }
+  return str.join("&");
+}

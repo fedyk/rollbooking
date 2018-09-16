@@ -30,7 +30,7 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_OAUTH2_REDIRECT_URL,
 }, async function(accessToken, refreshToken, profile, done) {
   const client = await connect();
-  debugger
+
   try {
     const user = await getUserByGoogleId(client, profile.id)
 

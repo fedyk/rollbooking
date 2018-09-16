@@ -33,7 +33,7 @@ export async function getServices(ctx: Context) {
 
   client.release()
 
-  ctx.body = renderer('widgets/reservation/get-services.njk', viewLocal)
+  ctx.body = await renderer('widgets/reservation/get-services.njk', viewLocal)
 }
 
 /**

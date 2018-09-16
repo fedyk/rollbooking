@@ -1,4 +1,6 @@
-<aside id="event-dialog" class="mdc-dialog">
+{{ error | getErrorMessage }}
+
+<aside class="mdc-dialog">
   <div class="mdc-dialog__surface">
     <form id="user-form" action="" method="POST" onsubmit="calendar.eventDialog.onSave(event)">
 
@@ -12,19 +14,25 @@
           <div id="event-editor">
             <div>
               <label>Start</label>
-              <input type="date">
-              <input type="time">
+              <input type="date" value="{{ event.start | toDate }}">
+              <input type="time" value="{{ event.start | toTime }}">
             </div>
 
             <div>
               <label>End</label>
-              <input type="date">
-              <input type="time">
+              <input type="date" value="{{ event.end | toDate }}">
+              <input type="time" value="{{ event.end | toTime }}">
             </div>
 
             <div>
               <label>Master</label>
-              <select>Select master</select>
+              <select>
+                {% for user in salonUsers -%}
+                  <option value="{{ user.user_id }}" {% if masterId === user.user_id %}selected{% endif %}>{{ user | getUserName }}
+                {% else %}
+                <option>No master</option>
+                {%- endfor %}
+              </select>
             </div>
             
             <div>

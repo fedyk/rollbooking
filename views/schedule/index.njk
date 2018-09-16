@@ -28,14 +28,20 @@
         selectable: true,
         selectHelper: true,
         allDay: false,
-        select: open,
+        select: function(start, end, event, agendaView, resource) {
+          calendar.eventDialog.createEvent({{ salonId}}, {
+            start_time: start.toISOString(),
+            end_time: end.toISOString(),
+            master_id: resource.id
+          })
+        },
         defaultView: 'agendaDay',
         events: "/schedule/{{ salonId }}/get-events",
-        resources: JSON.parse("{{ resources | dump | safe }}"),
+        resources: JSON.parse('{{ resources | dump | safe }}'),
         timezone: "{{ salon | getSalonTimezone }}",
       });
 
-      function onSelectEvent(start, end) {
+      /*function onSelectEvent(start, end) {
         $.post("/schedule/{{ salonId }}/create-event", event)
         var title = prompt('Event Title:');
         var eventData;
@@ -48,7 +54,7 @@
           $('#calendar').fullCalendar('renderEvent', eventData, true);
         }
         $('#calendar').fullCalendar('unselect');
-      }
+      }*/
     });
   </script>
 

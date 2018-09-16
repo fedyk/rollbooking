@@ -329,15 +329,39 @@ function userDialogSingleton() {
  * Implemented as a factory
  */
 function EventDialog() {
-	const $$root = document.querySelector('#event-dialog');
-	const dialog = new MDCDialog($$root)
-
 	return {
 		createEvent: createEvent,
 	}
 
-	function createEvent(params) {
-		dialog.show()
+	function createEvent(salonId, params) {
+		var url = '/schedule/' + salonId + '/get-event-dialog?' + toQueryString(params);
+
+		fetchEventDialog(url).then(function(dialog) {
+			dialog.show()
+		})
+	}
+
+	// return fetch('/schedule/' + salonId + '/create-event-dialog?' + toQueryString(params), {
+	function fetchEventDialog(url) {
+		return fetch(url, { credentials: 'same-origin', method: 'POST' })
+		.then(fetchCheckStatus)
+		.then(function(response) {
+			return response.text();
+		})
+		.then(function(dialogHTML) {
+			var dialogElement = document.createElement('div');
+
+			dialogElement.innerHTML = dialogHTML;
+			document.body.appendChild(dialogElement);
+
+			var $dialog = dialogElement.querySelector('.mdc-dialog');
+
+			if (!$dialog) {
+				throw new Error("Invalid dialog content");
+			}
+
+			return new MDCDialog($dialog);
+		})
 	}
 }
 

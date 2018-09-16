@@ -36,7 +36,7 @@ export async function welcome(ctx: Context): Promise<any> {
     return client.release(), ctx.redirect('/onboarding')
   }
 
-  ctx.body = renderer('welcome.njk');
+  ctx.body = await renderer('welcome.njk');
 }
 
 module.exports = welcome;
