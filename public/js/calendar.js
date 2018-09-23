@@ -331,19 +331,40 @@ function userDialogSingleton() {
 function EventDialog() {
 	return {
 		createEvent: createEvent,
+		openEventDialog: openEventDialog,
 	}
 
-	function createEvent(salonId, params) {
+	function openEventDialog(salonId, params) {
 		var url = '/schedule/' + salonId + '/get-event-dialog?' + toQueryString(params);
 
-		fetchEventDialog(url).then(function(dialog) {
-			dialog.show()
+		return fetchEventDialog(url).then(function(dialog) {
+			dialog.show();
 		})
 	}
 
-	// return fetch('/schedule/' + salonId + '/create-event-dialog?' + toQueryString(params), {
+	function createEvent($$form, event, salonId) {
+		if (event) event.preventDefault();
+
+		// const startDate = $$form.elements.start_date;
+		// const startTime = $$form.elements.start_time;
+		// const endTime = $$form.elements.end_time;
+		// const masterId = $$form.elements.master_id;
+		// const clientName = $$form.elements.client_name;
+		// const clientPhone = $$form.elements.client_phone;
+
+		return fetch('/schedule/' + salonId + '/create-event', {
+			credentials: 'same-origin',
+			method: 'POST',
+			body: new FormData($$form)
+		})
+	
+	}
+
 	function fetchEventDialog(url) {
-		return fetch(url, { credentials: 'same-origin', method: 'POST' })
+		return fetch(url, {
+			credentials: 'same-origin',
+			method: 'POST',
+		})
 		.then(fetchCheckStatus)
 		.then(function(response) {
 			return response.text();

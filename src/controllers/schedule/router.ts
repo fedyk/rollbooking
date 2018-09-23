@@ -8,4 +8,3 @@ export const router = new Router();
 router.get(':salonId', schedule);
 router.get(':salonId/get-events', getEvents);
 router.post(':salonId/get-event-dialog', getEventDialog);
-

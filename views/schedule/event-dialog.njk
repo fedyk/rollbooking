@@ -1,76 +1,54 @@
-{{ error | getErrorMessage }}
-
 <aside class="mdc-dialog">
   <div class="mdc-dialog__surface">
-    <form id="user-form" action="" method="POST" onsubmit="calendar.eventDialog.onSave(event)">
+    <header class="mdc-dialog__header">
+      <h2 class="mdc-dialog__header__title">Create Event</h2>
+    </header>
+
+    <form action="" method="POST" onsubmit="calendar.eventDialog.createEvent(this, event, {{ salonId }})">
 
       <section class="mdc-dialog__body">
 
-        <section>
-          <div id="event-summary" class="event-summary">
-            <div id="event-time-summary">Mon 15, 2018 9AM to 10AM</div>
-          </div>
-
-          <div id="event-editor">
-            <div>
-              <label>Start</label>
-              <input type="date" value="{{ event.start | toDate }}">
-              <input type="time" value="{{ event.start | toTime }}">
-            </div>
-
-            <div>
-              <label>End</label>
-              <input type="date" value="{{ event.end | toDate }}">
-              <input type="time" value="{{ event.end | toTime }}">
-            </div>
-
-            <div>
-              <label>Master</label>
-              <select>
-                {% for user in salonUsers -%}
-                  <option value="{{ user.user_id }}" {% if masterId === user.user_id %}selected{% endif %}>{{ user | getUserName }}
-                {% else %}
-                <option>No master</option>
-                {%- endfor %}
-              </select>
-            </div>
-            
-            <div>
-              <label>Client</label>
-              <input type="text" />
-              <input type="text" />
-            </div>
-            
-          </div>
-        </section>
-
-        <div class="text-field-row text-field-row-full-width">
-          <div class="text-field-container">
-            <div id="name-field" class="mdc-text-field mdc-text-field--fullwidth">
-              <input type="text" id="name-field-input" class="mdc-text-field__input" placeholder="Name">
-              <div class="mdc-line-ripple"></div>
-            </div>
-            <p id="name-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg" aria-hidden="true"></p>
-          </div>
+        <div class="mdc-text-field">
+          <input type="date" id="event-start-date" class="mdc-text-field__input" name="start_date" value="{{ event.start | toDate }}">
+          <label class="mdc-floating-label mdc-floating-label--float-above" for="event-start-date">Start date</label>
+          <div class="mdc-line-ripple"></div>
         </div>
         
-        <div class="text-field-row text-field-row-full-width">
-          <div class="text-field-container">
-            <div id="email-field" class="mdc-text-field mdc-text-field--fullwidth">
-              <input type="text" id="email-field-input" class="mdc-text-field__input" placeholder="Email">
-              <div class="mdc-line-ripple"></div>
-            </div>
-            <p id="email-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg" aria-hidden="true"></p>
-          </div>
+        <div class="mdc-text-field">
+          <input type="time" id="event-start-time" class="mdc-text-field__input" name="start_time" value="{{ event.start | toTime }}">
+          <label class="mdc-floating-label mdc-floating-label--float-above" for="event-start-time">Start time</label>
+          <div class="mdc-line-ripple"></div>
         </div>
-        
-        <div class="text-field-row text-field-row-full-width">
-          <div class="text-field-container">
-            <div id="role-field" class="mdc-text-field mdc-text-field--fullwidth">
-              <input type="text" id="role-field-input" class="mdc-text-field__input" placeholder="Role">
-              <div class="mdc-line-ripple"></div>
-            </div>
-            <p id="role-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg" aria-hidden="true"></p>
+
+        <div class="mdc-text-field">
+          <input type="time" id="event-end-time" class="mdc-text-field__input" name="end_time" value="{{ event.end | toTime }}">
+          <label class="mdc-floating-label mdc-floating-label--float-above" for="event-end-time">End time</label>
+          <div class="mdc-line-ripple"></div>
+        </div>
+
+        <div class="mdc-select">
+          <select class="mdc-select__native-control" name="master_id">
+            {% for user in salonUsers -%}
+              <option value="{{ user.user_id }}" {% if masterId === user.user_id %}selected{% endif %}>{{ user | getUserName }}
+            {% else %}
+              <option>No master</option>
+            {%- endfor %}
+          </select>
+          <label class="mdc-floating-label mdc-floating-label--float-above">Pick Master</label>
+          <div class="mdc-line-ripple"></div>
+        </div>
+
+        <div>
+          <div class="mdc-text-field">
+            <input type="text" id="event-client-name" class="mdc-text-field__input" name="client_name" value="">
+            <label class="mdc-floating-label mdc-floating-label--float-above" for="event-start-date">Client Name</label>
+            <div class="mdc-line-ripple"></div>
+          </div>
+          
+          <div class="mdc-text-field">
+            <input type="text" id="event-client-phone" class="mdc-text-field__input" name="client_phone" value="">
+            <label class="mdc-floating-label mdc-floating-label--float-above" for="event-start-time">Client Phone</label>
+            <div class="mdc-line-ripple"></div>
           </div>
         </div>
 
@@ -79,7 +57,7 @@
       <footer class="mdc-dialog__footer">
         <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--delete" onclick="calendar.userDialog.onDelete()" data-user-id="">Delete</button>
         <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
-        <button type="submit" class="mdc-button mdc-dialog__footer__button mdc-button--raised mdc-dialog__footer__button--save">Save</button>
+        <button type="submit" class="mdc-button mdc-dialog__footer__button">Save</button>
       </footer>
 
     </form>

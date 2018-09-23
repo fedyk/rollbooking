@@ -29,10 +29,11 @@
         selectHelper: true,
         allDay: false,
         select: function(start, end, event, agendaView, resource) {
-          calendar.eventDialog.createEvent({{ salonId}}, {
+          calendar.eventDialog.openEventDialog({{ salonId}}, {
             start_time: start.toISOString(),
             end_time: end.toISOString(),
-            master_id: resource.id
+            master_id: resource.id,
+            mode: 'create',
           })
         },
         defaultView: 'agendaDay',
