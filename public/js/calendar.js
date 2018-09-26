@@ -329,6 +329,8 @@ function userDialogSingleton() {
  * Implemented as a factory
  */
 function EventDialog() {
+	var lastDialog;
+
 	return {
 		createEvent: createEvent,
 		openEventDialog: openEventDialog,
@@ -338,26 +340,46 @@ function EventDialog() {
 		var url = '/schedule/' + salonId + '/get-event-dialog?' + toQueryString(params);
 
 		return fetchEventDialog(url).then(function(dialog) {
-			dialog.show();
+			return lastDialog = dialog, dialog.show();
 		})
 	}
 
 	function createEvent($$form, event, salonId) {
-		if (event) event.preventDefault();
-
-		// const startDate = $$form.elements.start_date;
-		// const startTime = $$form.elements.start_time;
-		// const endTime = $$form.elements.end_time;
-		// const masterId = $$form.elements.master_id;
-		// const clientName = $$form.elements.client_name;
-		// const clientPhone = $$form.elements.client_phone;
+		if (event) {
+			event.preventDefault();
+		}
 
 		return fetch('/schedule/' + salonId + '/create-event', {
 			credentials: 'same-origin',
 			method: 'POST',
-			body: new FormData($$form)
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				start_date: $$form.start_date ? $$form.start_date.value : null,
+				start_time: $$form.start_time ? $$form.start_time.value : null,
+				end_time: $$form.end_time ? $$form.end_time.value : null,
+				master_id: $$form.master_id ? $$form.master_id.value : null,
+				client_name: $$form.client_name ? $$form.client_name.value : null,
+				client_phone: $$form.client_phone ? $$form.client_phone.value : null,
+			})
 		})
-	
+		.then(fetchCheckStatus)
+		.then(fetchParseJSON)
+		.then(function(event) {
+			var calendar = getCalendar();
+			var dialog = lastDialog;
+
+			calendar.renderEvent(event);
+
+			dialog.close();
+			dialog.listen('MDCDialog:closed', function() {
+				dialog.destroy();
+			});
+
+			// remove reference to dialog
+			lastDialog = null;
+		})
 	}
 
 	function fetchEventDialog(url) {
@@ -397,6 +419,19 @@ Object.defineProperty(calendar, 'eventDialog', {
 	get: function() {
 		return eventDialogSingleton || (eventDialogSingleton = EventDialog())
 	}
+});
+
+/**
+ * Get FullCalendar Instance
+ * @returns {FullCalendar}
+ */
+function getCalendar() {
+	return $('#calendar').fullCalendar('getCalendar');
+}
+
+// Expose UserDialog as a singleton
+Object.defineProperty(calendar, 'getCalendar', {
+	get: getCalendar
 });
 
 return calendar

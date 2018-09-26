@@ -7,11 +7,18 @@ import { json } from "../../lib/render"
 import { ScheduleData } from "../../view-models/schedule/schedule-data"
 import { Event as FullCalendarEvent } from "../../view-models/fullcalendar/event"
 
-const debug = require('debug')('controller:schedule:get-events');
+interface Body {
+  start?: string;
+  end?: string;
+}
 
 export async function getEvents(ctx: Context, next: () => Promise<any>) {
-  ctx.assert('start', 400, 'Missed start parameter');
-  ctx.assert('end', 400, 'Missed end parameter');
+  const salonId = parseInt(ctx.params.salonId, 10);
+  const params = ctx.request.body as Body;
+
+  ctx.assert(params, 400, 'Missed parameters');
+  ctx.assert(params.start, 400, 'Missed start parameter');
+  ctx.assert(params.end, 400, 'Missed end parameter');
 
   const endDate = (): string => {
     const end = new Date();
