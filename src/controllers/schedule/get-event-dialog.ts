@@ -31,7 +31,6 @@ export async function getEventDialog(ctx: Context) {
   };
 
   try {
-    const hasEventId = !!params.event_id;
     const masterId = parseInt(params.master_id, 10);
     const eventId = params.event_id;
     const startTime = parseDate(params.start_time);

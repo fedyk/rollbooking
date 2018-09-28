@@ -4,14 +4,9 @@ import { OAuth2Client } from 'google-auth-library'
 import { PoolClient } from 'pg'
 import debugFactory from 'debug'
 import { getSalonById } from '../../queries/salons'
-import { getUserCalendarId } from '../../utils/get-user-calendar-id'
-import getCalendarEvents from '../../sagas/get-calendar-events'
-import { getDateStartEnd } from '../../utils/get-date-start-end'
 import Salon from '../../models/salon';
-import { User } from '../../models/user';
 import { getSalonServices } from '../get-salon-services'
 import { getSalonUsers } from '../get-salon-users'
-import { getProperty } from '../../utils/get-property';
 
 const debug = debugFactory('saga:get-schedule-events')
 
@@ -23,12 +18,9 @@ export interface Params {
 }
 
 export interface Result {
-  salon: Salon,
-  salonUsers: any
-  salonServices: any
-  salonUsersEvents: {
-    [userId: string]: calendar_v3.Schema$Events
-  }
+  salon: Salon;
+  salonUsers: any;
+  salonServices: any;
 }
 
 export const getScheduleData = async (params: Params): Promise<Result> => {
@@ -54,28 +46,10 @@ export const getScheduleData = async (params: Params): Promise<Result> => {
   });
 
   debug('fetch users events')
-  
-  const salonUsersEvents: { [userId: string]: calendar_v3.Schema$Events } = {};
-  const { start, end } = getDateStartEnd(params.currentDate)
-
-  await Promise.all(
-    salonUsers.map(salonUser => {
-      const calendarId = getUserCalendarId(salonUser);
-      const user = salonUser.user as User;
-
-      return getCalendarEvents(calendar, {
-        calendarId: calendarId,
-        timeMin: start.toISOString(),
-        timeMax: end.toISOString(),
-        timeZone: getProperty(salon.properties, 'general', 'timezone'),
-      }).then(events => salonUsersEvents[user.id] = events.data);
-    })
-  );
 
   return {
     salon,
     salonUsers,
-    salonServices,
-    salonUsersEvents
+    salonServices
   }
 }

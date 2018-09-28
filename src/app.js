@@ -43,7 +43,6 @@ app.use(passport.session())
 
 router.get('/', welcome)
   // .get('/schedule/:salonId', passport.onlyAuthenticated, schedule)
-  .post('/schedule/:salonId/invite-user', passport.onlyAuthenticated, schedule.inviteUser)
   .get('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.getUserDetails)
   .post('/schedule/:salonId/user-details/:userId', passport.onlyAuthenticated, schedule.updateUserDetails)
   .post('/schedule/:salonId/remove-user/:userId', passport.onlyAuthenticated, schedule.removeUser)

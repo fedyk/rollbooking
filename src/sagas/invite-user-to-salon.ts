@@ -6,7 +6,7 @@ import { authorize } from '../lib/googleapis'
 import { addSalonUser, getSalonUser } from '../queries/salons'
 import { getUserByEmail, createUser } from '../queries/users'
 import { PoolClient } from 'pg';
-import { User } from '../models/user';
+import { User, UserProperties } from '../models/user';
 import { SalonUser, SalonUserRole } from '../models/salon-user';
 import { getProperty } from '../utils/get-property';
 
@@ -27,10 +27,11 @@ export async function inviteUserToSalon(
   role: SalonUserRole
 ): Promise<SalonUser> { 
 
-  ok(typeof user !== 'object', 'Invalid data')
-  ok(!user.email || !user.email.trim(), 'Email is required')
-  ok(!isEmail(user.email), 'Invalid email')
-  ok(!getProperty(user.properties, 'general', 'timezone'), 'Invalid timezone')
+  ok(user, "Empty user")
+  ok(typeof user === "object", "Invalid user")
+  ok(user.email, "Email is required")
+  ok(isEmail(user.email), "Invalid email address")
+  ok(getProperty(user.properties, 'general', 'timezone'), "Timezone is required")
 
   debug('find user with requested email')
 
@@ -39,14 +40,16 @@ export async function inviteUserToSalon(
   if (!userModel) {
     debug('create a new user')
 
-    const userData = Object.assign({}, user);
+    const properties: UserProperties = Object.assign({}, user.properties, {
+      invitation: {
+        from_user_id: currentUserId,
+        to_salon_id: salonId
+      }
+    });
 
-    userData.properties.invitation = Object.assign(userData.properties.invitation, {
-      from_user_id: currentUserId,
-      to_salon_id: salonId
-    })
-
-    userModel = await createUser(client, userData)
+    userModel = await createUser(client, Object.assign({}, user, {
+      properties
+    }));
   }
   else {
     debug('check if user has no relation with salon')

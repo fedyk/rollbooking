@@ -7,37 +7,6 @@ import { removeSalonUser } from '../sagas/remove-salon-user'
 
 const debug = debugFactory('controller:schedule');
 
-
-export async function inviteUser(ctx) {
-  const userData = ctx.request.body
-  const currUser = ctx.state.user
-  const salonId = parseInt(ctx.params.salonId)
-  const client = await connect()
-  const viewPath = 'schedule/invite-user.html'
-  const viewContext = {
-    salonId,
-    salonUsers: [],
-    error: null,
-  }
-
-  // Pass timezone from current user
-  userData.timezone = currUser.timezone;
-
-  try {
-    await inviteUserToSalon(client, salonId, userData, currUser.id, userData.role || 'member');
-
-    viewContext.salonUsers = await getSalonUsers(client, salonId)
-  }
-  catch (error) {
-    viewContext.error = error.message;
-  }
-
-  ctx.render(viewPath, viewContext)
-  ctx.type = 'application/json';
-
-  client.release();
-}
-
 export async function getUserDetails(ctx) {
   const getUserName = require('../utils/get-user-name')
   const getUserRole = require('../utils/get-user-role')

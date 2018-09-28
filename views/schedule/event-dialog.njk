@@ -29,7 +29,7 @@
         <div class="mdc-select">
           <select class="mdc-select__native-control" name="master_id">
             {% for user in salonUsers -%}
-              <option value="{{ user.user_id }}" {% if masterId === user.user_id %}selected{% endif %}>{{ user | getUserName }}
+              <option value="{{ user.user_id }}" {% if masterId === user.id %}selected{% endif %}>{{ user | getUserName }}
             {% else %}
               <option>No master</option>
             {%- endfor %}

@@ -338,9 +338,23 @@ function EventDialog() {
 
 	function openEventDialog(salonId, params) {
 		var url = '/schedule/' + salonId + '/get-event-dialog?' + toQueryString(params);
+		var fakeEvent = Object.assign({ id: guid() }, params);
+
+		getCalendar().renderEvent(fakeEvent)
 
 		return fetchEventDialog(url).then(function(dialog) {
+
+			// remove fake event when dialog is closed
+			dialog.listen('MDCDialog:closed', function() {
+				getCalendar().removeEvents(fakeEvent.id);
+			});
+
 			return lastDialog = dialog, dialog.show();
+		})
+		.catch(function (error) {
+			alert(error);
+			getCalendar().removeEvents(fakeEvent.id);
+			getCalendar().unselect();
 		})
 	}
 
