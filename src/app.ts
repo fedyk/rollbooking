@@ -1,27 +1,29 @@
-const path = require('path');
-const serve = require('koa-static');
-const router = require('koa-router')();
-const config = require('./lib/config');
-const { addFilter, middleware } = require('./lib/render');
-const { session } = require('./lib/session');
-const passport = require('./lib/passport');
-const bodyParser = require('koa-bodyparser');
-const { renderFilters } = require('./lib/render-filters');
-// const helmet = require("koa-helmet"); // todo
+import './lib/config'
 
-const Koa = require('koa');
+import * as Koa from 'koa';
+import * as Router from 'koa-router';
+import { join } from 'path';
+import * as serve from 'koa-static';
+import { addFilter, middleware } from './lib/render'
+import { session } from './lib/session'
+import * as passport from './lib/passport'
+import * as bodyParser from 'koa-bodyparser'
+import { renderFilters } from './lib/render-filters'
+
+import { welcome } from './controllers/welcome';
+import * as schedule from './controllers/schedule';
+import * as salonServices from './controllers/salon-services';
+import * as widgets from './controllers/widgets';
+
+import { router as authRouter } from './controllers/auth/router';
+import { router as widgetRouter } from './controllers/widgets/router';
+import { router as scheduleRouter } from './controllers/schedule/router';
+import { router as onboardingRouter } from './controllers/onboarding/router';
+import { router as settingsRouter } from './controllers/settings/router';
+import { router as salonSettingsRouter } from './controllers/salon-settings/router';
+
 const app = module.exports = new Koa();
-
-const { router: authRouter } = require('./controllers/auth/router');
-const welcome = require('./controllers/welcome');
-const schedule = require('./controllers/schedule');
-const salonServices = require('./controllers/salon-services');
-const widgets = require('./controllers/widgets');
-// const onboarding = require('./controllers/onboarding');
-
-const { router: widgetRouter } = require('./controllers/widgets/router');
-const { router: scheduleRouter } = require('./controllers/schedule/router');
-const { router: onboardingRouter } = require('./controllers/onboarding/router');
+const router = new Router()
 
 app.keys = (process.env.APP_KEYLIST || '').split(';');
 
@@ -35,7 +37,7 @@ renderFilters.forEach(([filterName, filter]) => {
 app.use(bodyParser())
 app.use(middleware())
 app.use(session(app))
-app.use(serve(path.join(__dirname, '../public')))
+app.use(serve(join(__dirname, '../public')))
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -59,18 +61,13 @@ router.get('/', welcome)
 
   .use('/', authRouter.routes(), authRouter.allowedMethods())
   .use('/widgets/', widgetRouter.routes(), widgetRouter.allowedMethods())
-  .use('/schedule/', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
   .use('/onboarding', passport.onlyAuthenticated, onboardingRouter.routes(), onboardingRouter.allowedMethods())
-
-  // .get('/onboarding', passport.onlyAuthenticated, onboarding)
-  // .post('/onboarding', passport.onlyAuthenticated, onboarding.createSalon)
-  // .get('/login', auth.login)
-  // .get('/logout', auth.logout)
+  .use('/schedule/', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
+  .use('/settings', passport.onlyAuthenticated, settingsRouter.routes(), settingsRouter.allowedMethods())
+  .use('/salon:salonId/settings', passport.onlyAuthenticated, salonSettingsRouter.routes(), salonSettingsRouter.allowedMethods())
   .use('/auth', passport.router.routes());
 
 app.use(router.routes());
-
-// listen
 
 if (!module.parent) {
   app.listen(process.env.PORT || 3000);

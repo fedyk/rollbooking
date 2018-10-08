@@ -1,0 +1,60 @@
+{% extends '../layout.html' %}
+
+{% block title %}New Service{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic-ext" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="/material-components-web/material-components-web.css" rel="stylesheet">
+<script src="/material-components-web/material-components-web.js"></script>
+<script src="/js/settings.js?1"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-full border-bottom">
+  {% include "./../partials/header.html" %}
+</div>
+
+<div class="container-full d-flex flex-row">
+  <div class="sidebar w-25 p-4">
+    {% include "./partials/sidebar.njk" %}
+  </div>
+
+  <div class="content w-50">
+    <div class="border-bottom mb-4">
+      <h5 class="mdc-typography--headline5 mb-1 mt-3">New Service</h5>
+    </div>
+
+    <div class="mdc-text-field mdc-text-field--fullwidth">
+      <input class="mdc-text-field__input" type="text" placeholder="Name">
+    </div>
+
+    <div class="mdc-text-field mdc-text-field--fullwidth">
+      <input class="mdc-text-field__input" type="text" placeholder="" aria-label="Full-Width Text Field">
+    </div>
+
+    <div class="mdc-select">
+      <select class="mdc-select__native-control">
+        <option value="" disabled selected></option>
+        <option value="15">15min</option>
+        <option value="30">30min</option>
+        <option value="45">45min</option>
+        <option value="60">1hour</option>
+        <option value="90">1hour 30min</option>
+        <option value="120">2hour</option>
+        <option value="180">3hour</option>
+        <option value="240">4hour</option>
+        <option value="custom">Custome</option>
+      </select>
+      <label class="mdc-floating-label">Duration</label>
+      <div class="mdc-line-ripple"></div>
+    </div>
+
+    <div class="mdc-text-field mdc-text-field--fullwidth">
+      <input class="mdc-text-field__input" type="text" placeholder="Full-Width Text Field" aria-label="Full-Width Text Field">
+    </div>
+
+    <button class="mdc-button mdc-button--raised">Button</button>
+  </div>
+</div>
+{% endblock %}

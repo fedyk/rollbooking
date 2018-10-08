@@ -4,7 +4,8 @@
   </a>
 
   <div class="header__actions">
+    {% if user %}
     <a href="/profile" class="header__profile-link">{{ user | getUserName }}</a>
+    {% endif %}
   </div>
 </div>
-

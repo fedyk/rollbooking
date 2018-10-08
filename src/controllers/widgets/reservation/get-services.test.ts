@@ -6,25 +6,25 @@ const TEST_SALON_ID = process.env.TEST_SALON_ID || 1;
 const TEST_MASTER_ID = process.env.TEST_MASTER_ID || 1;
 const TEST_SERVICE_ID = process.env.TEST_SERVICE_ID || 1;
 
-describe('Widgets > Reservation > getServices', () => {
-  const server = app.listen()
-  const request = supertest.agent(server)
-  const url = `/widgets/reservation/${TEST_SALON_ID}/get-services`
+// describe('Widgets > Reservation > getServices', () => {
+//   const server = app.listen()
+//   const request = supertest.agent(server)
+//   const url = `/widgets/reservation/${TEST_SALON_ID}/get-services`
 
-  afterAll(function () {
-    server.close();
-  });
+//   afterAll(function () {
+//     server.close();
+//   });
 
-  describe(`POST ${url}`, () => {
-    it('should return 200 OK', () => {
-      return request.post(url).send({
-        t: new Date,
-        m: TEST_MASTER_ID,
-        s: TEST_SERVICE_ID,
-      })
-      .expect(200)
-      .then(response => ok(response.body))
-    })
-  })
+//   describe(`POST ${url}`, () => {
+//     it('should return 200 OK', () => {
+//       return request.post(url).send({
+//         t: new Date,
+//         m: TEST_MASTER_ID,
+//         s: TEST_SERVICE_ID,
+//       })
+//       .expect(200)
+//       .then(response => ok(response.body))
+//     })
+//   })
 
-})
+// })

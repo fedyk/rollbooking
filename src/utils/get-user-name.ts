@@ -10,7 +10,6 @@ export default function (user) {
 }
 
 export function getUserName(user: User): string {
-  // user.properties.general.name
   const name = getProperty(user.properties, 'general', 'name')
 
   if (name) {

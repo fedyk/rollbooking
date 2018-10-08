@@ -38,5 +38,3 @@ export async function welcome(ctx: Context): Promise<any> {
 
   ctx.body = await renderer('welcome.njk');
 }
-
-module.exports = welcome;

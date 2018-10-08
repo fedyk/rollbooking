@@ -1,0 +1,32 @@
+<form id="service-form" action="" onsubmit="salonSettings.createService(this, event)">
+
+  <div class="mb-4">
+    <div class="mdc-text-field">
+      <input type="text" id="name" class="mdc-text-field__input" onkeyup="salonSettings.validateServiceForm()">
+      <label for="name" name="name" class="mdc-floating-label">Name</label>
+    </div>
+  
+    <div class="mdc-select">
+      <select class="mdc-select__native-control" onchange="salonSettings.validateServiceForm()">
+        <option value="15">15min</option>
+        <option value="30">30min</option>
+        <option value="45" selected>45min</option>
+        <option value="60">1hour</option>
+        <option value="90">1hour 30min</option>
+        <option value="120">2hour</option>
+        <option value="180">3hour</option>
+        <option value="240">4hour</option>
+        <option value="custom">Custome</option>
+      </select>
+      <label class="mdc-floating-label">Duration</label>
+    </div>
+
+    <div class="mdc-text-field">
+      <input type="text" id="name" class="mdc-text-field__input" onkeyup="salonSettings.validateServiceForm()">
+      <label for="name" name="name" class="mdc-floating-label">Price</label>
+    </div>
+  </div>
+  
+  <button class="mdc-button mdc-button--raised" type="submit" disabled>Add</button>
+
+</form>
