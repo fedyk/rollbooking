@@ -72,7 +72,7 @@ export async function getSalonUsers(client: PoolClient, salonId): Promise<SalonU
  * @return {Array<{id: number, salon_id: number, data: object}>}
  */
 export async function getSalonServices(client: PoolClient, salonId): Promise<SalonService[]> {
-  const query = `SELECT * FROM salon_services WHERE salon_id=$1`;
+  const query = `SELECT * FROM salon_services WHERE salon_id=$1 ORDER BY id DESC`;
 
   const { rows } = await client.query(query, [salonId]);
 
@@ -113,7 +113,7 @@ export async function updateSalonService(client: PoolClient, salonId: number, se
  * @param {number} salonId
  * @param {number} serviceId
  */
-export async function removeServiceFromSalon(client: PoolClient, salonId, serviceId): Promise<any> {
+export async function removeServiceFromSalon(client: PoolClient, salonId, serviceId: number): Promise<any> {
   const query = `DELETE FROM salon_services WHERE salon_id = $1 AND id = $2;`
 
   const { rows } = await client.query(query, [salonId, serviceId]);

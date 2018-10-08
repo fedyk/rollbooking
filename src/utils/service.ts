@@ -1,22 +1,21 @@
 import { SalonService } from "../models/salon-service";
-import { getProperty } from "./get-property";
 
 export const getServiceName = (service: SalonService) => {
-  return getProperty(service.properties, 'general', 'name');
+  return service && service.properties && service.properties.general && service.properties.general.name;
 }
 
-export const getServiceDuration = (service: SalonService): string => {
-  return getProperty(service.properties, 'general', 'duration');
+export const getServiceDuration = (service: SalonService): number => {
+  return service && service.properties && service.properties.general && service.properties.general.duration;
 }
 
 export const getServiceDescription = (service: SalonService): string => {
-  return getProperty(service.properties, 'general', 'description');
+  return service && service.properties && service.properties.general && service.properties.general.description;
 }
 
-export const getServicePrice = (service: SalonService): string => {
-  return getProperty(service.properties, 'price', 'value');
+export const getServicePrice = (service: SalonService): number => {
+  return service && service.properties && service.properties.price && service.properties.price.value;
 }
 
-export const getServicePriceCurrency = (service: SalonService): string => {
-  return getProperty(service.properties, 'price', 'currency');
+export const getServicePriceCurrency = (service: SalonService): number => {
+  return service && service.properties && service.properties.price && service.properties.price.value;
 }

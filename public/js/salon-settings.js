@@ -3,18 +3,6 @@
 var salonSettings = (function() {
 
   /**
-   * @param {HTMLFormElement} form 
-   * @param {Event} event
-   */
-  function createService(form, event) {
-    var isFormValid = validateServiceForm();
-
-    if (!isFormValid && event) {
-      event.preventDefault();
-    }
-  }
-
-  /**
    * Check if service form is valid
    * @returns {boolean}
    */
@@ -47,8 +35,35 @@ var salonSettings = (function() {
     return !(submitButton.disabled = false);
   }
 
+  /**
+   * 
+   * @param {number} salonId
+   * @param {number} serviceId
+   */
+  function deleteService(salonId, serviceId) {
+
+    /**
+     * @type {HTMLLIElement}
+     */
+    var listElement = document.querySelector("[data-service-list-item=\"" + serviceId + "\"]");
+
+    if (listElement) {
+      // Remove separator
+      if (listElement.nextElementSibling && listElement.nextElementSibling.getAttribute('role') === 'separator') {
+        listElement.parentElement.removeChild(listElement.nextElementSibling);
+      }
+
+      listElement.parentElement.removeChild(listElement);
+      listElement = null;
+    }
+
+    fetch("/salon" + salonId + "/settings/services/" + serviceId + "/delete", {
+      method: "DELETE"
+    }).then(function() {}).catch(function() {});
+  }
+
   return {
-    createService: createService,
+    deleteService: deleteService,
     validateServiceForm: validateServiceForm,
   }
 })()

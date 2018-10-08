@@ -3642,7 +3642,8 @@
   margin-top: 0;
   line-height: normal;
   margin-bottom: -20px;
-  display: block; }
+  display: block;
+  }
   .mdc-list-item__primary-text::before {
     display: inline-block;
     width: 0;
@@ -3695,7 +3696,8 @@
     width: 0;
     height: 20px;
     content: "";
-    vertical-align: 0; }
+    vertical-align: 0;
+    }
   .mdc-list--dense .mdc-list-item__secondary-text {
     display: block;
     margin-top: 0;

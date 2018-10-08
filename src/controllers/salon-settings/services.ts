@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { renderer } from "../../lib/render";
-import { Settings as SettingsViewModel } from "../../view-models/salon-settings/settings";
+import { Settings as SettingsViewModel } from "../../view-models/salon-settings/services";
 import { connect } from "../../lib/database";
 import { getSalonServices } from "../../sagas/get-salon-services";
 import { SalonService } from "../../models/salon-service";
@@ -17,11 +17,14 @@ export async function services(ctx: Context) {
     catch(e) {
       e.status = 400;
       e.expose = true;
+      client.release();
       throw e;
     }
   }
 
   const salonServices = await getSalonServices(client, salonId);
+
+  client.release();
 
   ctx.body = await renderer("salon-settings/services.njk", {
     salonId,
