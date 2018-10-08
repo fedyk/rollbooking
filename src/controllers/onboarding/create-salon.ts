@@ -29,7 +29,11 @@ export async function createSalon(ctx: Context): Promise<any> {
       name: body.name || 'Untitled salon',
       properties: {
         general: {
-          timezone: body.timezone
+          timezone: body.timezone,
+        },
+        currency: {
+          value: "USD",
+          symbol: "$",
         }
       },
       created: new Date(),

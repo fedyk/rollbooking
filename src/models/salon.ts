@@ -1,7 +1,11 @@
 export interface SalonProperties {
   general: {
     timezone: string;
-  }
+  },
+  currency: {
+    symbol: string; // e.g. $
+    value: string;  // e.g. USD
+  };
 }
 
 export interface Salon {

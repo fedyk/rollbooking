@@ -68,7 +68,7 @@ export async function createSalonSaga(client: PoolClient, salon: Salon, owner: U
   if (!getProperty(owner.properties, 'general', 'timezone')) {
     const properties: Partial<SalonProperties> = {
       general: {
-        timezone: getProperty(salon.properties, 'general', 'timezone')
+        timezone: getProperty(salon.properties, 'general', 'timezone'),
       }
     }
 

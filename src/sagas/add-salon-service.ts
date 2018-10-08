@@ -30,12 +30,7 @@ export async function addSalonService(client: PoolClient, service: SalonService)
     'Invalid price value'
   )
   
-  ok(
-    service.properties.price.currency,
-    'Invalid price currency'
-  )
-
-    debug('insert new service in storage')
+  debug('insert new service in storage')
  
   return await putSalonService(client, service);
 }

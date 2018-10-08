@@ -3,7 +3,8 @@
   <li class="mdc-list-item">
     <span class="mdc-list-item__text">
       <span class="mdc-list-item__primary-text">{{ service | getServiceName }}</span>
-      <span class="mdc-list-item__secondary-text">{{ service | getServiceDescription }}</span>
+      <span class="mdc-list-item__secondary-text">{{ service | getServiceDuration }}min, 
+      {{ salon | getSalonCurrencySymbol }}{{ service | getServicePrice }}</span>
     </span>
   </li>
   {% else %}

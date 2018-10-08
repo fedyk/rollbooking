@@ -3,12 +3,11 @@ import { User } from './user'
 export interface SalonServiceProperties {
   general: {
     name: string;
-    duration: number;
+    duration: number; // in minutes
     description?: string;
   },
   price: {
     value: number;
-    currency: string;
   }
 }
 
