@@ -59,7 +59,12 @@ export async function inviteUser(ctx: Context) {
     updated: new Date,
   };
 
-  await inviteUserToSalon(client, salonId, inviteUser, currentUser.id, SalonUserRole.Member);
+  try {
+    await inviteUserToSalon(client, salonId, inviteUser, currentUser.id, SalonUserRole.Member);
+  }
+  catch(e) {
+    return ctx.throw(e);
+  }
   const salonUsers = await getSalonUsers(client, salonId);
 
   client.release();

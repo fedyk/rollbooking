@@ -44,7 +44,7 @@ export async function createSalon(ctx: Context): Promise<any> {
 
     debug('Successful created new salon');
 
-    ctx.redirect(`/schedule/${salonModel.id}`);
+    ctx.redirect(`/schedule${salonModel.id}`);
   }
   catch(e) {
     const error = e.message || 'Something went wrong. Please try later';

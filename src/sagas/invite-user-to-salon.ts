@@ -31,7 +31,10 @@ export async function inviteUserToSalon(
   ok(typeof user === "object", "Invalid user")
   ok(user.email, "Email is required")
   ok(isEmail(user.email), "Invalid email address")
-  ok(getProperty(user.properties, 'general', 'timezone'), "Timezone is required")
+  ok(user.properties &&
+    user.properties &&
+    user.properties.general &&
+    user.properties.general.timezone, "Timezone is required")
 
   debug('find user with requested email')
 

@@ -1,6 +1,5 @@
 import { connect } from '../lib/database'
 import debugFactory from 'debug';
-import { inviteUserToSalon } from '../sagas/invite-user-to-salon'
 import { getSalonUsers } from '../sagas/get-salon-users'
 import { updateSalonUserProperties } from '../sagas/update-salon-user-properties';
 import { removeSalonUser } from '../sagas/remove-salon-user'

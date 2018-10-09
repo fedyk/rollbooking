@@ -17,7 +17,7 @@ export async function welcome(ctx: Context): Promise<any> {
     debug('try to get salon to show from user meta %o', defaultSalonId)
 
     if (defaultSalonId) {
-      return ctx.redirect(`/schedule/${defaultSalonId}`)
+      return ctx.redirect(`/schedule${defaultSalonId}`)
     }
 
     const client = await connect();
@@ -27,7 +27,7 @@ export async function welcome(ctx: Context): Promise<any> {
       const [userSalon] = userSalons;
 
       if (userSalon && userSalon.salon_id) {
-        return client.release(), ctx.redirect(`/schedule/${userSalon.salon_id}`)
+        return client.release(), ctx.redirect(`/schedule${userSalon.salon_id}`)
       }
     }
 

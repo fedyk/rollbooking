@@ -62,7 +62,7 @@ router.get('/', welcome)
   .use('/', authRouter.routes(), authRouter.allowedMethods())
   .use('/widgets/', widgetRouter.routes(), widgetRouter.allowedMethods())
   .use('/onboarding', passport.onlyAuthenticated, onboardingRouter.routes(), onboardingRouter.allowedMethods())
-  .use('/schedule/', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
+  .use('/schedule', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
   .use('/settings', passport.onlyAuthenticated, settingsRouter.routes(), settingsRouter.allowedMethods())
   .use('/salon:salonId/settings', passport.onlyAuthenticated, salonSettingsRouter.routes(), salonSettingsRouter.allowedMethods())
   .use('/auth', passport.router.routes());
