@@ -45,4 +45,4 @@ if (!process.env.GOOGLE_API_REDIRECT_URIS) {
   console.log('No google auth config. Set GOOGLE_API_REDIRECT_URIS environment variable.');
 }
 
-module.exports = result.parsed;
+export default result.parsed;
