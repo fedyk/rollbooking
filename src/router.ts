@@ -7,6 +7,7 @@ import * as schedule from './controllers/schedule';
 import * as salonServices from './controllers/salon-services';
 import * as widgets from './controllers/widgets';
 
+import { router as bookingRouter } from './controllers/booking/router';
 import { router as authRouter } from './controllers/auth/router';
 import { router as widgetRouter } from './controllers/widgets/router';
 import { router as scheduleRouter } from './controllers/schedule/router';
@@ -33,9 +34,12 @@ router.get('/', welcome)
   .get('/widgets/reservation/:salonId/preview', widgets.reservationPreview)
 
   .use('/', authRouter.routes(), authRouter.allowedMethods())
+  .use('/booking', bookingRouter.routes(), bookingRouter.allowedMethods())
   .use('/widgets/', widgetRouter.routes(), widgetRouter.allowedMethods())
   .use('/onboarding', passport.onlyAuthenticated, onboardingRouter.routes(), onboardingRouter.allowedMethods())
+  
   .use('/schedule', passport.onlyAuthenticated, scheduleRouter.routes(), scheduleRouter.allowedMethods())
+  
   .use('/settings', passport.onlyAuthenticated, settingsRouter.routes(), settingsRouter.allowedMethods())
   .use('/salon:salonId/settings', passport.onlyAuthenticated, salonSettingsRouter.routes(), salonSettingsRouter.allowedMethods())
   .use('/auth', passport.router.routes());

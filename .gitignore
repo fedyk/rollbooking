@@ -1,5 +1,5 @@
-built/
-node_modules/
+dist
+node_modules
 .vscode
 .env
 .DS_Store

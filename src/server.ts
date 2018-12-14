@@ -1,8 +1,7 @@
-import config from "./lib/config";
-
 import * as Koa from 'koa';
 import { join } from 'path';
 import * as serve from 'koa-static';
+import config from "./lib/config";
 import { addFilter, middleware } from './lib/render'
 import { session } from './lib/session'
 import * as passport from './lib/passport'
@@ -17,7 +16,7 @@ app.keys = (config.APP_KEYLIST || '').split(';');
 // nunjucks filters
 renderFilters.forEach(([filterName, filter]) => {
   addFilter(filterName, filter)
-})
+});
 
 // middleware
 app.use(bodyParser())
