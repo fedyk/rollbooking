@@ -3,6 +3,7 @@ import { getServiceName, getServicePrice, getServiceDescription } from "../../..
 import { BookingWorkday } from "../../../models/booking-workday";
 import { stringify } from "querystring";
 import { workdayISODate } from "../../../helpers/booking-workday/workday-iso-date";
+import { minutesToTime } from "../../../helpers/date";
 
 interface Result {
   name: string;
@@ -33,7 +34,7 @@ export function getResults(workday: BookingWorkday, salonServices: SalonService[
             price: prettyPrice(getServicePrice(service)),
             description: getServiceDescription(service),
             times: workdayMasterServices.available_times.map(time => ({
-              text: prettyTime(time),
+              text: minutesToTime(time),
               url: `/booking/${workday.salon_id}/checkout?${stringify({
                 m: masterId,
                 s: serviceId,
@@ -63,12 +64,6 @@ function getSalonServiceByIds(salonServices: SalonService[]) {
   return result;
 }
 
-function prettyTime(time: number) {
-  const hours = Math.floor(time / 60).toString().padStart(2, "0");
-  const minutes = (time % 60).toString().padStart(2, "0");
-
-  return `${hours}:${minutes}`;
-}
 
 // todo: add currency to number
 function prettyPrice(price: number) {
