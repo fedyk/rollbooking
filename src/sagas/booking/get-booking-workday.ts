@@ -117,11 +117,12 @@ export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWe
 
 
 export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
-  if (date.getDay() !== period.openDay) {
+  if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getDay() !== period.openDay) {
     throw new Error("date should have the same date as period");
-  }
-
-  const start = new Date(`${dateToISODate(date)}T${minutesToTime(period.openTime)}:00`);
+  }  
+  debugger
+  const startTime = `${dateToISODate(date)}T${minutesToTime(period.openTime)}:00.00Z`;
+  const start = new Date(startTime);
   
   const endDate = new Date(date.getTime());
 
@@ -134,7 +135,7 @@ export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRang
     }
   }
 
-  const end = new Date(`${dateToISODate(endDate)}T${minutesToTime(period.closeTime)}:00`);
+  const end = new Date(`${dateToISODate(endDate)}T${minutesToTime(period.closeTime)}:00.00Z`);
 
   return new DateRange(start, end);
 }

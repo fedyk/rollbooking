@@ -1,6 +1,8 @@
-import { getBookingWorkday, getPeriods } from "./get-booking-workday";
+import { getBookingWorkday, getPeriods, getDateRangeFromPeriod } from "./get-booking-workday";
 import { Salon } from "../../models/salon";
 import { DayOfWeek } from "../../models/dat-of-week";
+import { TimePeriod } from "../../models/time-period";
+import { DateRange } from "../../lib/date-range";
 
 // test("", () => {
 //   const now = Date.now();
@@ -46,31 +48,51 @@ import { DayOfWeek } from "../../models/dat-of-week";
 //   }))
 // })
 
-test("getPeriods", function() {
-    const now = new Date("2018-12-16T00:00:00").getTime();
+describe("getPeriods", function() {
+  it("should work", function() {
+    const start = new Date("2018-12-17T00:00:00.00Z");
+    const end = new Date("2018-12-18T00:00:00.00Z");
 
-    expect(getPeriods(
-      new Date(now),
-      new Date(now + 24 * 60 * 60 * 1000),
-      [{
+    expect(getPeriods(start, end, [{
         openDay: DayOfWeek.MONDAY,
         openTime: 10 * 60, // 10:00
         closeDay: DayOfWeek.MONDAY,
         closeTime: 18 * 60, // 18:00
-      }],
-      []
-    )).toEqual([{
-      startDate: {
-        year: 2018,
-        month: 12,
-        day: 16,
-      },
-      startTime: 60,
-      endDate: {
-        year: 2018,
-        month: 12,
-        day: 16,
-      },
-      endTime: 18 * 60
-    }])
+      }], []
+    )).toEqual([
+      new DateRange(new Date("2018-12-17T10:00:00.00Z"), new Date("2018-12-17T18:00:00.00Z")
+    )])
+  })
+})
+
+describe("getDateRangeFromPeriod", function() {
+  it("should return period", function() {
+    const date = new Date("2018-12-17T00:00:00.00Z");    
+    const period: TimePeriod = {
+      openDay: DayOfWeek.MONDAY,
+      openTime: 600,
+      closeDay: DayOfWeek.TUESDAY,
+      closeTime: 60
+    }
+
+    expect(getDateRangeFromPeriod(date, period)).toEqual({
+      start: new Date("2018-12-17T10:00:00.00Z"),
+      end: new Date("2018-12-18T01:00:00.00Z")
+    })
+  })
+
+  it("should return period 2", function() {
+    const date = new Date("2018-12-17T00:00:00.00Z");    
+    const period: TimePeriod = {
+      openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
+      openTime: 600,
+      closeDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
+      closeTime: 1200
+    }
+
+    expect(getDateRangeFromPeriod(date, period)).toEqual({
+      start: new Date("2018-12-17T10:00:00.00Z"),
+      end: new Date("2018-12-17T20:00:00.00Z")
+    })
+  })
 })
