@@ -1,27 +1,48 @@
+import { Date } from "./date";
+
 export interface BookingWorkday {
-  year: number;
-  month: number;
-  day: number;
+  salon_id: number;
+  period: Period;
+  masters: Masters;
+}
 
-  salon_id: 1;
+export interface Period {
+  startDate: Date;
+  startTime: number;
+  endDate: Date;
+  endTime: number;
+}
 
-  masters: {
-    [master_id: string]: {
-      services: {
-        [service_id: string]: {
-          available_times: number[]
-        }
-      }
-    }
+export interface Masters {
+  [master_id: string]: {
+    services: Services
   }
 }
 
-// mock
-export const bookingWorkdays: BookingWorkday[] = [{
-  year: 2018,
-  month: 12,
-  day: 15,
+export interface Services {
+  [service_id: string]: {
+    available_times: number[]
+  }  
+}
 
+// mock
+export const bookingWorkdays2: BookingWorkday[] = [];
+
+export const bookingWorkdays: BookingWorkday[] = [{
+  period: {
+    startDate: {
+      year: 2018,
+      month: 12,
+      day: 15,
+    },
+    startTime: 60,
+    endDate: {
+      year: 2018,
+      month: 12,
+      day: 15,
+    },
+    endTime: 60 * 8
+  },
   salon_id: 1,
 
   masters: {

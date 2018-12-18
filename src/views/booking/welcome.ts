@@ -4,6 +4,8 @@ import { attrs } from "../../helpers/html";
 
 interface Props {
   salonName: string;
+  showFilters: boolean;
+
   dateOptions: SelectOption[];
   selectedDate: string;
   
@@ -32,6 +34,8 @@ export const welcome = (props: Props) => `
   </div>
 </nav>
 <div class="container">
+
+  ${props.showFilters ? `
   <div class="card mb-3">
     <div class="card-body">
 
@@ -61,7 +65,15 @@ export const welcome = (props: Props) => `
 
     </div>
   </div>
+  ` : ``}
 
+  ${props.results.length === 0 ? `
+    <div class="p-5 text-center">
+      <p class="text-muted">No available times 😕</p>
+    </div>
+  ` : ``}
+
+  ${props.results.length > 0 ? `
   <div class="list-group">
     ${stringMapJoin(props.results, (item) => `
       <div class="list-group-item list-group-item-action flex-column align-items-start">
@@ -74,5 +86,6 @@ export const welcome = (props: Props) => `
       </div>
     `)}
   </div>
+  ` : ``}
 </div>
 `

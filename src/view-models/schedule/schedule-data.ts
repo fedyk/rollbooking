@@ -1,4 +1,4 @@
-import Salon from "../../models/salon";
+import { Salon } from "../../models/salon";
 import { User } from "../../models/user";
 import SalonUser from "../../models/salon-user";
 import SalonEvents from "../../models/salon-event";

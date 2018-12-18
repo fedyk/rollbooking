@@ -41,6 +41,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest --forceExit --coverage --verbose",
+    "test:watch": "jest --watch",
     "watch": "tsc --watch",
     "migrate:up": "migrate-up --store=./built/lib/migrations-store.js",
     "setup": "./bin/setup",

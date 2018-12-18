@@ -87,7 +87,6 @@ function getSalonFreeDates(timeMin, timeMax, freebusy) {
   }
 
   return dates;
-  
 }
 
 function getServicesSlots(salonServices, salonSchedule, salonFreebusy) {

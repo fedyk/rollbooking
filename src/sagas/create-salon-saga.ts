@@ -5,7 +5,7 @@ import { authorize } from '../lib/googleapis'
 import debugFactory from "debug";
 import { updateUser } from '../queries/users'
 import { createSalon, addSalonUser } from '../queries/salons'
-import Salon, { SalonProperties } from '../models/salon';
+import { Salon, SalonProperties } from '../models/salon';
 import { PoolClient } from 'pg';
 import { User } from '../models/user';
 import { getProperty } from "../utils/get-property";

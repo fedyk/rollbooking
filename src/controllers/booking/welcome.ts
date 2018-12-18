@@ -27,6 +27,8 @@ export async function welcome(ctx: Context) {
 
   const salonUsers = await getSalonUsers(database, salon.id);
   const salonServices = await getSalonServices(database, salon.id);
+
+  const showFilters = bookingWorkdays.length > 0;
   const dateOptions = getDateOptions(bookingWorkdays, 60);
   const selectedWorkday = getSelectedWorkday(bookingWorkdays, params.date);
   const selectedDate = selectedWorkday ? workdayISODate(selectedWorkday) : null;
@@ -42,6 +44,7 @@ export async function welcome(ctx: Context) {
     title: "Test Salon",
     body: welcomeView({
       salonName: salon.name,
+      showFilters: showFilters,
       dateOptions: dateOptions,
       selectedDate: selectedDate,
       mastersOptions: mastersOptions,

@@ -4,7 +4,7 @@ import { OAuth2Client } from 'google-auth-library'
 import { PoolClient } from 'pg'
 import debugFactory from 'debug'
 import { getSalonById } from '../../queries/salons'
-import Salon from '../../models/salon';
+import { Salon } from '../../models/salon';
 import { getSalonServices } from '../get-salon-services'
 import { getSalonUsers } from '../get-salon-users'
 

@@ -1,6 +1,6 @@
 import { extractQueryParams } from '../lib/database'
 import { PoolClient } from 'pg';
-import Salon from '../models/salon';
+import { Salon } from '../models/salon';
 import { SalonUser } from '../models/salon-user';
 import { SalonService } from '../models/salon-service';
 
