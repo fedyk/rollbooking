@@ -19,6 +19,24 @@ export class DateRange {
     return null;
   }
 
+  /**
+   * 
+   * dateRangeA: ---|-----------|---------
+   * dateRangeB: ------|-----------|------
+   * dateRangeC: --------|--------|-------
+   * result    : --------|======|---------
+   */
+  static intersection(dateRangeA: DateRange, dateRangeB: DateRange): DateRange {
+    if (!dateRangeA.isOverlap(dateRangeB)) {
+      return null;
+    }
+
+    const start = dateRangeA.start.getTime() >= dateRangeB.start.getTime() ? dateRangeA.start : dateRangeB.start;
+    const end = dateRangeA.end.getTime() <= dateRangeB.end.getTime() ? dateRangeA.end : dateRangeB.end;
+
+    return new DateRange(start, end);
+  }
+
   static merge(dateRanges: DateRange[]): DateRange[] {
     if(dateRanges.length === 0) {
       return []
@@ -113,6 +131,7 @@ export class DateRange {
 
     return []
   }
+
 
   split(period: number, options: { round?: boolean } = null) {
     const periods = []

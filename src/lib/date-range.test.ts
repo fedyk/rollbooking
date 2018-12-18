@@ -176,6 +176,16 @@ describe('lib:DateRange', () => {
       )
     })
   })
+  describe("#intersection", function() {
+    it("should get intersection", function() {
+      deepEqual(DateRange.intersection(
+        new DateRange("2018-05-01T10:00:00.00Z", "2018-05-01T11:00:00.00Z"),
+        new DateRange("2018-05-01T10:30:00.00Z", "2018-05-01T11:30:00.00Z")
+      ),
+        new DateRange("2018-05-01T10:30:00.00Z", "2018-05-01T11:00:00.00Z")
+      )
+    })
+  })
 
   describe('#merge', () => {
     it('should merge', () => {

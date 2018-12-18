@@ -46,31 +46,31 @@ import { DayOfWeek } from "../../models/dat-of-week";
 //   }))
 // })
 
-test("getPeriods", () => {
-  const now = new Date("2018-12-16T00:00:00").getTime();
+test("getPeriods", function() {
+    const now = new Date("2018-12-16T00:00:00").getTime();
 
-  expect(getPeriods(
-    new Date(now),
-    new Date(now + 24 * 60 * 60 * 1000),
-    [{
-      openDay: DayOfWeek.MONDAY,
-      openTime: 10 * 60, // 10:00
-      closeDay: DayOfWeek.MONDAY,
-      closeTime: 18 * 60, // 18:00
-    }],
-    []
-  )).toEqual([{
-    startDate: {
-      year: 2018,
-      month: 12,
-      day: 16,
-    },
-    startTime: 60,
-    endDate: {
-      year: 2018,
-      month: 12,
-      day: 16,
-    },
-    endTime: 18 * 60
-  }])
-}) 
+    expect(getPeriods(
+      new Date(now),
+      new Date(now + 24 * 60 * 60 * 1000),
+      [{
+        openDay: DayOfWeek.MONDAY,
+        openTime: 10 * 60, // 10:00
+        closeDay: DayOfWeek.MONDAY,
+        closeTime: 18 * 60, // 18:00
+      }],
+      []
+    )).toEqual([{
+      startDate: {
+        year: 2018,
+        month: 12,
+        day: 16,
+      },
+      startTime: 60,
+      endDate: {
+        year: 2018,
+        month: 12,
+        day: 16,
+      },
+      endTime: 18 * 60
+    }])
+})
