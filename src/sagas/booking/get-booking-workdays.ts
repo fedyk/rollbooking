@@ -1,73 +1,82 @@
-import { Salon } from "../../models/salon";
+import { Salon, BusinessHours, SpecialHours } from "../../models/salon";
 import { SalonUser } from "../../models/salon-user";
 import { SalonService } from "../../models/salon-service";
 import { SalonReservation } from "../../models/salon-reservation";
-import { BookingWorkday, Masters, Period } from "../../models/booking-workday";
+import { BookingWorkday, Masters, Period, Services } from "../../models/booking-workday";
 import { TimePeriod } from "../../models/time-period";
 import { SpecialHourPeriod } from "../../models/special-hour-period";
 import { DateRange } from "../../lib/date-range";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { dateToISODate, minutesToTime } from "../../helpers/date";
 import { addDay } from "../../utils/date";
+import { workdayISODate } from "../../helpers/booking-workday/date-to-iso-date";
+import { minutesInDay } from "../../helpers/date/minutes-in-day";
+import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 
 interface Params {
+  salonId: number;
+  salonRegularHours: BusinessHours;
+  salonSpecialHours: SpecialHours;
   startPeriod: Date;
   endPeriod: Date;
-  salon: Salon;
-  salonMasters: SalonUser[];
-  salonService: SalonService[];
-  salonReservations: SalonReservation[];
+  salonMastersIds: number[];
+  salonServices: SalonService[];
+  reservations: SalonReservation[];
 }
 
-export async function getBookingWorkday(params: Params): Promise<BookingWorkday> {
-  const { salon } = params;
+export function getBookingWorkdays(params: Params): BookingWorkday[] {
+  const { salonId, salonRegularHours, salonSpecialHours, startPeriod, endPeriod, salonMastersIds, salonServices, reservations } = params;
+  const ranges = getPeriods(startPeriod, endPeriod, salonRegularHours, salonSpecialHours);
+  const bookingWorkdays: BookingWorkday[] = [];  
 
-  const masters: Masters = {
-    1: {
-      services: {
-        10: {
-          available_times: [600, 660, 840]
-        },
-        11: {
-          available_times: [600, 660, 840]
+  for (let i = 0; i < ranges.length; i++) {
+    const range = ranges[i];
+    const masters: Masters = {};
+
+    for (let j = 0; j < salonMastersIds.length; j++) {
+      const salonMasterId = salonMastersIds[j];
+      const masterReservations = reservations.filter(v => v.master_id === salonMasterId);
+      const masterReservationsRanges = masterReservations.map(v => {
+        const start = new Date(`${workdayISODate(v.start_date)}T${minutesToTime(v.start_time)}:00.00Z`);
+        const end = new Date(`${workdayISODate(v.end_date)}T${minutesToTime(v.end_time)}:00.00Z`);
+        return new DateRange(start, end);
+      })
+      const masterServices: Services = {}
+  
+      for (let z = 0; z < salonServices.length; z++) {
+        const salonService = salonServices[z];
+        const availableTimes = range.exclude(masterReservationsRanges).map(v => {
+          return minutesInDay(v.start);
+        });
+
+        masterServices[salonService.id] = {
+          available_times: availableTimes
         }
       }
-    },
-    2: {
-      services: {
-        10: {
-          available_times: [600, 660, 840]
-        },
-        11: {
-          available_times: [600, 660, 840]
-        }
+
+      masters[salonMasterId] = {
+        services: masterServices
       }
     }
+
+    bookingWorkdays.push({
+      salon_id: salonId,
+      masters: masters,
+      period: {
+        startDate: nativeDateToDateObject(range.start),
+        startTime: minutesInDay(range.start),
+        endDate: nativeDateToDateObject(range.end),
+        endTime: minutesInDay(range.end)
+      }
+    })
   }
 
-  return {
-    period: {
-      startDate: {
-        year: 2018,
-        month: 2,
-        day: 1
-      },
-      startTime: 120,
-      endDate: {
-        year: 2018,
-        month: 2,
-        day: 1
-      },
-      endTime: 120 * 8
-    },
-    salon_id: salon.id,
-    masters: masters
-  }
+  return bookingWorkdays;
 }
 
-export function getPeriods(start: Date, end: Date, periods: TimePeriod[], specialPeriods: SpecialHourPeriod[]): DateRange[] {
+export function getPeriods(start: Date, end: Date, salonRegularHours: BusinessHours, salonSpecialHours: SpecialHours): DateRange[] {
   const allPeriod = new DateRange(start, end);
-  const periodsByStartDay = getGroupedPeriodsByDayOfWeek(periods);
+  const periodsByStartDay = getGroupedPeriodsByDayOfWeek(salonRegularHours.periods);
   const ranges = [];
   
   let curr = new Date(start.getTime());
@@ -119,8 +128,8 @@ export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWe
 export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
   if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getDay() !== period.openDay) {
     throw new Error("date should have the same date as period");
-  }  
-  debugger
+  }
+
   const startTime = `${dateToISODate(date)}T${minutesToTime(period.openTime)}:00.00Z`;
   const start = new Date(startTime);
   

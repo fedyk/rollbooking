@@ -4,10 +4,8 @@ import { SpecialHourPeriod } from "./special-hour-period";
 export interface Salon {
   id: number;
   name: string;
-  hours: {
-    regular: BusinessHours;
-    special: SpecialHours;
-  }
+  regular_hours: BusinessHours;
+  special_hours: SpecialHours;
   properties: SalonProperties;
   created: Date;
   updated: Date;
