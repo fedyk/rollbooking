@@ -3,8 +3,38 @@ import { Salon } from "../../models/salon";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { TimePeriod } from "../../models/time-period";
 import { DateRange } from "../../lib/date-range";
+import { BookingWorkday } from "../../models/booking-workday";
 
 describe("getBookingWorkday", function() {
+  const bookingWorkdays: BookingWorkday = {
+    salon_id: 1,
+    masters: {
+      1: {
+        services: {
+          1: {
+            available_times: [10 * 60, 11 * 60, 12 * 60, 13 * 60, 14 * 60, 15 * 60]
+          },
+          2: {
+            available_times: [10 * 60, 11 * 60, 12 * 60, 13 * 60, 14 * 60, 15 * 60]
+          }
+        }
+      }
+    },
+    period: {
+      startTime: 10 * 60,
+      startDate: {
+        day: 1,
+        month: 1,
+        year: 2018,
+      },
+      endTime: 16 * 60,
+      endDate: {
+        day: 1,
+        month: 1,
+        year: 2018,
+      },
+    },
+  }
   expect(getBookingWorkdays({
     startPeriod: new Date("2018-01-01T10:00:00.00Z"),
     endPeriod: new Date("2018-01-02T23:59:59.00Z"),
@@ -14,69 +44,24 @@ describe("getBookingWorkday", function() {
         openDay: DayOfWeek.MONDAY,
         openTime: 10 * 60,
         closeDay: DayOfWeek.MONDAY,
-        closeTime: 18 * 60,
-      }, {
-        openDay: DayOfWeek.TUESDAY,
-        openTime: 11 * 60,
-        closeDay: DayOfWeek.TUESDAY,
-        closeTime: 17 * 60,
+        closeTime: 16 * 60,
       }],
     },
     salonSpecialHours: {
       periods: []
     },
-    salonMastersIds: [1, 2, 3],
+    salonMasters: [{
+      id: 1
+    }],
     salonServices: [{
       id: 1,
-      salon_id: 1,
-      properties: {
-        general: {
-          name: "Test",
-          duration: 60,
-        },
-        price: {
-          value: 1
-        }
-      },
-      created: new Date(),
-      updated: new Date()
+      duration: 60,
+    }, {
+      id: 2,
+      duration: 60
     }],
     reservations: [],
-  })).toEqual([{
-    salon_id: 1,
-    masters: {},
-    period: {
-      startTime: 10 * 60,
-      startDate: {
-        day: 1,
-        month: 1,
-        year: 2018,
-      },
-      endTime: 18 * 60,
-      endDate: {
-        day: 1,
-        month: 1,
-        year: 2018,
-      },
-    },
-  }, {
-      salon_id: 1,
-      masters: {},
-      period: {
-        startTime: 11 * 60,
-        startDate: {
-          day: 2,
-          month: 1,
-          year: 2018,
-        },
-        endTime: 17 * 60,
-        endDate: {
-          day: 2,
-          month: 1,
-          year: 2018,
-        },
-      }
-  }])
+  })).toEqual([bookingWorkdays])
 })
 
 describe("getPeriods", function() {

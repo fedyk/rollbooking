@@ -164,7 +164,7 @@ describe('lib:DateRange', () => {
       )
     })
     it('should split with rounded periods', () => {
-      deepEqual(new DateRange('2018-05-01T10:00:00.00Z', '2018-05-01T10:04:00.00Z').split(60 * 1000, {
+      deepEqual(new DateRange('2018-05-01T10:00:00.00Z', '2018-05-01T10:04:30.00Z').split(60 * 1000, {
         round: true
       }), [
           new Date('2018-05-01T10:00:00.00Z'),

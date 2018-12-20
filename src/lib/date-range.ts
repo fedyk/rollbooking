@@ -133,7 +133,16 @@ export class DateRange {
   }
 
 
-  split(period: number, options: { round?: boolean } = null) {
+  /**
+   * ---|---------|-------
+   * ---|---|-------------
+   * -------|---|---------
+   * -----------|-|-------
+   * 
+   * @param period in ms
+   * @param options 
+   */
+  split(period: number, options: { round?: boolean } = null): Date[] {
     const periods = []
     const round = options != null && options.round
     let current = new Date(this.start.getTime());

@@ -1,6 +1,5 @@
 import { Salon, BusinessHours, SpecialHours } from "../../models/salon";
 import { SalonUser } from "../../models/salon-user";
-import { SalonService } from "../../models/salon-service";
 import { SalonReservation } from "../../models/salon-reservation";
 import { BookingWorkday, Masters, Period, Services } from "../../models/booking-workday";
 import { TimePeriod } from "../../models/time-period";
@@ -19,13 +18,18 @@ interface Params {
   salonSpecialHours: SpecialHours;
   startPeriod: Date;
   endPeriod: Date;
-  salonMastersIds: number[];
-  salonServices: SalonService[];
+  salonMasters: Array<{
+    id: number;
+  }>;
+  salonServices: Array<{
+    id: number;
+    duration: number;
+  }>;
   reservations: SalonReservation[];
 }
 
 export function getBookingWorkdays(params: Params): BookingWorkday[] {
-  const { salonId, salonRegularHours, salonSpecialHours, startPeriod, endPeriod, salonMastersIds, salonServices, reservations } = params;
+  const { salonId, salonRegularHours, salonSpecialHours, startPeriod, endPeriod, salonMasters, salonServices, reservations } = params;
   const ranges = getPeriods(startPeriod, endPeriod, salonRegularHours, salonSpecialHours);
   const bookingWorkdays: BookingWorkday[] = [];  
 
@@ -33,28 +37,42 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
     const range = ranges[i];
     const masters: Masters = {};
 
-    for (let j = 0; j < salonMastersIds.length; j++) {
-      const salonMasterId = salonMastersIds[j];
-      const masterReservations = reservations.filter(v => v.master_id === salonMasterId);
+    for (let j = 0; j < salonMasters.length; j++) {
+      const salonMaster = salonMasters[j];
+      const masterReservations = reservations.filter(v => v.master_id === salonMaster.id);
+
       const masterReservationsRanges = masterReservations.map(v => {
         const start = new Date(`${workdayISODate(v.start_date)}T${minutesToTime(v.start_time)}:00.00Z`);
         const end = new Date(`${workdayISODate(v.end_date)}T${minutesToTime(v.end_time)}:00.00Z`);
         return new DateRange(start, end);
       })
+
       const masterServices: Services = {}
   
       for (let z = 0; z < salonServices.length; z++) {
         const salonService = salonServices[z];
-        const availableTimes = range.exclude(masterReservationsRanges).map(v => {
-          return minutesInDay(v.start);
+
+        const availableRanges = range.exclude(masterReservationsRanges);
+        const serviceRanges = availableRanges.reduce(function(result, current) {
+          const serviceDurationInMs = salonService.duration * 60 * 1000;
+
+          return result.concat(current.split(serviceDurationInMs, {
+            round: false
+          }))
+        }, ([] as Date[]));
+
+        console.log(serviceRanges)
+
+        const availableTimes = serviceRanges.map(function(date) {
+          return minutesInDay(date);
         });
 
         masterServices[salonService.id] = {
           available_times: availableTimes
-        }
+        };
       }
 
-      masters[salonMasterId] = {
+      masters[salonMaster.id] = {
         services: masterServices
       }
     }
