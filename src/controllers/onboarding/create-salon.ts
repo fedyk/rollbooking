@@ -6,6 +6,7 @@ import { Context } from "koa";
 import { User } from "../../models/user";
 import { renderer } from "../../lib/render";
 import { Salon } from "../../models/salon";
+import { DayOfWeek } from "../../models/dat-of-week";
 
 const debug = debugFactory('controller:onboarding')
 
@@ -26,6 +27,17 @@ export async function createSalon(ctx: Context): Promise<any> {
   try {
     const salonData: Salon = {
       id: null,
+      regular_hours: {
+        periods: [{
+          openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
+          openTime: "10:00",
+          closeDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
+          closeTime: "18:00"
+        }]
+      },
+      special_hours: {
+        periods: []
+      },
       name: body.name || 'Untitled salon',
       properties: {
         general: {

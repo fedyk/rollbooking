@@ -1,6 +1,6 @@
 import { BookingWorkday } from "../../../models/booking-workday";
 import { SelectOption } from "../../../helpers/form";
-import { workdayISODate } from "../../../helpers/booking-workday/workday-iso-date";
+import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 
 export function getDateOptions(bookingWorkdays: BookingWorkday[], nextDays): SelectOption[] {
   const date = new Date();
@@ -11,7 +11,7 @@ export function getDateOptions(bookingWorkdays: BookingWorkday[], nextDays): Sel
   } = {};
 
   bookingWorkdays.forEach(bookingWorkday => {
-    const isoDate = workdayISODate(bookingWorkday);
+    const isoDate = dateToISODate(bookingWorkday.period.startDate);
 
     availableDates[isoDate] = true;
   })

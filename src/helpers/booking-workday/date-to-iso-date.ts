@@ -1,10 +1,14 @@
-import { Date } from "../../models/date";
+import { Date as DateObject } from "../../models/date";
+import { nativeDateToDateObject } from "../date/native-date-to-date-object";
 
-export function workdayISODate(date: Date): string {
-  const { year, month, day } = date;
-  const yearStr = year.toString().padStart(4, "20");
-  const monthStr = month.toString().padStart(2, "0");
-  const dayStr = day.toString().padStart(2, "0");
 
-  return `${yearStr}-${monthStr}-${dayStr}`;
+// Date -> YYYY-MM-DD
+export function dateToISODate(date: Date | DateObject): string {
+  if (date instanceof Date) {
+    date = nativeDateToDateObject(date);
+  }
+
+  const { year, month, day } = date as DateObject;
+  
+  return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
 }

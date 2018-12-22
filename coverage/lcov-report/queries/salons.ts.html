@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for queries/salons.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">All files</a> / <a href="index.html">queries</a> salons.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.45% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>14/55</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/13</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.45% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>14/55</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { extractQueryParams } from '../lib/database'
+import { PoolClient } from 'pg';
+import { Salon } from '../models/salon';
+import { SalonUser } from '../models/salon-user';
+import { SalonService } from '../models/salon-service';
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >getSalonById(</span>client: PoolClient, id: number): Promise&lt;Salon&gt; {
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query('SELECT * FROM salons WHERE id=$1 LIMIT 1', [id])</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >createSalon(</span>client: PoolClient, salon: Salon): Promise&lt;Salon&gt; {
+  const { keys, params, values } = <span class="cstat-no" title="statement not covered" >extractQueryParams(salon);</span>
+  const query = <span class="cstat-no" title="statement not covered" >`INSERT INTO salons (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;</span>
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, values);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >addSalonUser(</span>client: PoolClient, salonUser: SalonUser): Promise&lt;SalonUser&gt; {
+  const { keys, params, values } = <span class="cstat-no" title="statement not covered" >extractQueryParams(salonUser)</span>
+  const query = <span class="cstat-no" title="statement not covered" >`INSERT INTO salon_users (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;</span>
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, values);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >updateSalonUser(</span>
+  client: PoolClient,
+  salonId: number,
+  userId: number,
+  newValues: SalonUser
+): Promise&lt;SalonUser&gt; {
+  const { keys, params, values } = <span class="cstat-no" title="statement not covered" >extractQueryParams(newValues)</span>
+  const query = <span class="cstat-no" title="statement not covered" >`UPDATE salon_users</span>
+    SET (${keys.join(',')}) = ROW(${params.join(', ')})
+    WHERE user_id = $${params.length + 1} AND salon_id = $${params.length + 2}
+    RETURNING *;`;
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, values.concat(userId, salonId));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;
+/**
+ * @param {PoolClient} client 
+ * @param {number} userId 
+ * @param {number} salonId
+ */
+export async function <span class="fstat-no" title="function not covered" >removeUserFromSalon(</span>client: PoolClient, userId: number, salonId: number): Promise&lt;any&gt; {
+  const query = <span class="cstat-no" title="statement not covered" >`DELETE FROM salon_users WHERE user_id = $1 AND salon_id = $2;`</span>
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, [userId, salonId]);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows;</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >getSalonUsers(</span>client: PoolClient, salonId): Promise&lt;SalonUser[]&gt; {
+  const query = <span class="cstat-no" title="statement not covered" >`SELECT * FROM salon_users WHERE salon_id=$1`;</span>
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, [salonId]);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows</span>
+}
+&nbsp;
+/**
+ * @param {PoolClient} client
+ * @param {number} salonId
+ * @return {Array&lt;{id: number, salon_id: number, data: object}&gt;}
+ */
+export async function <span class="fstat-no" title="function not covered" >getSalonServices(</span>client: PoolClient, salonId): Promise&lt;SalonService[]&gt; {
+  const query = <span class="cstat-no" title="statement not covered" >`SELECT * FROM salon_services WHERE salon_id=$1 ORDER BY id DESC`;</span>
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, [salonId]);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >getSalonService(</span>client: PoolClient, salonId: number, serviceId: number): Promise&lt;SalonService&gt; {
+  const query = <span class="cstat-no" title="statement not covered" >`SELECT * FROM salon_services WHERE salon_id=$1 and id=$2`;</span>
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, [salonId, serviceId]);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >addSalonService(</span>client: PoolClient, service: SalonService): Promise&lt;any&gt; {
+  const { keys, params, values } = <span class="cstat-no" title="statement not covered" >extractQueryParams(service)</span>
+  const query = <span class="cstat-no" title="statement not covered" >`INSERT INTO salon_services (${keys.join(', ')}) VALUES (${params.join(', ')}) RETURNING *`;</span>
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, values);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >updateSalonService(</span>client: PoolClient, salonId: number, serviceId: number, service: SalonService): Promise&lt;SalonService&gt; {
+  const { keys, params, values } = <span class="cstat-no" title="statement not covered" >extractQueryParams(service)</span>
+  const query = <span class="cstat-no" title="statement not covered" >`UPDATE salon_services</span>
+    SET (${keys.join(',')}) = ROW(${params.join(', ')})
+    WHERE id = $${params.length + 1} AND salon_id = $${params.length + 2}
+    RETURNING *;`;
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, values.concat(serviceId, salonId));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;
+/**
+ * @param {PoolClient} client 
+ * @param {number} salonId
+ * @param {number} serviceId
+ */
+export async function <span class="fstat-no" title="function not covered" >removeServiceFromSalon(</span>client: PoolClient, salonId, serviceId: number): Promise&lt;any&gt; {
+  const query = <span class="cstat-no" title="statement not covered" >`DELETE FROM salon_services WHERE salon_id = $1 AND id = $2;`</span>
+&nbsp;
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query(query, [salonId, serviceId]);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows;</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >getUserSalons(</span>client: PoolClient, userId: number): Promise&lt;SalonUser[]&gt; {
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query('SELECT * FROM salon_users WHERE user_id=$1', [userId])</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows</span>
+}
+&nbsp;
+export async function <span class="fstat-no" title="function not covered" >getSalonUser(</span>client: PoolClient, salonId: number, userId: number): Promise&lt;SalonUser&gt; {
+  const { rows } = <span class="cstat-no" title="statement not covered" >await client.query('SELECT * FROM salon_users WHERE user_id=$1 AND salon_id=$2 LIMIT 1', [userId, salonId])</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return rows.length &gt; 0 ? rows[0] : null</span>
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Dec 21 2018 20:01:14 GMT+0100 (CET)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

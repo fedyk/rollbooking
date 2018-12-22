@@ -2,8 +2,7 @@ import { SalonService } from "../../../models/salon-service";
 import { getServiceName, getServicePrice, getServiceDescription } from "../../../utils/service";
 import { BookingWorkday } from "../../../models/booking-workday";
 import { stringify } from "querystring";
-import { workdayISODate } from "../../../helpers/booking-workday/workday-iso-date";
-import { minutesToTime } from "../../../helpers/date";
+import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 
 interface Result {
   name: string;
@@ -15,7 +14,7 @@ interface Result {
     }>
 }
 
-export function getResults(workday: BookingWorkday, salonServices: SalonService[]): Result[] {
+export function getResults(salonId: number, workday: BookingWorkday, salonServices: SalonService[]): Result[] {
   const results: Result[] = [];
   const salonServicesByIds = getSalonServiceByIds(salonServices);
 
@@ -34,11 +33,11 @@ export function getResults(workday: BookingWorkday, salonServices: SalonService[
             price: prettyPrice(getServicePrice(service)),
             description: getServiceDescription(service),
             times: workdayMasterServices.available_times.map(time => ({
-              text: minutesToTime(time),
-              url: `/booking/${workday.salon_id}/checkout?${stringify({
+              text: time,
+              url: `/booking/${salonId}/checkout?${stringify({
                 m: masterId,
                 s: serviceId,
-                d: workdayISODate(workday),
+                d: dateToISODate(workday.period.startDate),
                 t: time
               })}`
             }))

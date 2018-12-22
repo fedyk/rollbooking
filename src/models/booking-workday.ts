@@ -1,16 +1,15 @@
 import { Date } from "./date";
 
 export interface BookingWorkday {
-  salon_id: number;
   period: Period;
   masters: Masters;
 }
 
 export interface Period {
   startDate: Date;
-  startTime: number;
+  startTime: string;
   endDate: Date;
-  endTime: number;
+  endTime: string;
 }
 
 export interface Masters {
@@ -19,15 +18,16 @@ export interface Masters {
   }
 }
 
+/**
+ * Time in 24hr ISO 8601 extended format (hh:mm). Valid values are 00:00-24:00, where 24:00 represents midnight at the end of the specified day field.
+ */
 export interface Services {
   [service_id: string]: {
-    available_times: number[]
-  }  
+    available_times: string[]
+  }
 }
 
 // mock
-export const bookingWorkdays2: BookingWorkday[] = [];
-
 export const bookingWorkdays: BookingWorkday[] = [{
   period: {
     startDate: {
@@ -35,34 +35,33 @@ export const bookingWorkdays: BookingWorkday[] = [{
       month: 12,
       day: 15,
     },
-    startTime: 60,
+    startTime: "01:00",
     endDate: {
       year: 2018,
       month: 12,
       day: 15,
     },
-    endTime: 60 * 8
+    endTime: "08:00"
   },
-  salon_id: 1,
 
   masters: {
     1: {
       services: {
         10: {
-          available_times: [600, 660, 840]
+          available_times: ["10:00", "11:00", "12:00"]
         },
         11: {
-          available_times: [600, 660, 840]
+          available_times: ["10:00", "11:00", "12:00"]
         }
       }
     },
     2: {
       services: {
         10: {
-          available_times: [600, 660, 840]
+          available_times: ["10:00", "11:00", "12:00"]
         },
         11: {
-          available_times: [600, 660, 840]
+          available_times: ["10:00", "11:00", "12:00"]
         }
       }
     }

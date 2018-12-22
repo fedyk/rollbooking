@@ -3,20 +3,8 @@ export class DateRange {
   end: Date;
  
   constructor(start: any, end: any) {
-    this.start = this.parseDateTime(start);
-    this.end = this.parseDateTime(end);
-  }
-
-  private parseDateTime(dateTime: any): Date {
-    if (dateTime instanceof Date) {
-      return dateTime
-    }
-  
-    if (typeof dateTime === 'string' || typeof dateTime === 'number') {
-      return new Date(dateTime)
-    }
-    
-    return null;
+    this.start = parseDateTime(start);
+    this.end = parseDateTime(end);
   }
 
   /**
@@ -159,4 +147,16 @@ export class DateRange {
 
     return periods;
   }
+}
+
+function parseDateTime(dateTime: any): Date {
+  if (dateTime instanceof Date) {
+    return dateTime
+  }
+
+  if (typeof dateTime === 'string' || typeof dateTime === 'number') {
+    return new Date(dateTime)
+  }
+  
+  return null;
 }

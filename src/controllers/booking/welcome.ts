@@ -4,7 +4,6 @@ import { welcome as welcomeView } from "../../views/booking/welcome";
 import { layout as layoutView } from "../../views/booking/layout";
 import { bookingWorkdays } from "./../../models/booking-workday";
 import { getDateOptions } from "./helpers/get-date-options";
-import { workdayISODate } from "../../helpers/booking-workday/workday-iso-date";
 import { getSalonUsers } from "../../sagas/get-salon-users";
 import { connect } from "../../lib/database";
 import { getSalonServices } from "../../sagas/get-salon-services";
@@ -16,6 +15,7 @@ import { getSelectedService } from "./helpers/get-selected-service";
 import { getResults } from "./helpers/get-results";
 import { getSalonById } from "../../queries/salons";
 import { Context } from "koa";
+import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
 
 const debug = Debug("app:booking:welcome");
 
@@ -31,12 +31,12 @@ export async function welcome(ctx: Context) {
   const showFilters = bookingWorkdays.length > 0;
   const dateOptions = getDateOptions(bookingWorkdays, 60);
   const selectedWorkday = getSelectedWorkday(bookingWorkdays, params.date);
-  const selectedDate = selectedWorkday ? workdayISODate(selectedWorkday) : null;
+  const selectedDate = selectedWorkday ? dateToISODate(selectedWorkday.period.startDate) : null;
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
   const servicesOptions = getServiceOptions(salonServices);
   const selectedService = getSelectedService(params.serviceId);
-  const results = selectedWorkday ? getResults(selectedWorkday, salonServices) : [];
+  const results = selectedWorkday ? getResults(salonId, selectedWorkday, salonServices) : [];
 
   database.release();
 

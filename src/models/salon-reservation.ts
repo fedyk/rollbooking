@@ -10,10 +10,13 @@ export interface SalonReservation {
   salon_id: number;
   master_id: number;
   service_id: number;
+  
   start_date: Date;
-  start_time: number;
+  start_time: string; // HH:MM
+  
   end_date: Date;
-  end_time: number;
+  end_time: string; // HH:MM
+  
   properties: SalonReservationProperties;
 }
 

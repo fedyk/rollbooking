@@ -6,7 +6,11 @@ export function getSelectedWorkday(workdays: BookingWorkday[], date?: Date) {
     const month = date.getMonth();
     const day = date.getDay();
 
-    return workdays.find(workday => workday.year === year && workday.month === month && workday.day === day);
+    return workdays.find(workday => {
+      return workday.period.startDate.year === year 
+        && workday.period.startDate.month === month
+        && workday.period.startDate.day === day
+    });
   }
 
   return workdays.length > 0 ? workdays[0] : null;

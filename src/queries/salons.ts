@@ -1,5 +1,5 @@
 import { extractQueryParams } from '../lib/database'
-import { PoolClient } from 'pg';
+import { PoolClient, Pool } from 'pg';
 import { Salon } from '../models/salon';
 import { SalonUser } from '../models/salon-user';
 import { SalonService } from '../models/salon-service';
@@ -8,6 +8,12 @@ export async function getSalonById(client: PoolClient, id: number): Promise<Salo
   const { rows } = await client.query('SELECT * FROM salons WHERE id=$1 LIMIT 1', [id])
 
   return rows.length > 0 ? rows[0] : null
+}
+
+export async function getSalonsList(client: PoolClient): Promise<Salon[]> {
+  const { rows } = await client.query('SELECT * FROM salons')
+
+  return rows;
 }
 
 export async function createSalon(client: PoolClient, salon: Salon): Promise<Salon> {

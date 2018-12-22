@@ -33,6 +33,10 @@ export function extractQueryParams<T>(data: object): {
   }
 }
 
+export async function end() {
+  return await pool.end()
+}
+
 export async function connect() {
   return await pool.connect()
 }
