@@ -1,8 +1,7 @@
-import * as Debug from "debug";
+import Debug from "debug";
 import * as parseInt from "parse-int";
 import { welcome as welcomeView } from "../../views/booking/welcome";
 import { layout as layoutView } from "../../views/booking/layout";
-import { bookingWorkdays } from "./../../models/booking-workday";
 import { getDateOptions } from "./helpers/get-date-options";
 import { getSalonUsers } from "../../sagas/get-salon-users";
 import { connect } from "../../lib/database";
@@ -16,29 +15,40 @@ import { getResults } from "./helpers/get-results";
 import { getSalonById } from "../../queries/salons";
 import { Context } from "koa";
 import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
+import { salonsBookingWorkdays } from "../../adapters/mongodb";
 
 const debug = Debug("app:booking:welcome");
 
 export async function welcome(ctx: Context) {
   const salonId = parseInt(ctx.params.salonId);
-  const params = parseRequestParam(ctx.params);
+  const params = parseRequestParam({...ctx.params, ...ctx.query});
   const database = await connect();
   const salon = await getSalonById(database, salonId);
 
   const salonUsers = await getSalonUsers(database, salon.id);
   const salonServices = await getSalonServices(database, salon.id);
+  
+  database.release();
 
+  const workdaysCollections = await salonsBookingWorkdays();
+  const bookingWorkdays = await workdaysCollections.find({ salon_id: salon.id }).toArray();
+
+  const dateOptions = getDateOptions(bookingWorkdays, params, 60);
   const showFilters = bookingWorkdays.length > 0;
-  const dateOptions = getDateOptions(bookingWorkdays, 60);
   const selectedWorkday = getSelectedWorkday(bookingWorkdays, params.date);
   const selectedDate = selectedWorkday ? dateToISODate(selectedWorkday.period.startDate) : null;
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
   const servicesOptions = getServiceOptions(salonServices);
   const selectedService = getSelectedService(params.serviceId);
-  const results = selectedWorkday ? getResults(salonId, selectedWorkday, salonServices) : [];
+  const results = selectedWorkday ? getResults({
+    salonId,
+    workday: selectedWorkday,
+    salonServices,
+    masterId: params.masterId,
+    serviceId: params.serviceId
+  }) : [];
 
-  database.release();
 
   ctx.body = layoutView({
     title: "Test Salon",

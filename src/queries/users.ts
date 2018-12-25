@@ -20,7 +20,7 @@ export async function getUserByGoogleId(client: PoolClient, googleId: string): P
   return rows.length > 0 ? rows[0] : null
 }
 
-export async function createUser(client: PoolClient, user: User): Promise<User> {
+export async function createUser(client: PoolClient, user: Partial<User>): Promise<User> {
   const { keys, params, values } = extractQueryParams(user);
   const query = `INSERT INTO users (${keys.join(', ')})
     VALUES (${params.join(', ')})

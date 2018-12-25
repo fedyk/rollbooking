@@ -26,7 +26,7 @@ export interface User {
   email: string
   password: string
   logins: number
-  last_login: Date
+  last_login?: Date
   created: Date
   updated: Date
 }

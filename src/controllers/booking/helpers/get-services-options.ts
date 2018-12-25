@@ -3,7 +3,11 @@ import { SalonService } from "../../../models/salon-service";
 import { getServiceName } from "../../../utils/service";
 
 export function getServiceOptions(salonServices: SalonService[]): SelectOption[] {
-  const options: SelectOption[] = [];
+  const options: SelectOption[] = [{
+    value: "",
+    disabled: false,
+    text: "Any Service"
+  }];
 
   salonServices.forEach(salonService => {
     options.push({

@@ -1,4 +1,29 @@
-import { select } from "./form";
+import { input, hidden, select } from "./form";
+
+test("form/input", () => {
+  expect(
+    input("test", "val")
+  ).toBe(
+    "<input name=\"test\" value=\"val\" type=\"text\" />"
+  );
+  
+  expect(
+    input("test", "val", {
+      type: "email",
+      "class": "class1"
+    })
+  ).toBe(
+    "<input class=\"class1\" type=\"email\" name=\"test\" value=\"val\" />"
+  );
+});
+
+test("form/hidden", () => {
+  expect(
+    hidden("test", "val")
+  ).toBe(
+    "<input type=\"hidden\" name=\"test\" value=\"val\" />"
+  );
+});
 
 test("form/select", () => {
   expect(

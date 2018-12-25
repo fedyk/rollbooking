@@ -33,36 +33,37 @@ export const welcome = (props: Props) => `
     <a class="py-2 d-inline-block" href="#">${props.salonName}</a>
   </div>
 </nav>
+
 <div class="container">
 
   ${props.showFilters ? `
   <div class="card mb-3">
     <div class="card-body">
+      <form method="get" action="">
+        <div class="form-group">
+          ${select("d", props.dateOptions, props.selectedDate, {
+            "id": "date",
+            "class": "custom-select",
+            "onchange": "this.form.submit()"
+          })}
+        </div>
 
-      <div class="form-group">
-        <label for="date">Select day</label>
-        ${select("date", props.dateOptions, props.selectedDate, {
-          "id": "date",
-          "class": "custom-select"
-        })}
-      </div>
+        <div class="form-group">
+          ${select("m", props.mastersOptions, props.selectedMaster, {
+            "id": "master_id",
+            "class": "custom-select",
+            "onchange": "this.form.submit()"
+          })}
+        </div>
 
-      <div class="form-group">
-        <label for="master_id">Select Master</label>
-        ${select("master_id", props.mastersOptions, props.selectedMaster, {
-          "id": "master_id",
-          "class": "custom-select"
-        })}
-      </div>
-
-      <div class="form-group">
-        <label for="service_id">Select day</label>
-        ${select("master_id", props.servicesOptions, props.selectedService, {
-          "id": "service_id",
-          "class": "custom-select"
-        })}
-      </div>
-
+        <div class="form-group">
+          ${select("s", props.servicesOptions, props.selectedService, {
+            "id": "service_id",
+            "class": "custom-select",
+            "onchange": "this.form.submit()"
+          })}
+        </div>
+      </form>
     </div>
   </div>
   ` : ``}
@@ -82,7 +83,9 @@ export const welcome = (props: Props) => `
           <small>${item.price}</small>
         </div>
         ${item.description && `<p class="mb-1">${item.description}</p>`}
-        ${stringMapJoin(item.times, (time) => ` <a ${attrs({ href: time.url })} class="btn btn-primary btn-sm">${time.text}</a> `)}
+        ${stringMapJoin(item.times, (time) =>
+          ` <a ${attrs({ href: time.url })} class="btn btn-outline-primary btn-sm">${time.text}</a> `
+        )}
       </div>
     `)}
   </div>

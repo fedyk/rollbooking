@@ -3,7 +3,11 @@ import { SelectOption } from "../../../helpers/form";
 import getUserName from "../../../utils/get-user-name";
 
 export function getMastersOptions(salonUsers: SalonUser[]): SelectOption[] {
-  const options: SelectOption[] = [];
+  const options: SelectOption[] = [{
+    value: "",
+    disabled: false,
+    text: "Any Barber"
+  }];
 
   salonUsers.forEach(salonUser => {
     options.push({

@@ -1,10 +1,10 @@
 import "../../lib/config";
 import Debug from "debug";
 import { addDay } from "../../utils/date";
-import { getSalonsList } from "../../queries/salons";
+import { getSalonsList, getSalonById } from "../../queries/salons";
 import { connect, end } from "../../lib/database";
 import { getBookingWorkdays } from "../../sagas/booking/get-booking-workdays";
-import { BusinessHours, SpecialHours } from "../../models/salon";
+import { BusinessHours, SpecialHours, Salon } from "../../models/salon";
 import { getSalonUsers } from "../../sagas/get-salon-users";
 import { getSalonServices } from "../../sagas/get-salon-services";
 import { getServiceDuration } from "../../utils/service";
@@ -14,14 +14,25 @@ import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { getStartDay } from "../../helpers/date/get-start-day";
 import { getEndDay } from "../../helpers/date/get-end-day";
+import { salonsBookingWorkdays, closeClient, salonsReservations } from "../../adapters/mongodb";
+import { SalonBookingWorkday } from "../../models/salon-booking-workday";
+import { PoolClient } from "pg";
 
 const debug = Debug("tasks:sync-booking-workdays");
 
-export async function syncBookingWorkdays() {
+export async function syncBookingWorkdays(database: PoolClient, salonsIds: number[] = null) {
   const startPeriod = getStartDay(new Date(Date.now()));
-  const endPeriod = getEndDay(addDay(startPeriod, 60));
-  const database = await connect()
-  const salons = await getSalonsList(database);
+  const endPeriod = getEndDay(addDay(startPeriod, 20));
+  const collection = await salonsBookingWorkdays()
+  const $salonsReservations = await salonsReservations()
+  let salons: Salon[] = [];
+
+  if (Array.isArray(salonsIds)) {
+    salons = await Promise.all(salonsIds.map(salonId => getSalonById(database, salonId)));
+  }
+  else {
+    salons = await getSalonsList(database);
+  }
 
   debug("fetch %s salons", salons.length);
   
@@ -52,16 +63,27 @@ export async function syncBookingWorkdays() {
       duration: getServiceDuration(v)
     }))
 
-    const salonReservation: SalonReservation[] = []
-    const reservations = salonReservation.map(v => {
-      const startDate = `${dateToISODate(v.start_date)}T${v.start_time}:00.00Z`;
-      const endDate = `${dateToISODate(v.end_date)}T${v.end_time}:00.00Z`;
+    /**
+     *     reserv1    reserv2
+     * ---|-------|--|-------|---
+     *      | <- start   | <- end
+     * -----|------------|-------
+     * 
+     */  
+    const salonReservation: SalonReservation[] = await $salonsReservations.find({
+      salon_id: salon.id,
+      start: {
+        $lt: endPeriod
+      },
+      end: {
+        $gt: startPeriod
+      },
+    }).toArray();
 
-      return {
-        range: new DateRange(startDate, endDate),
-        master_id: v.master_id
-      }
-    });
+    const reservations = salonReservation.map(v => ({
+      range: new DateRange(v.start, v.end),
+      master_id: v.master_id
+    }));
 
     const bookingWorkdays = getBookingWorkdays({
       startPeriod,
@@ -71,24 +93,40 @@ export async function syncBookingWorkdays() {
       masters,
       services,
       reservations
+    });
+
+    const salonBookingWorkdays: SalonBookingWorkday[] = bookingWorkdays.map(v => {
+      return Object.assign({
+        salon_id: salon.id,
+        created: new Date(Date.now())
+      }, v);
     })
 
-    debug("generate booking workdays for salon %s(id=%s)", salon.name, salon.id);
-    // debug("regular hours %s", JSON.stringify(regularHours, null, 2));
-    // debug("booking workdays %s", JSON.stringify(bookingWorkdays, null, 2));
-    // debug("salon masters %s", JSON.stringify(salonMasters, null, 2));
-    // debug("salon services %s", JSON.stringify(salonServices, null, 2));
-  }
+    await collection.deleteMany({
+      salon_id: salon.id
+    })
 
-  await database.release();
-  await end();
+    await collection.insertMany(salonBookingWorkdays);
+
+    debug("generate booking workdays for salon %s (id=%s)", salon.name, salon.id);
+  }
 }
 
-
 if (!module.parent) {
-  syncBookingWorkdays().then(function() {
-    console.log("syncBookingWorkdays has finished")
-  }).catch(function(err) {
-    console.error(err);    
-  })
+  (async function() {
+    const database = await connect();
+
+    try {
+      await syncBookingWorkdays(database);
+      console.log("syncBookingWorkdays has finished")
+    }
+    catch(err) {
+      console.log(err);
+    }
+    finally {
+      await database.release();
+      closeClient()
+      end();
+    }
+  })();
 }

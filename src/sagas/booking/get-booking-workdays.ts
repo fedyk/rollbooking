@@ -27,9 +27,18 @@ interface Params {
 }
 
 export function getBookingWorkdays(params: Params): BookingWorkday[] {
-  const { regularHours, specialHours, startPeriod, endPeriod, masters: salonMasters, services: salonServices, reservations } = params;
+  const {
+    regularHours,
+    specialHours,
+    startPeriod,
+    endPeriod,
+    masters: salonMasters,
+    services: salonServices,
+    reservations
+  } = params;
+
   const ranges = getPeriods(startPeriod, endPeriod, regularHours, specialHours);
-  const bookingWorkdays: BookingWorkday[] = [];  
+  const bookingWorkdays: BookingWorkday[] = [];
 
   for (let i = 0; i < ranges.length; i++) {
     const range = ranges[i];
@@ -40,12 +49,12 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
       const masterReservations = reservations.filter(v => v.master_id === salonMaster.id);
       const masterReservationsRanges = masterReservations.map(v => v.range);
       const masterServices: Services = {}
-  
+
       for (let z = 0; z < salonServices.length; z++) {
         const salonService = salonServices[z];
 
         const availableRanges = range.exclude(masterReservationsRanges);
-        const serviceRanges = availableRanges.reduce(function(result, current) {
+        const serviceRanges = availableRanges.reduce(function (result, current) {
           const serviceDurationInMs = salonService.duration * 60 * 1000;
           const ranges = current.split(serviceDurationInMs, {
             round: true
@@ -58,7 +67,7 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
         }, ([] as Date[]));
 
         // Date -> "HH:MM"
-        const availableTimes = serviceRanges.map(function(date) {
+        const availableTimes = serviceRanges.map(function (date) {
           return timeInDay(date);
         });
 
@@ -90,10 +99,10 @@ export function getPeriods(start: Date, end: Date, regularHours: BusinessHours, 
   const allPeriod = new DateRange(start, end);
   const periodsByStartDay = getGroupedPeriodsByDayOfWeek(regularHours.periods);
   const ranges = [];
-  
+
   let curr = new Date(start.getTime());
 
-  while(curr.getTime() <= end.getTime()) {
+  while (curr.getTime() <= end.getTime()) {
     const currDayOfWeek = curr.getDay() as DayOfWeek;
 
     if (periodsByStartDay.has(currDayOfWeek)) {
@@ -130,12 +139,11 @@ export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWe
     else {
       map.get(period.openDay).push(period);
     }
-    
+
   }
 
   return map;
 }
-
 
 export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
   if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getDay() !== period.openDay) {
@@ -144,7 +152,7 @@ export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRang
 
   const startTime = `${dateToISODate(date)}T${period.openTime}:00.00Z`;
   const start = new Date(startTime);
-  
+
   const endDate = new Date(date.getTime());
 
   if (period.openDay !== period.closeDay) {

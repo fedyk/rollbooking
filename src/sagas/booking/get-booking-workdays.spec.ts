@@ -7,8 +7,8 @@ import { BookingWorkday } from "../../models/booking-workday";
 describe("getBookingWorkday", function () {
   it("should redurn booking workday", function () {
     expect(getBookingWorkdays({
-      startPeriod: new Date("2018-01-01T10:00:00.00Z"),
-      endPeriod: new Date("2018-01-02T23:59:59.00Z"),
+      startPeriod: new Date("2018-01-01T00:00:00Z"),
+      endPeriod: new Date("2018-01-02T23:59:59Z"),
       regularHours: {
         periods: [{
           openDay: DayOfWeek.MONDAY,
@@ -32,10 +32,13 @@ describe("getBookingWorkday", function () {
       }],
       reservations: [{
         master_id: 1,
-        range: new DateRange("2018-01-01T11:00:00.00Z", "2018-01-01T12:00:00.00Z")
+        range: new DateRange("2018-01-01T10:00:00Z", "2018-01-01T10:30:00Z")
       }, {
         master_id: 1,
-        range: new DateRange("2018-01-01T13:00:00.00Z", "2018-01-01T13:30:00.00Z")
+        range: new DateRange("2018-01-01T11:00:00Z", "2018-01-01T12:00:00Z")
+      }, {
+        master_id: 1,
+        range: new DateRange("2018-01-01T13:00:00Z", "2018-01-01T13:30:00Z")
       }],
     })).toEqual([{
       masters: {
@@ -70,8 +73,8 @@ describe("getBookingWorkday", function () {
 
 describe("getPeriods", function () {
   it("should work", function () {
-    const start = new Date("2018-12-17T00:00:00.00Z");
-    const end = new Date("2018-12-18T01:00:00.00Z");
+    const start = new Date("2018-12-17T00:00:00Z");
+    const end = new Date("2018-12-18T01:00:00Z");
 
     expect(getPeriods(start, end, {
       periods: [{
@@ -94,15 +97,15 @@ describe("getPeriods", function () {
         periods: []
       }
     )).toEqual([
-      new DateRange("2018-12-17T08:00:00.00Z", "2018-12-17T09:00:00.00Z"),
-      new DateRange("2018-12-17T10:00:00.00Z", "2018-12-17T18:00:00.00Z"),
+      new DateRange("2018-12-17T08:00:00Z", "2018-12-17T09:00:00Z"),
+      new DateRange("2018-12-17T10:00:00Z", "2018-12-17T18:00:00Z"),
     ])
   })
 })
 
 describe("getDateRangeFromPeriod", function () {
   it("should return period", function () {
-    const date = new Date("2018-12-17T00:00:00.00Z");
+    const date = new Date("2018-12-17T00:00:00Z");
     const period: TimePeriod = {
       openDay: DayOfWeek.MONDAY,
       openTime: "10:00",
@@ -111,13 +114,13 @@ describe("getDateRangeFromPeriod", function () {
     }
 
     expect(getDateRangeFromPeriod(date, period)).toEqual({
-      start: new Date("2018-12-17T10:00:00.00Z"),
-      end: new Date("2018-12-18T01:00:00.00Z")
+      start: new Date("2018-12-17T10:00:00Z"),
+      end: new Date("2018-12-18T01:00:00Z")
     })
   })
 
   it("should return period 2", function () {
-    const date = new Date("2018-12-17T00:00:00.00Z");
+    const date = new Date("2018-12-17T00:00:00Z");
     const period: TimePeriod = {
       openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
       openTime: "10:00",
@@ -126,8 +129,8 @@ describe("getDateRangeFromPeriod", function () {
     }
 
     expect(getDateRangeFromPeriod(date, period)).toEqual({
-      start: new Date("2018-12-17T10:00:00.00Z"),
-      end: new Date("2018-12-17T20:00:00.00Z")
+      start: new Date("2018-12-17T10:00:00Z"),
+      end: new Date("2018-12-17T20:00:00Z")
     })
   })
 })

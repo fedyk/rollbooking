@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import { join } from 'path';
 import * as serve from 'koa-static';
-import config from "./lib/config";
+import { config } from "./lib/config";
 import { addFilter, middleware } from './lib/render'
 import { session } from './lib/session'
 import * as passport from './lib/passport'
@@ -11,7 +11,7 @@ import { router } from './router';
 
 const app = new Koa();
 
-app.keys = (config.APP_KEYLIST || '').split(';');
+app.keys = config.APP_KEYLIST.split(';');
 
 // nunjucks filters
 renderFilters.forEach(([filterName, filter]) => {
@@ -28,5 +28,7 @@ app.use(passport.session())
 app.use(router.routes());
 
 if (!module.parent) {
-  app.listen(config.PORT || 3000);
+  app.listen(config.PORT, function() {
+    console.log(`app is listening PORT ${config.PORT}`)
+  });
 }
