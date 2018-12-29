@@ -5,24 +5,17 @@ describe("getSelectedWorkday", function() {
   const date = new Date(Date.UTC(2018, 0, 1));
   const bookingWorkdays: BookingWorkday[] = [{
     period: {
-      startDate: {
-        year: 2018,
-        month: 1,
-        day: 1,
-      },
-      startTime: "08:00",
-      endDate: {          
-        year: 2018,
-        month: 1,
-        day: 1,
-      },
-      endTime: "13:00"
+      start: new Date("2018-01-01T08:00:00Z"),
+      end: new Date("2018-01-01T13:00:00Z"),
     },
     masters: {
       1: {
         services: {
           1: {
-            availableTimes: ["08:00", "09:00"]
+            availableTimes: [
+              new Date("2018-01-01T08:00:00Z"),
+              new Date("2018-01-01T09:00:00Z")
+            ]
           }
         }
       },

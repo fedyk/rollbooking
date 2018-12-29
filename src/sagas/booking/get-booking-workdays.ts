@@ -4,8 +4,6 @@ import { TimePeriod } from "../../models/time-period";
 import { DateRange } from "../../lib/date-range";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { addDay } from "../../utils/date";
-import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
-import { timeInDay } from "../../helpers/date/time-in-day";
 import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
 
 interface Params {
@@ -66,13 +64,8 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
           return result.concat(ranges);
         }, ([] as Date[]));
 
-        // Date -> "HH:MM"
-        const availableTimes = serviceRanges.map(function (date) {
-          return timeInDay(date);
-        });
-
         masterServices[salonService.id] = {
-          availableTimes: availableTimes
+          availableTimes: serviceRanges
         };
       }
 
@@ -84,10 +77,8 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
     bookingWorkdays.push({
       masters: masters,
       period: {
-        startDate: nativeDateToDateObject(range.start),
-        startTime: timeInDay(range.start),
-        endDate: nativeDateToDateObject(range.end),
-        endTime: timeInDay(range.end)
+        start: range.start,
+        end: range.end
       }
     })
   }
@@ -103,7 +94,7 @@ export function getPeriods(start: Date, end: Date, regularHours: BusinessHours, 
   let curr = new Date(start.getTime());
 
   while (curr.getTime() <= end.getTime()) {
-    const currDayOfWeek = curr.getDay() as DayOfWeek;
+    const currDayOfWeek = curr.getUTCDay() as DayOfWeek;
 
     if (periodsByStartDay.has(currDayOfWeek)) {
       ranges.push(...periodsByStartDay.get(currDayOfWeek).map(period => {
@@ -146,13 +137,11 @@ export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWe
 }
 
 export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
-  if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getDay() !== period.openDay) {
+  if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getUTCDay() !== period.openDay) {
     throw new Error("date should have the same date as period");
   }
 
-  const startTime = `${dateToISODate(date)}T${period.openTime}:00.00Z`;
-  const start = new Date(startTime);
-
+  const start = new Date(`${dateToISODate(date)}T${period.openTime}:00Z`);
   const endDate = new Date(date.getTime());
 
   if (period.openDay !== period.closeDay) {
@@ -164,7 +153,7 @@ export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRang
     }
   }
 
-  const end = new Date(`${dateToISODate(endDate)}T${period.closeTime}:00.00Z`);
+  const end = new Date(`${dateToISODate(endDate)}T${period.closeTime}:00Z`);
 
   return new DateRange(start, end);
 }

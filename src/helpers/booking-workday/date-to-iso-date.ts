@@ -1,8 +1,9 @@
 import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../date/native-date-to-date-object";
 
-
-// Date -> YYYY-MM-DD
+/**
+ * Convert Date object to string YYYY-MM-DD. Important: Date string will be in UTC
+ */
 export function dateToISODate(date: Date | DateObject): string {
   if (date instanceof Date) {
     date = nativeDateToDateObject(date);

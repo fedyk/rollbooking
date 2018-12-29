@@ -52,7 +52,7 @@ export async function welcome(ctx: Context) {
   const dateOptions = getDateOptions(bookingWorkdays, params, 60);
   const showFilters = bookingWorkdays.length > 0;
   const selectedWorkday = getSelectedWorkday(bookingWorkdays, params.date);
-  const selectedDate = selectedWorkday ? dateToISODate(selectedWorkday.period.startDate) : null;
+  const selectedDate = selectedWorkday ? dateToISODate(selectedWorkday.period.start) : null;
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
   const servicesOptions = getServiceOptions(salonServices);
@@ -62,7 +62,8 @@ export async function welcome(ctx: Context) {
     workday: selectedWorkday,
     salonServices,
     masterId: params.masterId,
-    serviceId: params.serviceId
+    serviceId: params.serviceId,
+    timezoneName: salon.timezone
   }) : [];
 
 
@@ -84,18 +85,18 @@ export async function welcome(ctx: Context) {
 
 function parseRequestParam(param: any): {
   date: Date;
-  masterId: number;
+  masterId: string;
   serviceId: number;
 } {
   const dateStr = param && param.date || param.d;
-  const masterIdStr = param && param.master_id || param.m;
+  const masterId = param && param.master_id || param.m;
   const serviceIdStr = param && param.service_id || param.s;
 
   const date = new Date(dateStr);
 
   return {
     date: date instanceof Date && !isNaN(date.getTime()) ? date : null,
-    masterId: parseInt(masterIdStr),
+    masterId: ObjectID.isValid(masterId) ? masterId : null,
     serviceId: parseInt(serviceIdStr)
   }
 }

@@ -2,20 +2,27 @@ import { BookingWorkday } from "../../../models/booking-workday";
 import { SelectOption } from "../../../helpers/form";
 import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 import { getStartDay } from "../../../helpers/date/get-start-day";
+import { findTimeZone, getZonedTime } from "timezone-support";
 
 interface Options {
-  masterId: number;
+  masterId: string;
   serviceId: number;
 }
 
-export function getDateOptions(bookingWorkdays: BookingWorkday[], params: Options, nextDays: number): SelectOption[] {
-  const date = getStartDay(new Date(Date.now()));
+export function getDateOptions(bookingWorkdays: BookingWorkday[], params: Options, nextDays: number, timezoneName: string = "UTC"): SelectOption[] {
+  const date = new Date()
   const options: SelectOption[] = [];
   const availableDates = getAvailableDates(bookingWorkdays, params.masterId, params.serviceId);
+  const timezone = findTimeZone(timezoneName);
 
   for (let i = 0; i < nextDays; i++) {
-    const optionValue = dateToISODate(date)
-    const optionText = date.toLocaleDateString()
+    const optionValue = dateToISODate(date) // in UTC
+    const zonedTime = getZonedTime(date, timezone) // in salon timezone
+    const optionText = dateToISODate({
+      year: zonedTime.year,
+      month: zonedTime.month,
+      day: zonedTime.day
+    });
     const optionsDisabled = availableDates.get(optionValue) !== true;
 
     options.push({
@@ -33,16 +40,15 @@ export function getDateOptions(bookingWorkdays: BookingWorkday[], params: Option
 
 export function getAvailableDates(
   bookingWorkdays: BookingWorkday[],
-  selectedMasterId: number = null,
+  selectedMasterId: string = null,
   selectedServiceId: number = null
 ) {
   const availableDates = new Map<string, boolean>();
-  const selectedMasterIdStr = selectedMasterId ? selectedMasterId.toString() : "";
   const selectedServiceIdStr = selectedServiceId ? selectedServiceId.toString() : "";
 
   for (let i = 0; i < bookingWorkdays.length; i++) {
     const bookingWorkday = bookingWorkdays[i];
-    const date = dateToISODate(bookingWorkday.period.startDate);
+    const date = dateToISODate(bookingWorkday.period.start);
 
     if (availableDates.get(date) === true) {
       continue;
@@ -52,7 +58,7 @@ export function getAvailableDates(
       if (bookingWorkday.masters.hasOwnProperty(masterId)) {
 
         // skip if current iteration has nothing with selected master
-        if (selectedMasterIdStr != "" && masterId !== selectedMasterIdStr) {
+        if (selectedMasterId != null && masterId !== selectedMasterId) {
           continue;
         }
 
