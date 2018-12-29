@@ -69,7 +69,7 @@ export function getAvailableDates(
             }
 
             // we have available slots
-            if (masterService && masterService.available_times && masterService.available_times.length > 0) {
+            if (masterService && masterService.availableTimes && masterService.availableTimes.length > 0) {
               availableDates.set(date, true);
             }
           }

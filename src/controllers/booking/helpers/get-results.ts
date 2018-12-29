@@ -1,8 +1,8 @@
-import { SalonService } from "../../../models/salon-service";
 import { getServiceName, getServicePrice, getServiceDescription } from "../../../utils/service";
 import { BookingWorkday } from "../../../models/booking-workday";
 import { stringify } from "querystring";
 import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
+import { SalonService } from "../../../models/salon";
 
 interface Params {
   salonId: number;
@@ -48,10 +48,10 @@ export function getResults(params: Params): Result[] {
           const service = salonServicesByIds.get(serviceId);
 
           results.push({
-            name: getServiceName(service),
-            price: prettyPrice(getServicePrice(service)),
-            description: getServiceDescription(service),
-            times: workdayMasterServices.available_times.map(time => ({
+            name: service.name,
+            price: prettyPrice(service.price),
+            description: service.description,
+            times: workdayMasterServices.availableTimes.map(time => ({
               text: time,
               url: `/booking/${salonId}/checkout?${stringify({
                 m: masterId,

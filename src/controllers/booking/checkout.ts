@@ -4,45 +4,52 @@ import { layout as layoutView } from "../../views/booking/layout";
 import { connect } from "../../lib/database";
 import { getSalonById } from "../../queries/salons";
 import { Context } from "koa";
-import { salonsBookingWorkdays, salonsReservations } from "../../adapters/mongodb";
+import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
 import { getSalonService } from "../../sagas/get-salon-service";
 import getUserName from "../../utils/get-user-name";
 import { getServiceName, getServiceDuration } from "../../utils/service";
-import { getUserById, getUserByEmail, createUser } from "../../queries/users";
 import { timeInDay } from "../../helpers/date/time-in-day";
 import { isEmail } from "../../utils/is-email";
 import { User } from "../../models/user";
 import { addMinutes } from "../../helpers/date/add-minutes";
 import { stringify } from "querystring";
 import { syncBookingWorkdays } from "../../tasks/salon/sync-booking-workdays";
+import { ObjectID } from "bson";
 
 export async function checkout(ctx: Context) {
-  const salonId = parseInt(ctx.params.salonId);
+  const salonId = ctx.params.salonId as string;
   const params = parseRequestQuery(ctx.query);
-  const database = await connect();
 
   try {
     ctx.assert(salonId, 404, "Page doesn't exist")
+    ctx.assert(ObjectID.isValid(salonId), 404, "Page doesn't exist")
 
-    const salon = await getSalonById(database, salonId);
-    const bookingWorkdaysCollections = await salonsBookingWorkdays();
-    const reservationsCollections = await salonsReservations();
+    const $salons = await SalonsCollection();
+    const $bookingWorkdays = await BookingWorkdaysCollection();
+    const $users = await UsersCollection();
+    const $reservations = await ReservationsCollection();
+
+    const salon = await $salons.findOne({
+      _id: new ObjectID(salonId)
+    })
   
     ctx.assert(params.date, 400, "Invalid params");
   
     ctx.assert(params.masterId, 400, "Invalid params")
   
     ctx.assert(params.serviceId, 400, "Invalid params")
-  
-    const salonMaster = await getUserById(database, params.masterId);
+
+    const salonMaster = await $users.findOne({
+      _id: new ObjectID(params.masterId)
+    });
   
     ctx.assert(salonMaster, 400, "Invalid params");
   
-    const salonService = await getSalonService(database, salonId, params.serviceId);
+    const salonService = salon.services.items.find(v => v.id === params.serviceId);
   
     ctx.assert(salonService, 400, "Invalid params");
   
-    const bookingWorkday = await bookingWorkdaysCollections.findOne({
+    const bookingWorkday = await $bookingWorkdays.findOne({
       "period.startDate.year": {
         $lte: params.date.getFullYear()
       },
@@ -71,7 +78,7 @@ export async function checkout(ctx: Context) {
     const bookingWorkdayService = bookingWorkdayMaster.services[params.serviceId.toString()];
     ctx.assert(bookingWorkdayService, 400, "Barber not doing this service at this date")
 
-    const availableTimes = bookingWorkdayService.available_times;
+    const availableTimes = bookingWorkdayService.availableTimes;
     const requestedTime = timeInDay(params.date);
 
     ctx.assert(availableTimes && availableTimes.length > 0, 400, "All time is booked")
@@ -85,39 +92,42 @@ export async function checkout(ctx: Context) {
       ctx.assert(userParams.fullName, 400, "Name is required")
       ctx.assert(userParams.fullName.length < 64, 400, "Name is too long")
       
-      let user: User = await getUserByEmail(database, userParams.email);
+      let user: User = await $users.findOne({
+        email: userParams.email
+      });
 
       if (!user) {
-        user = await createUser(database, {
+        user = {
           email: userParams.email,
-          properties: {
-            general: {
-              name: userParams.fullName,
-            }
-          },
+          name: userParams.fullName,
           password: "",
-          logins: 1,
-          last_login: null,
           created: new Date(),
-          updated: new Date()
-        })
+          updated: new Date(),
+          employers: {
+            salons: []
+          },
+          properties: {}
+        }
+        const insertResult = await $users.insertOne(user);
+
+        user._id = insertResult.insertedId;
 
         await ctx.login(user);
       }
 
-      const reservation = await reservationsCollections.insertOne({
-        salon_id: salonId,
-        user_id: user.id,
-        master_id: salonMaster.id,
-        service_id: salonService.id,
+      const reservation = await $reservations.insertOne({
+        salonId: salonId,
+        userId: user._id.toHexString(),
+        masterId: salonMaster._id.toHexString(),
+        serviceId: salonService.id,
         start: params.date,
-        end: addMinutes(params.date, getServiceDuration(salonService)),
+        end: addMinutes(params.date, salonService.duration),
         status: 2, // confirmed
       })
 
       ctx.assert(reservation.insertedCount === 1, 500, "Internal error")
 
-      await syncBookingWorkdays(database, [salon.id]);
+      await syncBookingWorkdays([salon._id]);
 
       ctx.redirect(`/booking/${salonId}/reservation?${stringify({
         id: reservation.insertedId.toHexString()
@@ -129,7 +139,7 @@ export async function checkout(ctx: Context) {
       body: checkoutView({
         salonName: salon.name,
         bookingMasterName: getUserName(salonMaster),
-        bookingServiceName: getServiceName(salonService),
+        bookingServiceName: salonService.name,
         bookingDate: params.date.toISOString(),
       })
     })
@@ -138,7 +148,7 @@ export async function checkout(ctx: Context) {
     throw e;
   }
   finally {
-    database.release();
+    
   }
 }
 
@@ -148,7 +158,7 @@ export async function checkout(ctx: Context) {
 const ISO_DATE_TIME = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)/
 
 export function parseRequestQuery(query: any): {
-  masterId: number;
+  masterId: string;
   serviceId: number;
   date: Date;
 } {
@@ -163,7 +173,7 @@ export function parseRequestQuery(query: any): {
 
   return {
     date: date instanceof Date && !isNaN(date.getTime()) ? date : null,
-    masterId: parseInt(masterIdStr) || null,
+    masterId: ObjectID.isValid(masterIdStr) ? masterIdStr : null,
     serviceId: parseInt(serviceIdStr) || null,
   }
 }

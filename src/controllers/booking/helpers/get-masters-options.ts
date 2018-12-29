@@ -1,19 +1,18 @@
-import SalonUser from "../../../models/salon-user";
 import { SelectOption } from "../../../helpers/form";
-import getUserName from "../../../utils/get-user-name";
+import { User } from "../../../models/user";
 
-export function getMastersOptions(salonUsers: SalonUser[]): SelectOption[] {
+export function getMastersOptions(users: User[]): SelectOption[] {
   const options: SelectOption[] = [{
     value: "",
     disabled: false,
     text: "Any Barber"
   }];
 
-  salonUsers.forEach(salonUser => {
+  users.forEach(salonUser => {
     options.push({
-      value: `${salonUser.user_id}`,
+      value: `${salonUser._id.toHexString()}`,
       disabled: false,
-      text: getUserName(salonUser)
+      text: salonUser.name
     })
   });
   

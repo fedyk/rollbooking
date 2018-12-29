@@ -82,7 +82,7 @@ export const welcome = (props: Props) => `
           <h6 class="mb-1">${item.name}</h6>
           <small>${item.price}</small>
         </div>
-        ${item.description && `<p class="mb-1">${item.description}</p>`}
+        ${item.description && `<p class="mb-1">${item.description}</p>` || ''}
         ${stringMapJoin(item.times, (time) =>
           ` <a ${attrs({ href: time.url })} class="btn btn-outline-primary btn-sm">${time.text}</a> `
         )}

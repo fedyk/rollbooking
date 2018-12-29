@@ -41,6 +41,7 @@
     "typescript": "3.2.2"
   },
   "scripts": {
+    "build": "tsc",
     "start": "node index.js",
     "test": "jest --forceExit --coverage --verbose",
     "test:watch": "jest --watch",

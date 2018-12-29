@@ -21,13 +21,13 @@ export async function welcome(ctx: Context): Promise<any> {
     }
 
     const client = await connect();
-    const userSalons = await getUserSalons(client, user.id);
+    const userSalons = user.employers.salons;
 
     if (userSalons && userSalons.length > 0) {
       const [userSalon] = userSalons;
 
-      if (userSalon && userSalon.salon_id) {
-        return client.release(), ctx.redirect(`/schedule${userSalon.salon_id}`)
+      if (userSalon && userSalon.id) {
+        return client.release(), ctx.redirect(`/schedule${userSalon.id}`)
       }
     }
 

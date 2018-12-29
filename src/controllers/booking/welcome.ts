@@ -1,37 +1,53 @@
 import Debug from "debug";
-import * as parseInt from "parse-int";
 import { welcome as welcomeView } from "../../views/booking/welcome";
 import { layout as layoutView } from "../../views/booking/layout";
 import { getDateOptions } from "./helpers/get-date-options";
-import { getSalonUsers } from "../../sagas/get-salon-users";
 import { connect } from "../../lib/database";
-import { getSalonServices } from "../../sagas/get-salon-services";
 import { getSelectedWorkday } from "./helpers/get-salon-workday";
 import { getMastersOptions } from "./helpers/get-masters-options";
 import { getSelectedMaster } from "./helpers/get-selected-master";
 import { getServiceOptions } from "./helpers/get-services-options";
 import { getSelectedService } from "./helpers/get-selected-service";
 import { getResults } from "./helpers/get-results";
-import { getSalonById } from "../../queries/salons";
 import { Context } from "koa";
 import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
-import { salonsBookingWorkdays } from "../../adapters/mongodb";
+import { BookingWorkdaysCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
+import { ObjectID } from "bson";
 
 const debug = Debug("app:booking:welcome");
 
 export async function welcome(ctx: Context) {
-  const salonId = parseInt(ctx.params.salonId);
+  const salonId = ctx.params.salonId;
   const params = parseRequestParam({...ctx.params, ...ctx.query});
   const database = await connect();
-  const salon = await getSalonById(database, salonId);
+  const $salons = await SalonsCollection();
 
-  const salonUsers = await getSalonUsers(database, salon.id);
-  const salonServices = await getSalonServices(database, salon.id);
+  debug("Salon ID should be a valid BJSON ObjectID")
+
+  ctx.assert(ObjectID.isValid(salonId), 404, "Page doesn't exist")
+
+  const salon = await $salons.findOne({
+    _id: new ObjectID(salonId)
+  });
+
+  ctx.assert(salon, 404, "Page doesn't exist")
+
+  const $users = await UsersCollection();
+
+  const salonUsers = await $users.find({
+    _id: {
+      $in: salon.employees.users.map(v => v.id)
+    }
+  }).toArray();
+
+  const salonServices = salon.services.items
   
   database.release();
 
-  const workdaysCollections = await salonsBookingWorkdays();
-  const bookingWorkdays = await workdaysCollections.find({ salon_id: salon.id }).toArray();
+  const $bookingWorkdays = await BookingWorkdaysCollection();
+  const bookingWorkdays = await $bookingWorkdays.find({
+    salonId: salon._id
+  }).toArray();
 
   const dateOptions = getDateOptions(bookingWorkdays, params, 60);
   const showFilters = bookingWorkdays.length > 0;

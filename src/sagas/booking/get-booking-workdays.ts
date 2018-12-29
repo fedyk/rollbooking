@@ -14,7 +14,7 @@ interface Params {
   startPeriod: Date;
   endPeriod: Date;
   masters: Array<{
-    id: number;
+    id: string;
   }>;
   services: Array<{
     id: number;
@@ -22,7 +22,7 @@ interface Params {
   }>;
   reservations: Array<{
     range: DateRange,
-    master_id: number;
+    masterId: string;
   }>;
 }
 
@@ -46,7 +46,7 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
 
     for (let j = 0; j < salonMasters.length; j++) {
       const salonMaster = salonMasters[j];
-      const masterReservations = reservations.filter(v => v.master_id === salonMaster.id);
+      const masterReservations = reservations.filter(v => v.masterId === salonMaster.id);
       const masterReservationsRanges = masterReservations.map(v => v.range);
       const masterServices: Services = {}
 
@@ -72,7 +72,7 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
         });
 
         masterServices[salonService.id] = {
-          available_times: availableTimes
+          availableTimes: availableTimes
         };
       }
 

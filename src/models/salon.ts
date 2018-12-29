@@ -1,24 +1,41 @@
 import { TimePeriod } from "./time-period";
 import { SpecialHourPeriod } from "./special-hour-period";
+import { ObjectID } from "bson";
 
 export interface Salon {
-  id: number;
+  _id?: ObjectID
+  alias: string;
   name: string;
-  regular_hours: BusinessHours;
-  special_hours: SpecialHours;
-  properties: SalonProperties;
-  created: Date;
-  updated: Date;
+  timezone: string;
+  employees: SalonEmployees;
+  services: SalonServices;
+  regularHours: BusinessHours;
+  specialHours: SpecialHours;
+  created?: Date;
+  updated?: Date;
 }
 
-export interface SalonProperties {
-  general: {
-    timezone: string;
-  }
-  currency: {
-    symbol: string; // e.g. $
-    value: string;  // e.g. USD
-  }
+export interface SalonEmployees {
+  users: SalonEmployee[];
+}
+
+export interface SalonEmployee {
+  id: string;
+  position: string;
+}
+
+export interface SalonServices {
+  lastServiceId: number;
+  items: SalonService[]
+}
+
+export interface SalonService {
+  id: number;
+  name: string;
+  description?: string;
+  duration: number; // in minutes
+  currencyCode: string; // ISO 4217
+  price: number;
 }
 
 export interface BusinessHours {

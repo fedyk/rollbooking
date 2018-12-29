@@ -1,57 +1,68 @@
+import { ObjectID } from "bson";
 import * as passport from "koa-passport";
 import * as Router from "koa-router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { connect } from "./database";
-import { getUserById, getUserByGoogleId, createUser } from "../queries/users";
 import { mapGoogleProfileToUser } from "../mappers/users";
+import { SalonsCollection, UsersCollection } from "../adapters/mongodb";
+import { User } from "../models/user";
 
 export const router = new Router()
+
 const scope = ['email', 'profile']
 
-passport.serializeUser(async function(user: any, done) {
-  done(null, user.id)
+passport.serializeUser(function(user: User, done) {
+  done(null, user._id.toHexString())
 })
 
 passport.deserializeUser(async function(id: number, done) {
-  const client = await connect();
+  const $users = await SalonsCollection()
+
+  if (!ObjectID.isValid(id)) {
+    return done(new Error("User id is not valid ObjectID"))
+  }
+
   try {
-    const user = await getUserById(client, id)
+    const user = await $users.findOne({
+      _id: new ObjectID(id)
+    })
+
     done(null, user)
   }
   catch(err) {
     done(err)
   }
-  client.release();
 });
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_OAUTH2_CLIENT_ID,
   clientSecret: process.env.GOOGLE_OAUTH2_SECRET,
   callbackURL: process.env.GOOGLE_OAUTH2_REDIRECT_URL,
-}, async function(accessToken, refreshToken, profile, done) {
-  const client = await connect();
-
+}, async function(accessToken, refreshToken, profile, done: (err: Error, user: User) => void) {
   try {
-    const user = await getUserByGoogleId(client, profile.id)
+    const $user = await UsersCollection();
 
-    // User already present is DB
+    let user = await $user.findOne({
+      googleId: profile.id
+    });
+
+    // User already present is storage
     if (user) {
-      return client.release(), done(null, user);
+      return done(null, user);
     }
 
     // Create new user model
-    const newUser = mapGoogleProfileToUser(profile, { accessToken, refreshToken, scope })
+    user = mapGoogleProfileToUser(profile, { accessToken, refreshToken, scope })
 
     // Put user in database
-    const createdUser = await createUser(client, newUser)
+    const { insertedId } = await $user.insertOne(user);
 
-    done(null, createdUser)
-  }
-  catch(e) {
-    done(e);
-  }
+    user._id = insertedId;
 
-  client.release();
+    done(null, user)
+  }
+  catch(err) {
+    done(err, null);
+  }
 }));
 
 router.get('/google', passport.authenticate('google', {

@@ -1,5 +1,5 @@
 import { SelectOption } from "../../../helpers/form";
-import { SalonService } from "../../../models/salon-service";
+import { SalonService } from "../../../models/salon";
 import { getServiceName } from "../../../utils/service";
 
 export function getServiceOptions(salonServices: SalonService[]): SelectOption[] {
@@ -13,7 +13,7 @@ export function getServiceOptions(salonServices: SalonService[]): SelectOption[]
     options.push({
       value: `${salonService.id}`,
       disabled: false,
-      text: getServiceName(salonService)
+      text: salonService.name
     })
   });
   

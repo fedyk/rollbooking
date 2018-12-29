@@ -22,14 +22,14 @@ describe("getSelectedWorkday", function() {
       1: {
         services: {
           1: {
-            available_times: ["08:00", "09:00"]
+            availableTimes: ["08:00", "09:00"]
           }
         }
       },
       2: {
         services: {
           1: {
-            available_times: []
+            availableTimes: []
           }
         }
       }

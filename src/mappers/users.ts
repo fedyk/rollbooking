@@ -21,21 +21,17 @@ export function mapGoogleProfileToUser(
       accessToken,
       refreshToken,
     },
-    general: {
-      name: name,
-      role: '',
-      timezone: null,
-    }
   }
 
   return {
-    id: null,
-    google_id: profile.id,
+    name: name,
+    googleId: profile.id,
     email: email,
+    employers: {
+      salons: []
+    },
     properties,
     password: null,
-    logins: 0,
-    last_login: new Date(),
     created: new Date(),
     updated: new Date(),
   }

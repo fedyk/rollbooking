@@ -1,12 +1,12 @@
 import { ok } from "assert";
 import { connect } from "../../lib/database";
-import { createSalonSaga } from '../../sagas/create-salon-saga';
 import debugFactory from 'debug'
 import { Context } from "koa";
 import { User } from "../../models/user";
 import { renderer } from "../../lib/render";
 import { Salon } from "../../models/salon";
 import { DayOfWeek } from "../../models/dat-of-week";
+import { SalonsCollection } from "../../adapters/mongodb";
 
 const debug = debugFactory('controller:onboarding')
 
@@ -26,8 +26,8 @@ export async function createSalon(ctx: Context): Promise<any> {
 
   try {
     const salonData: Salon = {
-      id: null,
-      regular_hours: {
+      alias: "..",
+      regularHours: {
         periods: [{
           openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
           openTime: "10:00",
@@ -35,28 +35,32 @@ export async function createSalon(ctx: Context): Promise<any> {
           closeTime: "18:00"
         }]
       },
-      special_hours: {
+      services: {
+        lastServiceId: 0,
+        items: []
+      },
+      employees: {
+        users: [{
+          id: user._id.toHexString(),
+          position: "Administrator",
+        }]
+      },
+      specialHours: {
         periods: []
       },
+      timezone: body.timezone,
       name: body.name || 'Untitled salon',
-      properties: {
-        general: {
-          timezone: body.timezone,
-        },
-        currency: {
-          value: "USD",
-          symbol: "$",
-        }
-      },
       created: new Date(),
       updated: new Date(),
     };
 
-    const salonModel = await createSalonSaga(client, salonData, user);
+    const $salons = await SalonsCollection()
+
+    const insertResult = await $salons.insertOne(salonData);
 
     debug('Successful created new salon');
 
-    ctx.redirect(`/schedule${salonModel.id}`);
+    ctx.redirect(`/schedule/${insertResult.insertedId.toHexString()}`);
   }
   catch(e) {
     const error = e.message || 'Something went wrong. Please try later';

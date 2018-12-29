@@ -21,7 +21,7 @@ describe("getBookingWorkday", function () {
         periods: []
       },
       masters: [{
-        id: 1
+        id: "1"
       }],
       services: [{
         id: 1,
@@ -31,13 +31,13 @@ describe("getBookingWorkday", function () {
         duration: 60
       }],
       reservations: [{
-        master_id: 1,
+        masterId: "1",
         range: new DateRange("2018-01-01T10:00:00Z", "2018-01-01T10:30:00Z")
       }, {
-        master_id: 1,
+        masterId: "1",
         range: new DateRange("2018-01-01T11:00:00Z", "2018-01-01T12:00:00Z")
       }, {
-        master_id: 1,
+        masterId: "1",
         range: new DateRange("2018-01-01T13:00:00Z", "2018-01-01T13:30:00Z")
       }],
     })).toEqual([{
@@ -45,10 +45,10 @@ describe("getBookingWorkday", function () {
         1: {
           services: {
             1: {
-              available_times: ["10:00", "12:00", "13:30", "14:30"]
+              availableTimes: ["10:00", "12:00", "13:30", "14:30"]
             },
             2: {
-              available_times: ["10:00", "12:00", "13:30", "14:30"]
+              availableTimes: ["10:00", "12:00", "13:30", "14:30"]
             }
           }
         }
