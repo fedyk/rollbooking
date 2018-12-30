@@ -60,8 +60,10 @@ export function getResults(params: Params): Result[] {
                 useUTC: true
               });
 
+              const prettyTime = `${zonedTime.hours.toString().padStart(2, "0")}:${zonedTime.minutes.toString().padStart(2, "0")}`;
+
               return {
-                text: `${zonedTime.hours}:${zonedTime.minutes}`,
+                text: time.toISOString(),
                 url: `/booking/${salonId}/checkout?${stringify({
                   m: masterId,
                   s: serviceId,

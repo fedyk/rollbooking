@@ -5,11 +5,6 @@ export interface BookingWorkday {
   masters: Masters;
 }
 
-export interface BookingWorkdayTZ {
-  period: Period;
-  masters: Masters;
-}
-
 export interface Period {
   start: Date;
   end: Date;

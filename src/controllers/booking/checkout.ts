@@ -151,7 +151,7 @@ export async function checkout(ctx: Context) {
 /**
  * @source https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
  */
-const ISO_DATE_TIME = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)/
+const ISO_DATE_TIME = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/
 
 export function parseRequestQuery(query: any): {
   masterId: string;

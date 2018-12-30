@@ -1,6 +1,7 @@
 import { ObjectID } from "bson";
 
 export interface Reservation {
+  _id?: ObjectID;
   salonId: string;
   userId: string;
   masterId: string;
