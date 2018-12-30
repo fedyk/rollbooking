@@ -4,27 +4,20 @@ import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date
 import { BookingWorkday } from "../../../models/booking-workday";
 
 describe("getDateOptions", function() {
-  const now = new Date(Date.now());
+  const now = new Date();
   const bookingWorkdays: BookingWorkday[] = [{
     period: {
-      startDate: {
-        year: now.getFullYear(),
-        month: now.getMonth() + 1,
-        day: now.getDate(),
-      },
-      startTime: "08:00",
-      endDate: {          
-        year: now.getFullYear(),
-        month: now.getMonth() + 1,
-        day: now.getDate(),
-      },
-      endTime: "13:00"
+      start: new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0)),
+      end: new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 13, 0)),
     },
     masters: {
       1: {
         services: {
           1: {
-            availableTimes: ["08:00", "09:00"]
+            availableTimes: [
+              new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0)),
+              new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0)),
+            ]
           }
         }
       }
@@ -32,13 +25,12 @@ describe("getDateOptions", function() {
   }]
 
   it("should work", function() {
-    debugger
     expect(getDateOptions(bookingWorkdays, {
       masterId: null,
       serviceId: null
     }, 1)).toEqual([{
       value: dateToISODate(now),
-      text: now.toLocaleDateString(),
+      text: dateToISODate(now),
       disabled: false
     }] as SelectOption[])
   })
@@ -49,7 +41,7 @@ describe("getDateOptions", function() {
       serviceId: null
     }, 1)).toEqual([{
       value: dateToISODate(now),
-      text: now.toLocaleDateString(),
+      text: dateToISODate(now),
       disabled: false
     }] as SelectOption[])
   })
@@ -58,28 +50,21 @@ describe("getDateOptions", function() {
 describe("getAvailableDates", function() {
   const bookingWorkdays: BookingWorkday[] = [{
     period: {
-      startDate: {
-        year: 2018,
-        month: 1,
-        day: 1,
-      },
-      startTime: "08:00",
-      endDate: {          
-        year: 2018,
-        month: 1,
-        day: 1,
-      },
-      endTime: "13:00"
+      start: new Date("2018-01-01T08:00:00Z"),
+      end: new Date("2018-01-01T13:00:00Z")
     },
     masters: {
-      1: {
+      "1": {
         services: {
           1: {
-            availableTimes: ["08:00", "09:00"]
+            availableTimes: [
+              new Date("2018-01-01T08:00:00Z"),
+              new Date("2018-01-01T09:00:00Z"),
+            ]
           }
         }
       },
-      2: {
+      "2": {
         services: {
           1: {
             availableTimes: []
@@ -98,19 +83,19 @@ describe("getAvailableDates", function() {
   })
 
   it("shoult work 3", function() {
-    expect(getAvailableDates(bookingWorkdays, 1, null)).toEqual(new Map<string, boolean>([["2018-01-01", true]]))
+    expect(getAvailableDates(bookingWorkdays, "1", null)).toEqual(new Map<string, boolean>([["2018-01-01", true]]))
   })
 
   it("shoult work 4", function() {
-    expect(getAvailableDates(bookingWorkdays, 1, 1)).toEqual(new Map<string, boolean>([["2018-01-01", true]]))
+    expect(getAvailableDates(bookingWorkdays, "1", 1)).toEqual(new Map<string, boolean>([["2018-01-01", true]]))
   })
   
   it("shoult work 5", function() {
-    expect(getAvailableDates(bookingWorkdays, 2, null)).toEqual(new Map<string, boolean>())
+    expect(getAvailableDates(bookingWorkdays, "2", null)).toEqual(new Map<string, boolean>())
   })
   
   it("shoult work 6", function() {
-    expect(getAvailableDates(bookingWorkdays, 2, 1)).toEqual(new Map<string, boolean>())
+    expect(getAvailableDates(bookingWorkdays, "2", 1)).toEqual(new Map<string, boolean>())
   })
   
   it("shoult work 7", function() {

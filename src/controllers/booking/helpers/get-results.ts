@@ -3,13 +3,16 @@ import { BookingWorkday } from "../../../models/booking-workday";
 import { stringify } from "querystring";
 import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 import { SalonService } from "../../../models/salon";
+import { findTimeZone, setTimeZone } from "timezone-support";
+import { timeInDay } from "../../../helpers/date/time-in-day";
 
 interface Params {
   salonId: number;
   workday: BookingWorkday;
   salonServices: SalonService[];
-  masterId?: number;
+  masterId?: string;
   serviceId?: number;
+  timezoneName: string;
 }
 
 interface Result {
@@ -28,6 +31,7 @@ export function getResults(params: Params): Result[] {
   const serviceIdStr = serviceId ? serviceId.toString() : "";
   const results: Result[] = [];
   const salonServicesByIds = getSalonServiceByIds(salonServices);
+  const timezone = findTimeZone(params.timezoneName);
 
   for (const masterId in workday.masters) {
     if (workday.masters.hasOwnProperty(masterId)) {
@@ -51,14 +55,20 @@ export function getResults(params: Params): Result[] {
             name: service.name,
             price: prettyPrice(service.price),
             description: service.description,
-            times: workdayMasterServices.availableTimes.map(time => ({
-              text: time,
-              url: `/booking/${salonId}/checkout?${stringify({
-                m: masterId,
-                s: serviceId,
-                d: `${dateToISODate(workday.period.startDate)}T${time}:00Z`,
-              })}`
-            }))
+            times: workdayMasterServices.availableTimes.map(function(time) {
+              const zonedTime = setTimeZone(time, timezone, {
+                useUTC: true
+              });
+
+              return {
+                text: `${zonedTime.hours}:${zonedTime.minutes}`,
+                url: `/booking/${salonId}/checkout?${stringify({
+                  m: masterId,
+                  s: serviceId,
+                  d: time.toISOString()
+                })}`
+              }
+            })
           })
         }
       }

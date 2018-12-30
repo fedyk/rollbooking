@@ -1,13 +1,9 @@
 import * as parseInt from "parse-int";
 import { checkout as checkoutView } from "../../views/booking/checkout";
 import { layout as layoutView } from "../../views/booking/layout";
-import { connect } from "../../lib/database";
-import { getSalonById } from "../../queries/salons";
 import { Context } from "koa";
 import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
-import { getSalonService } from "../../sagas/get-salon-service";
 import getUserName from "../../utils/get-user-name";
-import { getServiceName, getServiceDuration } from "../../utils/service";
 import { timeInDay } from "../../helpers/date/time-in-day";
 import { isEmail } from "../../utils/is-email";
 import { User } from "../../models/user";
@@ -79,10 +75,10 @@ export async function checkout(ctx: Context) {
     ctx.assert(bookingWorkdayService, 400, "Barber not doing this service at this date")
 
     const availableTimes = bookingWorkdayService.availableTimes;
-    const requestedTime = timeInDay(params.date);
+    const requestedTime = availableTimes.find(time => time.getTime() === requestedTime.getTime());
 
     ctx.assert(availableTimes && availableTimes.length > 0, 400, "All time is booked")
-    ctx.assert(availableTimes.indexOf(requestedTime) !== -1, 400, "This time is booked")
+    ctx.assert(requestedTime !== -1, 400, "The selected time is already booked")
 
     // Ok, lets save
     if (ctx.method === "POST") {

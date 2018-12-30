@@ -4,7 +4,6 @@ import * as passport from './lib/passport'
 
 import { welcome } from './controllers/welcome';
 import * as salonServices from './controllers/salon-services';
-import * as widgets from './controllers/widgets';
 
 import { router as bookingRouter } from './controllers/booking/router';
 import { router as authRouter } from './controllers/auth/router';
@@ -21,10 +20,6 @@ router.get('/', welcome)
   .get('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.getSalonService)
   .put('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.updateSalonService)
   .del('/schedule/:salonId/service/:serviceId', passport.onlyAuthenticated, salonServices.removeSalonService)
-
-  .get('/widgets/reservation/:salonId', widgets.reservation)
-  .get('/widgets/reservation/:salonId/confirm', widgets.reservationConfirm)
-  .get('/widgets/reservation/:salonId/preview', widgets.reservationPreview)
 
   .use('/', authRouter.routes(), authRouter.allowedMethods())
   .use('/booking', bookingRouter.routes(), bookingRouter.allowedMethods())

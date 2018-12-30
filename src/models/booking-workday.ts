@@ -1,15 +1,18 @@
-import { Date } from "./date";
+import { Date as DateObj } from "./date";
 
 export interface BookingWorkday {
   period: Period;
   masters: Masters;
 }
 
+export interface BookingWorkdayTZ {
+  period: Period;
+  masters: Masters;
+}
+
 export interface Period {
-  startDate: Date;
-  startTime: string;
-  endDate: Date;
-  endTime: string;
+  start: Date;
+  end: Date;
 }
 
 export interface Masters {
@@ -23,45 +26,51 @@ export interface Masters {
  */
 export interface Services {
   [serviceId: string]: {
-    availableTimes: string[]
+    availableTimes: Date[]
   }
 }
 
 // mock
 export const bookingWorkdays: BookingWorkday[] = [{
   period: {
-    startDate: {
-      year: 2018,
-      month: 12,
-      day: 15,
-    },
-    startTime: "01:00",
-    endDate: {
-      year: 2018,
-      month: 12,
-      day: 15,
-    },
-    endTime: "08:00"
+    start: new Date("2018-12-15T01:00:00Z"),
+    end: new Date("2018-12-15T08:00:00Z"),
   },
 
   masters: {
     1: {
       services: {
         10: {
-          availableTimes: ["10:00", "11:00", "12:00"]
+          availableTimes: [
+            new Date("2018-12-15T01:00:00Z"),
+            new Date("2018-12-15T02:00:00Z"),
+            new Date("2018-12-15T03:00:00Z"),
+          ]
         },
         11: {
-          availableTimes: ["10:00", "11:00", "12:00"]
+          availableTimes: [
+            new Date("2018-12-15T01:00:00Z"),
+            new Date("2018-12-15T02:00:00Z"),
+            new Date("2018-12-15T03:00:00Z"),
+          ]
         }
       }
     },
     2: {
       services: {
         10: {
-          availableTimes: ["10:00", "11:00", "12:00"]
+          availableTimes: [
+            new Date("2018-12-15T01:00:00Z"),
+            new Date("2018-12-15T02:00:00Z"),
+            new Date("2018-12-15T03:00:00Z"),
+          ]
         },
         11: {
-          availableTimes: ["10:00", "11:00", "12:00"]
+          availableTimes: [
+            new Date("2018-12-15T01:00:00Z"),
+            new Date("2018-12-15T02:00:00Z"),
+            new Date("2018-12-15T03:00:00Z"),
+          ]
         }
       }
     }

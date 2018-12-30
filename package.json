@@ -21,7 +21,8 @@
     "parse-int": "^1.0.3",
     "passport-google-oauth20": "^1.0.0",
     "pg": "7.7.1",
-    "supertest": "3.3.0"
+    "supertest": "3.3.0",
+    "timezone-support": "^1.8.1"
   },
   "devDependencies": {
     "@types/ioredis": "3.2.17",

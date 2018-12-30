@@ -1,25 +1,23 @@
 import "../../lib/config";
 import Debug from "debug";
+import { findTimeZone, getZonedTime, getUnixTime } from "timezone-support";
 import { ObjectID } from "bson";
 import { addDay } from "../../utils/date";
 import { getBookingWorkdays } from "../../sagas/booking/get-booking-workdays";
 import { BusinessHours, SpecialHours, Salon } from "../../models/salon";
 import { Reservation } from "../../models/reservation";
 import { DateRange } from "../../lib/date-range";
-import { getStartDay } from "../../helpers/date/get-start-day";
 import { getEndDay } from "../../helpers/date/get-end-day";
 import { BookingWorkdaysCollection, closeClient, ReservationsCollection, SalonsCollection } from "../../adapters/mongodb";
 import { SalonBookingWorkday } from "../../models/salon-booking-workday";
 
-
 const debug = Debug("tasks:sync-booking-workdays");
 
 export async function syncBookingWorkdays(salonsIds: ObjectID[] = null) {
-  const startPeriod = getStartDay(new Date(Date.now()));
-  const endPeriod = getEndDay(addDay(startPeriod, 20));
   const $bookings = await BookingWorkdaysCollection()
   const $reservations = await ReservationsCollection()
   const $salons = await SalonsCollection();
+
   let salons: Salon[] = [];
  
   if (Array.isArray(salonsIds)) {
@@ -37,6 +35,30 @@ export async function syncBookingWorkdays(salonsIds: ObjectID[] = null) {
   
   for (let i = 0; i < salons.length; i++) {
     const salon = salons[i];
+
+    debug("get salon timezone")
+
+    const salonTimezone = findTimeZone(salon.timezone);
+
+    const localNow = new Date()
+
+    debug("convert local time to time in salon timezone")
+    const salonNow = getZonedTime(localNow, salonTimezone);
+
+    debug("set hours to 00 to have a day start")
+    const unixDayStart = getUnixTime({
+      year: salonNow.year,
+      month: salonNow.month,
+      day: salonNow.day,
+      hours: 0,
+      minutes: 0,
+      seconds: 0
+    }, salonTimezone);
+
+    const localDayStart = new Date(unixDayStart);
+
+    const startPeriod = new Date(localDayStart.getTime());
+    const endPeriod = getEndDay(addDay(startPeriod, 5));
 
     const regularHours: BusinessHours = salon.regularHours || {
       periods: []
@@ -94,13 +116,15 @@ export async function syncBookingWorkdays(salonsIds: ObjectID[] = null) {
       }, v);
     })
 
-    await $reservations.deleteMany({
+    const { deletedCount } = await $bookings.deleteMany({
       salonId: salon._id
     })
 
-    await $bookings.insertMany(salonBookingWorkdays);
+    debug("deleted %s bookings for salon %s", deletedCount, salon._id);
 
-    debug("generate booking workdays for salon %s (id=%s)", salon.name, salon._id.toHexString());
+    const { insertedCount } = await $bookings.insertMany(salonBookingWorkdays);
+
+    debug("generate %s booking workdays for salon %s (id=%s)", insertedCount, salon.name, salon._id.toHexString());
   }
 }
 
