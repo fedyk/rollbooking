@@ -7,6 +7,7 @@ image: node:lts
 # Only needed when using a docker container to run your tests in.
 # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
 services:
+  - mongo:latest
   - redis:latest
   - postgres:latest
 
@@ -19,10 +20,14 @@ cache:
 
 test:
   script:
+   - node -v
+   - npm -v
    - npm install
    - npm run test
 
-# test_db:
-#   script:
-#    - npm install
-#    - node ./specs/start.js ./specs/db-postgres.spec.js
+build:
+  script:
+   - node -v
+   - npm -v
+   - npm install
+   - npm run build
