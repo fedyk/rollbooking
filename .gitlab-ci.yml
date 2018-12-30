@@ -7,7 +7,7 @@ image: node:lts
 # Only needed when using a docker container to run your tests in.
 # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
 services:
-  - mogno:3.6
+  - mogno:3.6-stretch
   - redis:latest
   - postgres:latest
 
