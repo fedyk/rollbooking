@@ -13,13 +13,16 @@ import { Context } from "koa";
 import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
 import { BookingWorkdaysCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
+import { findTimeZone, getZonedTime } from "timezone-support";
+import { DateTime } from "../../models/date-time";
+import { Date as DateObject } from "../../models/date";
+import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 
 const debug = Debug("app:booking:welcome");
 
 export async function welcome(ctx: Context) {
-  const salonId = ctx.params.salonId;
+  const salonId = ctx.params.salonId as string;
   const params = parseRequestParam({...ctx.params, ...ctx.query});
-  const database = await connect();
   const $salons = await SalonsCollection();
 
   debug("Salon ID should be a valid BJSON ObjectID")
@@ -40,16 +43,29 @@ export async function welcome(ctx: Context) {
     }
   }).toArray();
 
-  const salonServices = salon.services.items
-  
-  database.release();
+  const salonServices = salon.services.items;
 
   const $bookingWorkdays = await BookingWorkdaysCollection();
   const bookingWorkdays = await $bookingWorkdays.find({
     salonId: salon._id
   }).toArray();
 
-  const dateOptions = getDateOptions(bookingWorkdays, params, 60);
+  const salonTimezone = findTimeZone(salon.timezone);
+  const salonDateTime = getZonedTime(new Date(), salonTimezone);
+  const salonDate: DateObject = {
+    year: salonDateTime.year,
+    month: salonDateTime.month,
+    day: salonDateTime.day,
+  }
+
+  const dateOptions = getDateOptions({
+    bookingWorkdays,
+    startDate: salonDate,
+    masterId: params.masterId,
+    serviceId: params.serviceId,
+    nextDays: 60
+  });
+
   const showFilters = bookingWorkdays.length > 0;
   const selectedWorkday = getSelectedWorkday(bookingWorkdays, params.date);
   const selectedDate = selectedWorkday ? dateToISODate(selectedWorkday.period.start) : null;
@@ -83,19 +99,26 @@ export async function welcome(ctx: Context) {
   })
 }
 
+const DATE_REGEX = /\d{4}-[01]\d-[0-3]\d/;  // YYYY-MM-DD
+
 function parseRequestParam(param: any): {
-  date: Date;
+  date: DateObject;
   masterId: string;
   serviceId: number;
 } {
-  const dateStr = param && param.date || param.d;
+  const dateStr = `${param && param.date || param.d}`.trim();
   const masterId = param && param.master_id || param.m;
   const serviceIdStr = param && param.service_id || param.s;
+  let date;
 
-  const date = new Date(dateStr);
+  if (DATE_REGEX.test(dateStr)) {
+    const [y, m, d] = dateStr.split("-").map(v => parseInt(v, 10));
+
+    date = new Date(y, m - 1, d);
+  }
 
   return {
-    date: date instanceof Date && !isNaN(date.getTime()) ? date : null,
+    date: date instanceof Date && !isNaN(date.getTime()) ? nativeDateToDateObject(date) : null,
     masterId: ObjectID.isValid(masterId) ? masterId : null,
     serviceId: parseInt(serviceIdStr)
   }

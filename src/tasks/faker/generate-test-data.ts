@@ -22,7 +22,8 @@ const DEFAULT_TIME_ZONES = [
 
   "Europe/Berlin",
   "Europe/Kiev",
-  "Europe/Moscow"
+  "Europe/Moscow",
+  "Pacific/Auckland",
 ]
 
 export async function generateTestData(timeZones = DEFAULT_TIME_ZONES) {

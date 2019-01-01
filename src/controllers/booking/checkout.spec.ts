@@ -10,11 +10,11 @@ test('booking/checkout/parseRequestQuery', function() {
   expect(parseRequestQuery({
     m: "5c24a58a86211ebcbbde0c26",
     s: "1",
-    d: "2018-01-01T01:01:01Z",
+    d: "2018-01-01T01:01:01",
   })).toEqual({
     masterId: "5c24a58a86211ebcbbde0c26",
     serviceId: 1,
-    date: new Date("2018-01-01T01:01:01Z"),
+    date: new Date("2018-01-01T01:01:01"),
   })
 
   expect(parseRequestQuery({

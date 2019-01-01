@@ -2,21 +2,46 @@ import { getDateOptions, getAvailableDates } from "./get-date-options";
 import { SelectOption } from "../../../helpers/form";
 import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 import { BookingWorkday } from "../../../models/booking-workday";
+import { DateTime } from "../../../models/date-time";
+import { Date as DateObject } from "../../../models/date";
+
+const start: DateTime = {
+  year: 2018,
+  month: 1,
+  day: 1,
+  hour: 8,
+  minute: 0,
+  second: 0,
+}
+
+const end: DateTime = {
+  year: 2018,
+  month: 1,
+  day: 1,
+  hour: 13,
+  minute: 0,
+  second: 0,
+}
+
+const startDate: DateObject = {
+  year: 2018,
+  month: 1,
+  day: 1,
+}
 
 describe("getDateOptions", function() {
-  const now = new Date();
   const bookingWorkdays: BookingWorkday[] = [{
     period: {
-      start: new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0)),
-      end: new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 13, 0)),
+      start,
+      end
     },
     masters: {
       1: {
         services: {
           1: {
             availableTimes: [
-              new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0)),
-              new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0)),
+              "08:00",
+              "09:00"
             ]
           }
         }
@@ -25,24 +50,16 @@ describe("getDateOptions", function() {
   }]
 
   it("should work", function() {
-    expect(getDateOptions(bookingWorkdays, {
+    expect(getDateOptions({
+      bookingWorkdays,
       masterId: null,
-      serviceId: null
-    }, 1)).toEqual([{
-      value: dateToISODate(now),
-      text: dateToISODate(now),
-      disabled: false
-    }] as SelectOption[])
-  })
-  
-  it("should work 2", function() {
-    expect(getDateOptions(bookingWorkdays, {
-      masterId: null,
-      serviceId: null
-    }, 1)).toEqual([{
-      value: dateToISODate(now),
-      text: dateToISODate(now),
-      disabled: false
+      serviceId: null,
+      startDate: startDate,
+      nextDays: 1,
+    })).toEqual([{
+      value: "2018-01-01",
+      text: "2018-01-01",
+      disabled: true
     }] as SelectOption[])
   })
 })
@@ -50,16 +67,16 @@ describe("getDateOptions", function() {
 describe("getAvailableDates", function() {
   const bookingWorkdays: BookingWorkday[] = [{
     period: {
-      start: new Date("2018-01-01T08:00:00Z"),
-      end: new Date("2018-01-01T13:00:00Z")
+      start,
+      end,
     },
     masters: {
       "1": {
         services: {
           1: {
             availableTimes: [
-              new Date("2018-01-01T08:00:00Z"),
-              new Date("2018-01-01T09:00:00Z"),
+              "08:00",
+              "09:00",
             ]
           }
         }

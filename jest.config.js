@@ -3,12 +3,12 @@ module.exports = {
 		"<rootDir>/src"
 	],
 	"testMatch": [
-		'**/*.(test|spec).(js|ts)'
+		"**/*.(test|spec).(js|ts)"
 	],
 	"transform": {
     "^.+\\.ts?$": "ts-jest"
   },
-	"testEnvironment": 'node',
+	"testEnvironment": "node",
 	"moduleFileExtensions": [
 		"ts",
 		"tsx",

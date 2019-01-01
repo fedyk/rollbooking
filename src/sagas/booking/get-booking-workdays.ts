@@ -5,12 +5,18 @@ import { DateRange } from "../../lib/date-range";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { addDay } from "../../utils/date";
 import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
+import { DateTime } from "../../models/date-time";
+import { Date as OnlyDate } from "../../models/date";
+import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native-date";
+import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
+import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
+import { nativeDateToTime } from "../../helpers/date/native-date-to-time";
 
 interface Params {
+  startPeriod: OnlyDate;
+  endPeriod: OnlyDate;
   regularHours: BusinessHours;
   specialHours: SpecialHours;
-  startPeriod: Date;
-  endPeriod: Date;
   masters: Array<{
     id: string;
   }>;
@@ -19,40 +25,35 @@ interface Params {
     duration: number;
   }>;
   reservations: Array<{
-    range: DateRange,
+    range: DateRange;
     masterId: string;
   }>;
+  timezone?: string;
 }
 
 export function getBookingWorkdays(params: Params): BookingWorkday[] {
-  const {
-    regularHours,
-    specialHours,
-    startPeriod,
-    endPeriod,
-    masters: salonMasters,
-    services: salonServices,
-    reservations
-  } = params;
+  const { regularHours, specialHours, startPeriod, endPeriod } = params;
 
   const ranges = getPeriods(startPeriod, endPeriod, regularHours, specialHours);
+
   const bookingWorkdays: BookingWorkday[] = [];
 
   for (let i = 0; i < ranges.length; i++) {
     const range = ranges[i];
     const masters: Masters = {};
 
-    for (let j = 0; j < salonMasters.length; j++) {
-      const salonMaster = salonMasters[j];
-      const masterReservations = reservations.filter(v => v.masterId === salonMaster.id);
+    for (let j = 0; j < params.masters.length; j++) {
+      const master = params.masters[j];
+      const masterReservations = params.reservations.filter(v => v.masterId === master.id);
       const masterReservationsRanges = masterReservations.map(v => v.range);
+
       const masterServices: Services = {}
 
-      for (let z = 0; z < salonServices.length; z++) {
-        const salonService = salonServices[z];
+      for (let z = 0; z < params.services.length; z++) {
+        const salonService = params.services[z];
 
         const availableRanges = range.exclude(masterReservationsRanges);
-        const serviceRanges = availableRanges.reduce(function (result, current) {
+        const serviceRanges = availableRanges.reduce(function(result, current) {
           const serviceDurationInMs = salonService.duration * 60 * 1000;
           const ranges = current.split(serviceDurationInMs, {
             round: true
@@ -64,12 +65,14 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
           return result.concat(ranges);
         }, ([] as Date[]));
 
+        const availableTimes = serviceRanges.map(v => nativeDateToTime(v))
+
         masterServices[salonService.id] = {
-          availableTimes: serviceRanges
+          availableTimes: availableTimes
         };
       }
 
-      masters[salonMaster.id] = {
+      masters[master.id] = {
         services: masterServices
       }
     }
@@ -77,8 +80,8 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
     bookingWorkdays.push({
       masters: masters,
       period: {
-        start: range.start,
-        end: range.end
+        start: nativeDateToDateTime(range.start),
+        end: nativeDateToDateTime(range.end)
       }
     })
   }
@@ -86,15 +89,24 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
   return bookingWorkdays;
 }
 
-export function getPeriods(start: Date, end: Date, regularHours: BusinessHours, specialHours: SpecialHours): DateRange[] {
-  const allPeriod = new DateRange(start, end);
+export function getPeriods(
+  start: OnlyDate,
+  end: OnlyDate,
+  regularHours: BusinessHours,
+  specialHours: SpecialHours
+): DateRange[] {
+  const startDate = dateObjectToNativeDate(start);
+  const endDate = dateObjectToNativeDate(end);
+
+  const allPeriod = new DateRange(startDate, endDate);
+
   const periodsByStartDay = getGroupedPeriodsByDayOfWeek(regularHours.periods);
   const ranges = [];
 
-  let curr = new Date(start.getTime());
+  let curr = new Date(startDate.getTime());
 
-  while (curr.getTime() <= end.getTime()) {
-    const currDayOfWeek = curr.getUTCDay() as DayOfWeek;
+  while (curr.getFullYear() <= endDate.getFullYear() && curr.getMonth() <= endDate.getMonth() && curr.getDate() <= endDate.getDate()) {
+    const currDayOfWeek = curr.getDay() as DayOfWeek;
 
     if (periodsByStartDay.has(currDayOfWeek)) {
       ranges.push(...periodsByStartDay.get(currDayOfWeek).map(period => {
@@ -130,30 +142,46 @@ export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWe
     else {
       map.get(period.openDay).push(period);
     }
-
+    // TODO: handle period.endDay
   }
 
   return map;
 }
 
 export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
-  if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getUTCDay() !== period.openDay) {
+  if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getDay() !== period.openDay) {
     throw new Error("date should have the same date as period");
   }
+  const openTime = parseTime(period.openTime);
+  const start = new Date(date.getTime());
+  start.setHours(openTime.hour);
+  start.setMinutes(openTime.minute);
+  start.setSeconds(0)
+  start.setMilliseconds(0)
 
-  const start = new Date(`${dateToISODate(date)}T${period.openTime}:00Z`);
-  const endDate = new Date(date.getTime());
+  const closeTime = parseTime(period.closeTime);
+  const end = new Date(date.getTime());
+  end.setHours(closeTime.hour);
+  end.setMinutes(closeTime.minute);
+  end.setSeconds(0)
+  end.setMilliseconds(0)
 
   if (period.openDay !== period.closeDay) {
     if (period.closeDay === DayOfWeek.SUNDAY) {
-      endDate.setDate(endDate.getDate() + (7 - period.openDay));
+      end.setDate(end.getDate() + (7 - period.openDay));
     }
     else {
-      endDate.setDate(endDate.getDate() + (period.closeDay - period.openDay));
+      end.setDate(end.getDate() + (period.closeDay - period.openDay));
     }
   }
 
-  const end = new Date(`${dateToISODate(endDate)}T${period.closeTime}:00Z`);
-
   return new DateRange(start, end);
+}
+
+function parseTime(time: string) {
+  const [ hour, minute ] = time.split(":").map(v => parseInt(v, 10))
+  
+  return {
+    hour, minute
+  }
 }

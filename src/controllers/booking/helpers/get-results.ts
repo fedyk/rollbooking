@@ -4,10 +4,10 @@ import { stringify } from "querystring";
 import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 import { SalonService } from "../../../models/salon";
 import { findTimeZone, setTimeZone } from "timezone-support";
-import { timeInDay } from "../../../helpers/date/time-in-day";
+import { dateTimeToNativeDate } from "../../../helpers/date/date-time-to-native-date";
 
 interface Params {
-  salonId: number;
+  salonId: string;
   workday: BookingWorkday;
   salonServices: SalonService[];
   masterId?: string;
@@ -56,18 +56,14 @@ export function getResults(params: Params): Result[] {
             price: prettyPrice(service.price),
             description: service.description,
             times: workdayMasterServices.availableTimes.map(function(time) {
-              const zonedTime = setTimeZone(time, timezone, {
-                useUTC: true
-              });
-
-              const prettyTime = `${zonedTime.hours.toString().padStart(2, "0")}:${zonedTime.minutes.toString().padStart(2, "0")}`;
+              const date = dateToISODate(workday.period.start);
 
               return {
-                text: time.toISOString(),
+                text: time,
                 url: `/booking/${salonId}/checkout?${stringify({
                   m: masterId,
                   s: serviceId,
-                  d: time.toISOString()
+                  d: `${date}T${time}:00`
                 })}`
               }
             })

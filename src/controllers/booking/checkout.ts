@@ -4,13 +4,14 @@ import { layout as layoutView } from "../../views/booking/layout";
 import { Context } from "koa";
 import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
 import getUserName from "../../utils/get-user-name";
-import { timeInDay } from "../../helpers/date/time-in-day";
 import { isEmail } from "../../utils/is-email";
 import { User } from "../../models/user";
 import { addMinutes } from "../../helpers/date/add-minutes";
 import { stringify } from "querystring";
 import { syncBookingWorkdays } from "../../tasks/salon/sync-booking-workdays";
 import { ObjectID } from "bson";
+import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
+import { nativeDateToTime } from "../../helpers/date/native-date-to-time";
 
 export async function checkout(ctx: Context) {
   const salonId = ctx.params.salonId as string;
@@ -30,9 +31,7 @@ export async function checkout(ctx: Context) {
     })
   
     ctx.assert(params.date, 400, "Invalid params");
-  
     ctx.assert(params.masterId, 400, "Invalid params")
-  
     ctx.assert(params.serviceId, 400, "Invalid params")
 
     const salonMaster = await $users.findOne({
@@ -45,24 +44,25 @@ export async function checkout(ctx: Context) {
   
     ctx.assert(salonService, 400, "Invalid params");
   
+    // TODO: this should be covered by TS, any changes and we would know about need to update this part
     const bookingWorkday = await $bookingWorkdays.findOne({
-      "period.startDate.year": {
+      "period.start.year": {
         $lte: params.date.getFullYear()
       },
-      "period.startDate.month": {
+      "period.start.month": {
         $lte: params.date.getMonth() + 1,
       },
-      "period.startDate.day": {
+      "period.start.day": {
         $lte: params.date.getDate()
       },
       "period.endDate.year": {
-        $gte: params.date.getFullYear()
+        $gt: params.date.getFullYear()
       },
       "period.endDate.month": {
-        $gte: params.date.getMonth() + 1,
+        $gt: params.date.getMonth() + 1,
       },
       "period.endDate.day": {
-        $gte: params.date.getDate()
+        $gt: params.date.getDate()
       },
     });
   
@@ -75,10 +75,11 @@ export async function checkout(ctx: Context) {
     ctx.assert(bookingWorkdayService, 400, "Barber not doing this service at this date")
 
     const availableTimes = bookingWorkdayService.availableTimes;
-    const requestedTime = availableTimes.find(time => time.getTime() === requestedTime.getTime());
+    const time = nativeDateToTime(params.date)
+    const requestedTime = availableTimes.find(v => v === time);
 
     ctx.assert(availableTimes && availableTimes.length > 0, 400, "All time is booked")
-    ctx.assert(requestedTime !== -1, 400, "The selected time is already booked")
+    ctx.assert(requestedTime, 400, "The selected time is already booked")
 
     // Ok, lets save
     if (ctx.method === "POST") {
@@ -112,12 +113,12 @@ export async function checkout(ctx: Context) {
       }
 
       const reservation = await $reservations.insertOne({
-        salonId: salonId,
-        userId: user._id.toHexString(),
-        masterId: salonMaster._id.toHexString(),
+        salonId: salon._id,
+        userId: user._id,
+        masterId: salonMaster._id,
         serviceId: salonService.id,
-        start: params.date,
-        end: addMinutes(params.date, salonService.duration),
+        start: nativeDateToDateTime(params.date),
+        end: nativeDateToDateTime(addMinutes(params.date, salonService.duration)),
         status: 2, // confirmed
       })
 
@@ -151,7 +152,7 @@ export async function checkout(ctx: Context) {
 /**
  * @source https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
  */
-const ISO_DATE_TIME = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/
+const ISO_DATE_TIME = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/
 
 export function parseRequestQuery(query: any): {
   masterId: string;
@@ -160,9 +161,9 @@ export function parseRequestQuery(query: any): {
 } {
   const masterIdStr = query && query.master_id || query.m;
   const serviceIdStr = query && query.service_id || query.s;
-  const dateStr = (query && query.date || query.d) + '';
-  let date = null;
-
+  const dateStr = `${query && query.date || query.d || ''}`.trim();
+  let date;
+  
   if (ISO_DATE_TIME.test(dateStr)) {
     date = new Date(dateStr);
   }
