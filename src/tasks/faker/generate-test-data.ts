@@ -6,19 +6,19 @@ import { DayOfWeek } from "../../models/dat-of-week";
 
 
 const DEFAULT_TIME_ZONES = [
-  // "PST",
-  // "America/Los_Angeles",
+  "PST",
+  "America/Los_Angeles",
 
-  // "MST",
-  // "America/Phoenix",
+  "MST",
+  "America/Phoenix",
 
-  // "CST",
-  // "America/Chicago",
+  "CST",
+  "America/Chicago",
 
-  // "EST",
-  // "America/New_York",
+  "EST",
+  "America/New_York",
 
-  // "Europe/Amsterdam",
+  "Europe/Amsterdam",
 
   "Europe/Berlin",
   "Europe/Kiev",
