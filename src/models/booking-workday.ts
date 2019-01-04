@@ -1,5 +1,6 @@
 import { ObjectID } from "bson";
 import { DateTime } from "./date-time";
+import { TimeOfDay } from "./time-of-day";
 
 export interface BookingWorkday {
   _id?: ObjectID;
@@ -27,7 +28,7 @@ export interface Masters {
  */
 export interface Services {
   [serviceId: string]: {
-    availableTimes: string[]
+    availableTimes: TimeOfDay[]
   }
 }
 
@@ -41,17 +42,17 @@ const bookingWorkday: BookingWorkday = {
       year: 2018,
       month: 12,
       day: 30,
-      hour: 10,
-      minute: 0,
-      second: 0,
+      hours: 10,
+      minutes: 0,
+      seconds: 0,
     },
     end: {
       year: 2018,
       month: 12,
       day: 30,
-      hour: 16,
-      minute: 0,
-      second: 0,
+      hours: 16,
+      minutes: 0,
+      seconds: 0,
     },
   },
 
@@ -60,8 +61,15 @@ const bookingWorkday: BookingWorkday = {
       services: {
         "service1": {
           availableTimes: [
-            "10:00",
-            "11:00"
+            {
+              hours: 10,
+              minutes: 0,
+              seconds: 0
+            },
+            {
+              hours: 10, minutes: 0,
+              seconds: 0
+            }
           ]
         }
       }

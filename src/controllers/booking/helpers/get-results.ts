@@ -1,10 +1,10 @@
-import { getServiceName, getServicePrice, getServiceDescription } from "../../../utils/service";
-import { BookingWorkday } from "../../../models/booking-workday";
 import { stringify } from "querystring";
-import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
+import { BookingWorkday } from "../../../models/booking-workday";
 import { SalonService } from "../../../models/salon";
 import { findTimeZone, setTimeZone } from "timezone-support";
-import { dateTimeToNativeDate } from "../../../helpers/date/date-time-to-native-date";
+import { CheckoutURLParams } from "../interfaces";
+import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
+import { timeOfDayToISOTime } from "../../../helpers/date/time-of-day-to-iso-time";
 
 interface Params {
   salonId: string;
@@ -56,15 +56,19 @@ export function getResults(params: Params): Result[] {
             price: prettyPrice(service.price),
             description: service.description,
             times: workdayMasterServices.availableTimes.map(function(time) {
-              const date = dateToISODate(workday.period.start);
+              const hours = time.hours.toString().padStart(2, "0");
+              const minutes = time.minutes.toString().padStart(2, "0");
+              const params: CheckoutURLParams = {
+                m: masterId,
+                s: serviceId,
+                wdps: dateTimeToISODate(workday.period.start),
+                wdpe: dateTimeToISODate(workday.period.end),
+                t: timeOfDayToISOTime(time)
+              }
 
               return {
-                text: time,
-                url: `/booking/${salonId}/checkout?${stringify({
-                  m: masterId,
-                  s: serviceId,
-                  d: `${date}T${time}:00`
-                })}`
+                text: `${hours}:${minutes}`,
+                url: `/booking/${salonId}/checkout?${stringify(params)}`
               }
             })
           })

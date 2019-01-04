@@ -21,9 +21,17 @@ describe("getBookingWorkday", function () {
       regularHours: {
         periods: [{
           openDay: DayOfWeek.MONDAY,
-          openTime: "10:00",
+          openTime: {
+            hours: 10,
+            minutes: 0,
+            seconds: 0
+          },
           closeDay: DayOfWeek.MONDAY,
-          closeTime: "16:00",
+          closeTime: {
+            hours: 16,
+            minutes: 0,
+            seconds: 0
+          },
         }],
       },
       specialHours: {
@@ -55,21 +63,65 @@ describe("getBookingWorkday", function () {
           services: {
             "1": {
               availableTimes: [
-                "12:00",
-                "13:30",
-                "14:30"
+                {
+                  hours: 12,
+                  minutes: 0,
+                  seconds: 0
+                },
+                {
+                  hours: 13,
+                  minutes: 30,
+                  seconds: 0
+                },
+                {
+                  hours: 14,
+                  minutes: 30,
+                  seconds: 0
+                }
               ]
             },
             2: {
               availableTimes: [
-                "10:30",
-                "12:00",
-                "12:30",
-                "13:30",
-                "14:00",
-                "14:30",
-                "15:00",
-                "15:30"
+                {
+                  hours: 10,
+                  minutes: 30,
+                  seconds: 0
+                },
+                {
+                  hours: 12,
+                  minutes: 0,
+                  seconds: 0
+                },
+                {
+                  hours: 12,
+                  minutes: 30,
+                  seconds: 0
+                },
+                {
+                  hours: 13,
+                  minutes: 30,
+                  seconds: 0
+                },
+                {
+                  hours: 14,
+                  minutes: 0,
+                  seconds: 0
+                },
+                {
+                  hours: 14,
+                  minutes: 30,
+                  seconds: 0
+                },
+                {
+                  hours: 15,
+                  minutes: 0,
+                  seconds: 0
+                },
+                {
+                  hours: 15,
+                  minutes: 30,
+                  seconds: 0
+                }
               ]
             }
           }
@@ -80,17 +132,17 @@ describe("getBookingWorkday", function () {
           year: 2018,
           month: 1,
           day: 1,
-          hour: 10,
-          minute: 0,
-          second: 0,
+          hours: 10,
+          minutes: 0,
+          seconds: 0,
         },
         end: {
           year: 2018,
           month: 1,
           day: 1,
-          hour: 16,
-          minute: 0,
-          second: 0
+          hours: 16,
+          minutes: 0,
+          seconds: 0
         }
       },
     }] as BookingWorkday[])
@@ -113,19 +165,43 @@ describe("getPeriods", function () {
     expect(getPeriods(start, end, {
       periods: [{
         openDay: DayOfWeek.MONDAY,
-        openTime: "10:00",
+        openTime: {
+          hours: 10,
+          minutes: 0,
+          seconds: 0
+        },
         closeDay: DayOfWeek.MONDAY,
-        closeTime: "18:00",
+        closeTime: {
+          hours: 18,
+          minutes: 0,
+          seconds: 0
+        },
       }, {
         openDay: DayOfWeek.TUESDAY,
-        openTime: "10:00",
+        openTime: {
+          hours: 10,
+          minutes: 0,
+          seconds: 0
+        },
         closeDay: DayOfWeek.TUESDAY,
-        closeTime: "18:00",
+        closeTime: {
+          hours: 18,
+          minutes: 0,
+          seconds: 0
+        },
       }, {
         openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
-        openTime: "08:00",
+        openTime: {
+          hours: 08,
+          minutes: 0,
+          seconds: 0
+        },
         closeDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
-        closeTime: "09:00",
+        closeTime: {
+          hours: 09,
+          minutes: 0,
+          seconds: 0
+        },
       }]
     }, {
         periods: []
@@ -140,9 +216,17 @@ describe("getPeriods", function () {
     expect(getPeriods(start, end, {
       periods: [{
         openDay: DayOfWeek.MONDAY,
-        openTime: "23:00",
+        openTime: {
+          hours: 23,
+          minutes: 0,
+          seconds: 0
+        },
         closeDay: DayOfWeek.TUESDAY,
-        closeTime: "01:00",
+        closeTime: {
+          hours: 1,
+          minutes: 0,
+          seconds: 0
+        },
       }]
     }, {
         periods: []
@@ -157,9 +241,17 @@ describe("getGroupedPeriodsByDayOfWeek", function () {
   it("should work", function () {
     const periods: TimePeriod[] = [{
       openDay: DayOfWeek.MONDAY,
-      openTime: "10:00",
+      openTime: {
+        hours: 10,
+        minutes: 0,
+        seconds: 0
+      },
       closeDay: DayOfWeek.MONDAY,
-      closeTime: "12:00"
+      closeTime: {
+        hours: 12,
+        minutes: 0,
+        seconds: 0
+      }
     }]
 
     expect(getGroupedPeriodsByDayOfWeek(periods)).toEqual(new Map([
@@ -170,9 +262,17 @@ describe("getGroupedPeriodsByDayOfWeek", function () {
   it("should work 2", function () {
     const periods: TimePeriod[] = [{
       openDay: DayOfWeek.MONDAY,
-      openTime: "10:00",
+      openTime: {
+        hours: 10,
+        minutes: 0,
+        seconds: 0
+      },
       closeDay: DayOfWeek.TUESDAY,
-      closeTime: "10:00"
+      closeTime: {
+        hours: 10,
+        minutes: 0,
+        seconds: 0
+      }
     }]
 
     expect(getGroupedPeriodsByDayOfWeek(periods)).toEqual(new Map([
@@ -187,9 +287,17 @@ describe("getDateRangeFromPeriod", function () {
     const date = new Date("2018-12-17T23:59:59");
     const period: TimePeriod = {
       openDay: DayOfWeek.MONDAY,
-      openTime: "10:00",
+      openTime: {
+        hours: 10,
+        minutes: 0,
+        seconds: 0
+      },
       closeDay: DayOfWeek.TUESDAY,
-      closeTime: "01:00"
+      closeTime: {
+        hours: 1,
+        minutes: 0,
+        seconds: 0
+      }
     }
 
     expect(getDateRangeFromPeriod(date, period)).toEqual({
@@ -202,9 +310,17 @@ describe("getDateRangeFromPeriod", function () {
     const date = new Date(2018, 11, 17);
     const period: TimePeriod = {
       openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
-      openTime: "10:00",
+      openTime: {
+        hours: 10,
+        minutes: 0,
+        seconds: 0
+      },
       closeDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
-      closeTime: "20:00"
+      closeTime: {
+        hours: 20,
+        minutes: 0,
+        seconds: 0
+      }
     }
 
     expect(getDateRangeFromPeriod(date, period)).toEqual({

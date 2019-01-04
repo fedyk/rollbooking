@@ -5,8 +5,8 @@ test("dateTimeToNativeDate", function() {
     year: 2018,
     month: 12,
     day: 31,
-    hour: 23,
-    minute: 59,
-    second: 59
+    hours: 23,
+    minutes: 59,
+    seconds: 59
   })).toEqual(new Date("2018-12-31T23:59:59"))
 })

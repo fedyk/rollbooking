@@ -11,6 +11,7 @@ import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
 import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
 import { nativeDateToTime } from "../../helpers/date/native-date-to-time";
+import { nativeDateToTimeOfDay } from "../../helpers/date/native-date-to-time-of-day";
 
 interface Params {
   startPeriod: OnlyDate;
@@ -65,7 +66,7 @@ export function getBookingWorkdays(params: Params): BookingWorkday[] {
           return result.concat(ranges);
         }, ([] as Date[]));
 
-        const availableTimes = serviceRanges.map(v => nativeDateToTime(v))
+        const availableTimes = serviceRanges.map(v => nativeDateToTimeOfDay(v))
 
         masterServices[salonService.id] = {
           availableTimes: availableTimes
@@ -142,7 +143,15 @@ export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWe
     else {
       map.get(period.openDay).push(period);
     }
-    // TODO: handle period.endDay
+
+    if (period.openDay !== period.closeDay) {
+      if (!map.has(period.closeDay)) {
+        map.set(period.closeDay, [period]);
+      }
+      else {
+        map.get(period.closeDay).push(period);
+      }
+    }
   }
 
   return map;
@@ -152,17 +161,17 @@ export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRang
   if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED && date.getDay() !== period.openDay) {
     throw new Error("date should have the same date as period");
   }
-  const openTime = parseTime(period.openTime);
+  const openTime = period.openTime;
   const start = new Date(date.getTime());
-  start.setHours(openTime.hour);
-  start.setMinutes(openTime.minute);
+  start.setHours(openTime.hours);
+  start.setMinutes(openTime.minutes);
   start.setSeconds(0)
   start.setMilliseconds(0)
 
-  const closeTime = parseTime(period.closeTime);
+  const closeTime = period.closeTime;
   const end = new Date(date.getTime());
-  end.setHours(closeTime.hour);
-  end.setMinutes(closeTime.minute);
+  end.setHours(closeTime.hours);
+  end.setMinutes(closeTime.minutes);
   end.setSeconds(0)
   end.setMilliseconds(0)
 
@@ -176,12 +185,4 @@ export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRang
   }
 
   return new DateRange(start, end);
-}
-
-function parseTime(time: string) {
-  const [ hour, minute ] = time.split(":").map(v => parseInt(v, 10))
-  
-  return {
-    hour, minute
-  }
 }

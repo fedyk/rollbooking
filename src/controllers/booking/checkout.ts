@@ -12,6 +12,7 @@ import { syncBookingWorkdays } from "../../tasks/salon/sync-booking-workdays";
 import { ObjectID } from "bson";
 import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
 import { nativeDateToTime } from "../../helpers/date/native-date-to-time";
+import { CheckoutURLParams } from "./interfaces";
 
 export async function checkout(ctx: Context) {
   const salonId = ctx.params.salonId as string;
@@ -154,13 +155,17 @@ export async function checkout(ctx: Context) {
  */
 const ISO_DATE_TIME = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/
 
-export function parseRequestQuery(query: any): {
+export function parseRequestQuery(query: CheckoutURLParams): {
   masterId: string;
   serviceId: number;
   date: Date;
 } {
-  const masterIdStr = query && query.master_id || query.m;
-  const serviceIdStr = query && query.service_id || query.s;
+  const masterId = query && query.m;
+  const serviceId = query && query.s;
+  const workdayStartPeriod = query && query.wdps;
+  const workdayEndPeriod = query && query.wdpe;
+  const time = query && query.t
+
   const dateStr = `${query && query.date || query.d || ''}`.trim();
   let date;
   

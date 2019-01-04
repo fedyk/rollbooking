@@ -9,18 +9,18 @@ const start: DateTime = {
   year: 2018,
   month: 1,
   day: 1,
-  hour: 8,
-  minute: 0,
-  second: 0,
+  hours: 8,
+  minutes: 0,
+  seconds: 0,
 }
 
 const end: DateTime = {
   year: 2018,
   month: 1,
   day: 1,
-  hour: 13,
-  minute: 0,
-  second: 0,
+  hours: 13,
+  minutes: 0,
+  seconds: 0,
 }
 
 const startDate: DateObject = {
@@ -40,8 +40,16 @@ describe("getDateOptions", function() {
         services: {
           1: {
             availableTimes: [
-              "08:00",
-              "09:00"
+              {
+                hours: 8,
+                minutes: 0,
+                seconds: 0
+              },
+              {
+                hours: 9,
+                minutes: 0,
+                seconds: 0
+              }
             ]
           }
         }
@@ -75,8 +83,16 @@ describe("getAvailableDates", function() {
         services: {
           1: {
             availableTimes: [
-              "08:00",
-              "09:00",
+              {
+                hours: 8,
+                minutes: 0,
+                seconds: 0
+              },
+              {
+                hours: 9,
+                minutes: 0,
+                seconds: 0
+              },
             ]
           }
         }

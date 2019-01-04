@@ -45,17 +45,17 @@ const reservation: Reservation = {
     year: 2018,
     month: 12,
     day: 30,
-    hour: 13,
-    minute: 0,
-    second: 0
+    hours: 13,
+    minutes: 0,
+    seconds: 0
   },
   end: {
     year: 2018,
     month: 12,
     day: 30,
-    hour: 14,
-    minute: 0,
-    second: 0
+    hours: 14,
+    minutes: 0,
+    seconds: 0
   },
   status: Status.Confirmed,
   meta: {

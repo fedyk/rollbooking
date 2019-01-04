@@ -5,8 +5,8 @@ export function nativeDateToDateTime(date: Date): DateTime {
     year: date.getFullYear(),
     month: date.getMonth() + 1,
     day: date.getDate(),
-    hour: date.getHours(),
-    minute: date.getMinutes(),
-    second: date.getSeconds(),
+    hours: date.getHours(),
+    minutes: date.getMinutes(),
+    seconds: date.getSeconds(),
   }
 }

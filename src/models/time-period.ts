@@ -1,4 +1,5 @@
 import { DayOfWeek } from "./dat-of-week";
+import { TimeOfDay } from "./time-of-day";
 
 /**
  * Inspired by Google Business API
@@ -8,7 +9,7 @@ import { DayOfWeek } from "./dat-of-week";
  */
 export interface TimePeriod {
   openDay: DayOfWeek;
-  openTime: string;
+  openTime: TimeOfDay;
   closeDay: DayOfWeek;
-  closeTime: string;
+  closeTime: TimeOfDay;
 }
