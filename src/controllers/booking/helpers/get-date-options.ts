@@ -24,7 +24,7 @@ export function getDateOptions(params: Options): SelectOption[] {
 
     options.push({
       value: optionValue,
-      text: date.toLocaleDateString(),
+      text: optionValue,
       disabled: optionsDisabled
     });
 

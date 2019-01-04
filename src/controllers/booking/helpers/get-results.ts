@@ -1,14 +1,16 @@
 import { stringify } from "querystring";
 import { BookingWorkday } from "../../../models/booking-workday";
 import { SalonService } from "../../../models/salon";
-import { findTimeZone, setTimeZone } from "timezone-support";
 import { CheckoutURLParams } from "../interfaces";
 import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
 import { timeOfDayToISOTime } from "../../../helpers/date/time-of-day-to-iso-time";
+import { Date as DateObject } from "../../../models/date";
+import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 
 interface Params {
   salonId: string;
   workday: BookingWorkday;
+  date: DateObject;
   salonServices: SalonService[];
   masterId?: string;
   serviceId?: number;
@@ -31,7 +33,6 @@ export function getResults(params: Params): Result[] {
   const serviceIdStr = serviceId ? serviceId.toString() : "";
   const results: Result[] = [];
   const salonServicesByIds = getSalonServiceByIds(salonServices);
-  const timezone = findTimeZone(params.timezoneName);
 
   for (const masterId in workday.masters) {
     if (workday.masters.hasOwnProperty(masterId)) {
@@ -58,17 +59,18 @@ export function getResults(params: Params): Result[] {
             times: workdayMasterServices.availableTimes.map(function(time) {
               const hours = time.hours.toString().padStart(2, "0");
               const minutes = time.minutes.toString().padStart(2, "0");
-              const params: CheckoutURLParams = {
+              const queryString: CheckoutURLParams = {
                 m: masterId,
                 s: serviceId,
                 wdps: dateTimeToISODate(workday.period.start),
                 wdpe: dateTimeToISODate(workday.period.end),
-                t: timeOfDayToISOTime(time)
+                t: timeOfDayToISOTime(time),
+                d: dateToISODate(params.date),
               }
 
               return {
                 text: `${hours}:${minutes}`,
-                url: `/booking/${salonId}/checkout?${stringify(params)}`
+                url: `/booking/${salonId}/checkout?${stringify(queryString)}`
               }
             })
           })

@@ -21,6 +21,11 @@ export interface CheckoutURLParams {
   wdpe: string;
 
   /**
+   * Date of requested reservation
+   */
+  d: string;
+
+  /**
    * Time of day, HH:MM, or HH:MM:SS
    */
   t: string;

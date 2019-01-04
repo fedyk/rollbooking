@@ -1,12 +1,11 @@
+import { Date as DateObject } from "../../../models/date";
 import { BookingWorkday } from "../../../models/booking-workday";
-import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
-import { Date } from "../../../models/date";
 
-export function getSelectedWorkday(workdays: BookingWorkday[], date?: Date): BookingWorkday {
-  if (date instanceof Date && !isNaN(date.getTime())) {
+export function getSelectedWorkday(workdays: BookingWorkday[], date?: DateObject): BookingWorkday {
+  if (date) {
     for (let i = 0; i < workdays.length; i++) {
       const workday = workdays[i];
-      const { start, end } = workday.period;
+      const { start } = workday.period;
 
       if (start.year === date.year && start.month === date.month && start.day === date.day) {
         return workday;

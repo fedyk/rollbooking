@@ -2,7 +2,6 @@ import Debug from "debug";
 import { welcome as welcomeView } from "../../views/booking/welcome";
 import { layout as layoutView } from "../../views/booking/layout";
 import { getDateOptions } from "./helpers/get-date-options";
-import { connect } from "../../lib/database";
 import { getSelectedWorkday } from "./helpers/get-salon-workday";
 import { getMastersOptions } from "./helpers/get-masters-options";
 import { getSelectedMaster } from "./helpers/get-selected-master";
@@ -14,7 +13,6 @@ import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
 import { BookingWorkdaysCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
-import { DateTime } from "../../models/date-time";
 import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 
@@ -76,6 +74,7 @@ export async function welcome(ctx: Context) {
   const results = selectedWorkday ? getResults({
     salonId,
     workday: selectedWorkday,
+    date: params.date,
     salonServices,
     masterId: params.masterId,
     serviceId: params.serviceId,

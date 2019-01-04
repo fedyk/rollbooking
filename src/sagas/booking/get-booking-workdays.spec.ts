@@ -192,13 +192,13 @@ describe("getPeriods", function () {
       }, {
         openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
         openTime: {
-          hours: 08,
+          hours: 8,
           minutes: 0,
           seconds: 0
         },
         closeDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
         closeTime: {
-          hours: 09,
+          hours: 9,
           minutes: 0,
           seconds: 0
         },
