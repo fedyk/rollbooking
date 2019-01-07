@@ -1,6 +1,5 @@
 import { SelectOption } from "../../../helpers/form";
 import { SalonService } from "../../../models/salon";
-import { getServiceName } from "../../../utils/service";
 
 export function getServiceOptions(salonServices: SalonService[]): SelectOption[] {
   const options: SelectOption[] = [{

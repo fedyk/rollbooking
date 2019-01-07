@@ -1,7 +1,4 @@
-import * as parseInt from "parse-int";
 import { layout as layoutView } from "../../views/booking/layout";
-import { connect } from "../../lib/database";
-import { getSalonById } from "../../queries/salons";
 import { Context } from "koa";
 import { ReservationsCollection, SalonsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";

@@ -3,7 +3,6 @@ import { connect } from "../../lib/database";
 import debugFactory from 'debug'
 import { Context } from "koa";
 import { User } from "../../models/user";
-import { renderer } from "../../lib/render";
 import { Salon } from "../../models/salon";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { SalonsCollection } from "../../adapters/mongodb";
@@ -75,7 +74,7 @@ export async function createSalon(ctx: Context): Promise<any> {
 
     debug('Fail in attempt to create new salon. Details: %O', e);
 
-    ctx.body = await renderer('onboarding/index.njk', { user, error });
+    // ctx.body = await renderer('onboarding/index.njk', { user, error });
   }
 
   client.release();

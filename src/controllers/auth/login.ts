@@ -1,6 +1,6 @@
 import { Context } from "koa";
-import { renderer } from "../../lib/render";
+import { loginView } from "../../views/auth/login-view";
 
 export async function login(ctx: Context) {
-  ctx.body = await renderer('auth/login.njk');
+  ctx.body = loginView();
 }

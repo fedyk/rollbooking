@@ -3,7 +3,6 @@ import { checkout as checkoutView } from "../../views/booking/checkout";
 import { layout as layoutView } from "../../views/booking/layout";
 import { Context } from "koa";
 import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
-import getUserName from "../../utils/get-user-name";
 import { isEmail } from "../../utils/is-email";
 import { User } from "../../models/user";
 import { addMinutes } from "../../helpers/date/add-minutes";
