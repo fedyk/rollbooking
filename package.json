@@ -49,7 +49,9 @@
     "migrate:up": "migrate-up --store=./built/lib/migrations-store.js",
     "setup": "./bin/setup",
     "rimraf:dist": "rimraf dist",
-    "dev": "nodemon dist/server.js --watch dist"
+    "dev": "nodemon dist/server.js --watch dist",
+    "heroku-prebuild": "echo This runs before Heroku installs your dependencies.",
+    "heroku-postbuild": "echo This runs afterwards."
   },
   "author": "Rollbooking Team",
   "license": "ISC"
