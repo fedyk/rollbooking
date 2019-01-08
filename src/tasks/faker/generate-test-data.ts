@@ -6,23 +6,22 @@ import { DayOfWeek } from "../../models/dat-of-week";
 
 
 const DEFAULT_TIME_ZONES = [
-  // "PST",
-  // "America/Los_Angeles",
+  "America/Los_Angeles",
 
-  // "MST",
-  // "America/Phoenix",
+  "MST",
+  "America/Phoenix",
 
-  // "CST",
-  // "America/Chicago",
+  "America/Chicago",
 
-  // "EST",
-  // "America/New_York",
+  "EST",
+  "America/New_York",
 
-  // "Europe/Amsterdam",
+  "Europe/Amsterdam",
 
   "Europe/Berlin",
   "Europe/Kiev",
-  "Europe/Moscow"
+  "Europe/Moscow",
+  "Pacific/Auckland",
 ]
 
 export async function generateTestData(timeZones = DEFAULT_TIME_ZONES) {
@@ -81,29 +80,69 @@ export async function generateTestData(timeZones = DEFAULT_TIME_ZONES) {
       regularHours: {
         periods: [{
           openDay: DayOfWeek.MONDAY,
-          openTime: "10:00",
+          openTime: {
+            hours: 10,
+            minutes: 0,
+            seconds: 0
+          },
           closeDay: DayOfWeek.MONDAY,
-          closeTime: "16:00",
+          closeTime: {
+            hours: 16,
+            minutes: 0,
+            seconds: 0
+          },
         }, {
           openDay: DayOfWeek.TUESDAY,
-          openTime: "10:00",
+          openTime: {
+            hours: 10,
+            minutes: 0,
+            seconds: 0
+          },
           closeDay: DayOfWeek.TUESDAY,
-          closeTime: "16:00",
+          closeTime: {
+            hours: 16,
+            minutes: 0,
+            seconds: 0
+          },
         }, {
           openDay: DayOfWeek.WEDNESDAY,
-          openTime: "10:00",
+          openTime: {
+            hours: 10,
+            minutes: 0,
+            seconds: 0
+          },
           closeDay: DayOfWeek.WEDNESDAY,
-          closeTime: "16:00",
+          closeTime: {
+            hours: 16,
+            minutes: 0,
+            seconds: 0
+          },
         },{
           openDay: DayOfWeek.THURSDAY,
-          openTime: "10:00",
+          openTime: {
+            hours: 10,
+            minutes: 0,
+            seconds: 0
+          },
           closeDay: DayOfWeek.THURSDAY,
-          closeTime: "16:00",
+          closeTime: {
+            hours: 16,
+            minutes: 0,
+            seconds: 0
+          },
         }, {
           openDay: DayOfWeek.FRIDAY,
-          openTime: "10:00",
+          openTime: {
+            hours: 10,
+            minutes: 0,
+            seconds: 0
+          },
           closeDay: DayOfWeek.FRIDAY,
-          closeTime: "16:00",
+          closeTime: {
+            hours: 16,
+            minutes: 0,
+            seconds: 0
+          },
         }]
       },
       specialHours: {

@@ -9,11 +9,11 @@ body {
 }
 
 .site-header a {
-  color: #999;
+  color: #fff;
   transition: ease-in-out color .15s;
 }
 
 .site-header a:hover {
-  color: #fff;
+  color: #ccc;
   text-decoration: none;
 }

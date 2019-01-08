@@ -2,7 +2,9 @@ const dotenv = require('dotenv');
 const result = dotenv.config();
 
 if (result.error) {
-  throw result.error
+  const error = result.error as Error;
+
+  console.warn(error.message);
 }
 
 interface Config {

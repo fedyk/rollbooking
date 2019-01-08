@@ -30,9 +30,17 @@ export async function createSalon(ctx: Context): Promise<any> {
       regularHours: {
         periods: [{
           openDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
-          openTime: "10:00",
+          openTime: {
+            hours: 10,
+            minutes: 0,
+            seconds: 0
+          },
           closeDay: DayOfWeek.DAY_OF_WEEK_UNSPECIFIED,
-          closeTime: "18:00"
+          closeTime: {
+            hours: 18,
+            minutes: 0,
+            seconds: 0
+          }
         }]
       },
       services: {

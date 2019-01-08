@@ -1,33 +1,33 @@
 import { BookingWorkday } from "../../../models/booking-workday";
 import { SelectOption } from "../../../helpers/form";
 import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
-import { getStartDay } from "../../../helpers/date/get-start-day";
-import { findTimeZone, getZonedTime } from "timezone-support";
+import { Date as DateObject } from "../../../models/date";
+import { dateObjectToNativeDate } from "../../../helpers/date/date-object-to-native-date";
 
 interface Options {
+  bookingWorkdays: BookingWorkday[];
+  startDate: DateObject;
   masterId: string;
   serviceId: number;
+  nextDays: number
 }
 
-export function getDateOptions(bookingWorkdays: BookingWorkday[], params: Options, nextDays: number, timezoneName: string = "UTC"): SelectOption[] {
-  const date = new Date()
-  const options: SelectOption[] = [];
+export function getDateOptions(params: Options): SelectOption[] {
+  const { bookingWorkdays, startDate, nextDays } = params;
+  const date = dateObjectToNativeDate(startDate);
+  const options: SelectOption[] = [{
+    value: "",
+    text: "Select date"
+  }];
   const availableDates = getAvailableDates(bookingWorkdays, params.masterId, params.serviceId);
-  const timezone = findTimeZone(timezoneName);
 
   for (let i = 0; i < nextDays; i++) {
     const optionValue = dateToISODate(date) // in UTC
-    const zonedTime = getZonedTime(date, timezone) // in salon timezone
-    const optionText = dateToISODate({
-      year: zonedTime.year,
-      month: zonedTime.month,
-      day: zonedTime.day
-    });
     const optionsDisabled = availableDates.get(optionValue) !== true;
 
     options.push({
       value: optionValue,
-      text: optionText,
+      text: optionValue,
       disabled: optionsDisabled
     });
 
