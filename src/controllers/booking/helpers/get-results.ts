@@ -1,14 +1,16 @@
-import { getServiceName, getServicePrice, getServiceDescription } from "../../../utils/service";
-import { BookingWorkday } from "../../../models/booking-workday";
 import { stringify } from "querystring";
-import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
+import { BookingWorkday } from "../../../models/booking-workday";
 import { SalonService } from "../../../models/salon";
-import { findTimeZone, setTimeZone } from "timezone-support";
-import { timeInDay } from "../../../helpers/date/time-in-day";
+import { CheckoutURLParams } from "../interfaces";
+import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
+import { timeOfDayToISOTime } from "../../../helpers/date/time-of-day-to-iso-time";
+import { Date as DateObject } from "../../../models/date";
+import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 
 interface Params {
-  salonId: number;
-  workday: BookingWorkday;
+  salonId: string;
+  workdays: BookingWorkday[];
+  date: DateObject;
   salonServices: SalonService[];
   masterId?: string;
   serviceId?: number;
@@ -26,53 +28,64 @@ interface Result {
 }
 
 export function getResults(params: Params): Result[] {
-  const { salonId, workday, salonServices, masterId, serviceId } = params;
+  const { salonId, workdays, salonServices, masterId, serviceId } = params;
   const masterIdStr = masterId ? masterId.toString() : "";
   const serviceIdStr = serviceId ? serviceId.toString() : "";
   const results: Result[] = [];
   const salonServicesByIds = getSalonServiceByIds(salonServices);
-  const timezone = findTimeZone(params.timezoneName);
 
-  for (const masterId in workday.masters) {
-    if (workday.masters.hasOwnProperty(masterId)) {
-      const workdayMaster = workday.masters[masterId];
+  for (let i = 0; i < workdays.length; i++) {
+    const workday = workdays[i];
+    
+    for (const masterId in workday.masters) {
+      if (workday.masters.hasOwnProperty(masterId)) {
+        const workdayMaster = workday.masters[masterId];
 
-      if (masterIdStr !== "" && masterId !== masterIdStr) {
-        continue;
-      }
+        if (masterIdStr !== "" && masterId !== masterIdStr) {
+          continue;
+        }
 
-      for (const serviceId in workdayMaster.services) {
-        if (workdayMaster.services.hasOwnProperty(serviceId)) {
+        for (const serviceId in workdayMaster.services) {
+          if (workdayMaster.services.hasOwnProperty(serviceId)) {
 
-          if (serviceIdStr !== "" && serviceId !== serviceIdStr) {
-            continue;
-          }
+            if (serviceIdStr !== "" && serviceId !== serviceIdStr) {
+              continue;
+            }
 
-          const workdayMasterServices = workdayMaster.services[serviceId];
-          const service = salonServicesByIds.get(serviceId);
+            const workdayMasterServices = workdayMaster.services[serviceId];
+            const service = salonServicesByIds.get(serviceId);
 
-          results.push({
-            name: service.name,
-            price: prettyPrice(service.price),
-            description: service.description,
-            times: workdayMasterServices.availableTimes.map(function(time) {
-              const zonedTime = setTimeZone(time, timezone, {
-                useUTC: true
-              });
+            results.push({
+              name: service.name,
+              price: prettyPrice(service.price),
+              description: service.description,
+              times: workdayMasterServices.availableTimes.map(function(time) {
+                const hours = time.hours.toString().padStart(2, "0");
+                const minutes = time.minutes.toString().padStart(2, "0");
+                const date = params.date || {
+                  year: workday.period.start.year,
+                  month: workday.period.start.month,
+                  day: workday.period.start.day
+                }
 
-              return {
-                text: `${zonedTime.hours}:${zonedTime.minutes}`,
-                url: `/booking/${salonId}/checkout?${stringify({
+                const queryString: CheckoutURLParams = {
                   m: masterId,
                   s: serviceId,
-                  d: time.toISOString()
-                })}`
-              }
+                  wdps: dateTimeToISODate(workday.period.start),
+                  wdpe: dateTimeToISODate(workday.period.end),
+                  t: timeOfDayToISOTime(time),
+                  d: dateToISODate(date),
+                }
+
+                return {
+                  text: `${hours}:${minutes}`,
+                  url: `/booking/${salonId}/checkout?${stringify(queryString)}`
+                }
+              })
             })
-          })
+          }
         }
       }
-      
     }
   }
 

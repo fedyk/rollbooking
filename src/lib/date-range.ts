@@ -2,7 +2,7 @@ export class DateRange {
   start: Date;
   end: Date;
  
-  constructor(start: any, end: any) {
+  constructor(start: Date | number | string, end: Date | number | string) {
     this.start = parseDateTime(start);
     this.end = parseDateTime(end);
   }

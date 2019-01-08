@@ -1,78 +1,78 @@
-import { Date as DateObj } from "./date";
+import { ObjectID } from "bson";
+import { DateTime } from "./date-time";
+import { TimeOfDay } from "./time-of-day";
 
 export interface BookingWorkday {
-  period: Period;
-  masters: Masters;
-}
+  _id?: ObjectID;
+  salonId?: ObjectID;
+  created?: Date;
 
-export interface BookingWorkdayTZ {
   period: Period;
   masters: Masters;
 }
 
 export interface Period {
-  start: Date;
-  end: Date;
+  start: DateTime;
+  end: DateTime;
 }
 
 export interface Masters {
-  [master_id: string]: {
+  [masterId: string]: {
     services: Services
   }
 }
 
 /**
- * Time in 24hr ISO 8601 extended format (hh:mm). Valid values are 00:00-24:00, where 24:00 represents midnight at the end of the specified day field.
+ * Time in 24hr ISO 8601 extended format (hh:mm).
+ * Valid values are 00:00-24:00, where 24:00 represents midnight at the end of the specified day field.
  */
 export interface Services {
   [serviceId: string]: {
-    availableTimes: Date[]
+    availableTimes: TimeOfDay[]
   }
 }
 
-// mock
-export const bookingWorkdays: BookingWorkday[] = [{
+/**
+ * Example of test workday Object
+ */
+const bookingWorkday: BookingWorkday = {
+
   period: {
-    start: new Date("2018-12-15T01:00:00Z"),
-    end: new Date("2018-12-15T08:00:00Z"),
+    start: {
+      year: 2018,
+      month: 12,
+      day: 30,
+      hours: 10,
+      minutes: 0,
+      seconds: 0,
+    },
+    end: {
+      year: 2018,
+      month: 12,
+      day: 30,
+      hours: 16,
+      minutes: 0,
+      seconds: 0,
+    },
   },
 
   masters: {
-    1: {
+    "master1": {
       services: {
-        10: {
+        "service1": {
           availableTimes: [
-            new Date("2018-12-15T01:00:00Z"),
-            new Date("2018-12-15T02:00:00Z"),
-            new Date("2018-12-15T03:00:00Z"),
-          ]
-        },
-        11: {
-          availableTimes: [
-            new Date("2018-12-15T01:00:00Z"),
-            new Date("2018-12-15T02:00:00Z"),
-            new Date("2018-12-15T03:00:00Z"),
-          ]
-        }
-      }
-    },
-    2: {
-      services: {
-        10: {
-          availableTimes: [
-            new Date("2018-12-15T01:00:00Z"),
-            new Date("2018-12-15T02:00:00Z"),
-            new Date("2018-12-15T03:00:00Z"),
-          ]
-        },
-        11: {
-          availableTimes: [
-            new Date("2018-12-15T01:00:00Z"),
-            new Date("2018-12-15T02:00:00Z"),
-            new Date("2018-12-15T03:00:00Z"),
+            {
+              hours: 10,
+              minutes: 0,
+              seconds: 0
+            },
+            {
+              hours: 10, minutes: 0,
+              seconds: 0
+            }
           ]
         }
       }
     }
   }
-}]
+}
