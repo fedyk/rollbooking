@@ -42,7 +42,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node index.js",
+    "start": "node dist/server",
     "test": "jest --coverage --verbose",
     "test:watch": "jest --watch",
     "watch": "tsc --watch",
