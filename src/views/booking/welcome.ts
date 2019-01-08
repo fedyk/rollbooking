@@ -30,7 +30,7 @@ interface Props {
 export const welcome = (props: Props) => `
 <nav class="site-header py-1 mb-3">
   <div class="container d-flex flex-column flex-md-row justify-content-between">
-    <a class="py-2 d-inline-block" href="#">${props.salonName}</a>
+    <a class="py-2 d-inline-block" href="">${props.salonName}</a>
   </div>
 </nav>
 

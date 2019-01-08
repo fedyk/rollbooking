@@ -10,11 +10,10 @@ import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date
 interface Params {
   salonId: string;
   workdays: BookingWorkday[];
-  date: DateObject;
+  date?: DateObject;
   salonServices: SalonService[];
   masterId?: string;
   serviceId?: number;
-  timezoneName: string;
 }
 
 interface Result {
@@ -29,7 +28,6 @@ interface Result {
 
 export function getResults(params: Params): Result[] {
   const { salonId, workdays, salonServices, masterId, serviceId } = params;
-  const masterIdStr = masterId ? masterId.toString() : "";
   const serviceIdStr = serviceId ? serviceId.toString() : "";
   const results: Result[] = [];
   const salonServicesByIds = getSalonServiceByIds(salonServices);
@@ -41,7 +39,7 @@ export function getResults(params: Params): Result[] {
       if (workday.masters.hasOwnProperty(masterId)) {
         const workdayMaster = workday.masters[masterId];
 
-        if (masterIdStr !== "" && masterId !== masterIdStr) {
+        if (masterId !== "" && masterId !== masterId) {
           continue;
         }
 

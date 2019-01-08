@@ -14,6 +14,7 @@ export function salonsView(props: Props) {
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Timezone</th>
+          <th scope="col">Amount of masters</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -21,6 +22,7 @@ export function salonsView(props: Props) {
         ${stringMapJoin(props.salons, (salon) => `<tr>
           <td>${salon.name}</td>
           <td>${salon.timezone}</td>
+          <td>${salon.employees.users.length}</td>
           <td>
             <a class="badge badge-light" ${attrs({ href: `/booking/${salon._id.toHexString()}` })}>Booking</a>
             <a class="badge badge-light" ${attrs({ href: `/calendar/${salon._id.toHexString()}` })}>Calendar</a>

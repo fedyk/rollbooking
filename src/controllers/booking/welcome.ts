@@ -78,8 +78,7 @@ export async function welcome(ctx: Context) {
     date: params.date,
     salonServices,
     masterId: params.masterId,
-    serviceId: params.serviceId,
-    timezoneName: salon.timezone
+    serviceId: params.serviceId
   });
 
   ctx.body = layoutView({
@@ -101,9 +100,9 @@ export async function welcome(ctx: Context) {
 const DATE_REGEX = /\d{4}-[01]\d-[0-3]\d/;  // YYYY-MM-DD
 
 function parseRequestParam(param: any): {
-  date: DateObject;
-  masterId: string;
-  serviceId: number;
+  date?: DateObject;
+  masterId?: string;
+  serviceId?: number;
 } {
   const dateStr = `${param && param.date || param.d}`.trim();
   const masterId = param && param.master_id || param.m;

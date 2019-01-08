@@ -11,7 +11,7 @@ interface Props {
 export function checkout(props: Props) {
   return `<nav class="site-header py-1 mb-3">
     <div class="container d-flex flex-column flex-md-row justify-content-between">
-      <a class="py-2 d-inline-block" href="#">${escape(props.salonName)}</a>
+      <a class="py-2 d-inline-block" href="">${escape(props.salonName)}</a>
     </div>
   </nav>
 
