@@ -6,7 +6,6 @@ export interface BookingWorkday {
   _id?: ObjectID;
   salonId?: ObjectID;
   created?: Date;
-
   period: Period;
   masters: Masters;
 }

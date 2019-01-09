@@ -74,8 +74,8 @@ export async function welcome(ctx: Context) {
   const selectedService = getSelectedService(params.serviceId);
   const results = getResults({
     salonId,
-    workdays: selectedWorkdays,
-    date: params.date,
+    bookingWorkdays: selectedWorkdays,
+    selectedDate: params.date,
     salonServices,
     masterId: params.masterId,
     serviceId: params.serviceId

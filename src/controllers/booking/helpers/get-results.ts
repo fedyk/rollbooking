@@ -6,83 +6,107 @@ import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
 import { timeOfDayToISOTime } from "../../../helpers/date/time-of-day-to-iso-time";
 import { Date as DateObject } from "../../../models/date";
 import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
+import { TimeOfDay } from "../../../models/time-of-day";
 
 interface Params {
   salonId: string;
-  workdays: BookingWorkday[];
-  date?: DateObject;
+  bookingWorkdays: BookingWorkday[];
   salonServices: SalonService[];
+  selectedDate?: DateObject;
   masterId?: string;
   serviceId?: number;
 }
 
 interface Result {
   name: string;
-    price: string;
-    description?: string;
-    times: Array<{
-      url: string;
-      text: string;
-    }>
+  price: string;
+  description?: string;
+  times: Array<{
+    url: string;
+    text: string;
+  }>
 }
 
 export function getResults(params: Params): Result[] {
-  const { salonId, workdays, salonServices, masterId, serviceId } = params;
-  const serviceIdStr = serviceId ? serviceId.toString() : "";
-  const results: Result[] = [];
-  const salonServicesByIds = getSalonServiceByIds(salonServices);
+  const serviceId = params.serviceId ? params.serviceId.toString() : "";
+  const availableTimesByServiceId = groupAvailableTimesByServiceId(params.bookingWorkdays, params.masterId, serviceId);
+  const salonServices = params.salonServices || [];
 
-  for (let i = 0; i < workdays.length; i++) {
-    const workday = workdays[i];
-    
-    for (const masterId in workday.masters) {
-      if (workday.masters.hasOwnProperty(masterId)) {
-        const workdayMaster = workday.masters[masterId];
+  return salonServices.filter(function(v) {
+    return availableTimesByServiceId.has(v.id.toString())
+  }).map(function(salonService) {
+    const availableTimes = availableTimesByServiceId.get(salonService.id.toString());
+    const uniqAvailableTimes = getUniqAvailableTimes(availableTimes);
 
-        if (masterId !== "" && masterId !== masterId) {
+    return {
+      name: salonService.name,
+      price: prettyPrice(salonService.price),
+      description: salonService.description,
+      times: uniqAvailableTimes.map(function ({
+        availableTime: time,
+        bookingWorkday: workday,
+        masterId
+      }) {
+        const hours = time.hours.toString().padStart(2, "0");
+        const minutes = time.minutes.toString().padStart(2, "0");
+        const date = params.selectedDate || {
+          year: workday.period.start.year,
+          month: workday.period.start.month,
+          day: workday.period.start.day
+        }
+
+        const queryString: CheckoutURLParams = {
+          m: masterId,
+          s: salonService.id.toString(),
+          wdps: dateTimeToISODate(workday.period.start),
+          wdpe: dateTimeToISODate(workday.period.end),
+          t: timeOfDayToISOTime(time),
+          d: dateToISODate(date),
+        }
+
+        return {
+          text: `${hours}:${minutes}`,
+          url: `/booking/${params.salonId}/checkout?${stringify(queryString)}`
+        }
+      })
+    }
+  })
+}
+
+function groupAvailableTimesByServiceId(bookingWorkdays: BookingWorkday[], selectedMasterId?: string, selectedServiceId?: string) {
+  const results = new Map<string, {
+    masterId: string;
+    bookingWorkday: BookingWorkday;
+    availableTimes: TimeOfDay[]
+  }[]>();
+
+  for (let i = 0; i < bookingWorkdays.length; i++) {
+    const bookingWorkday = bookingWorkdays[i];
+
+    for (let masterId in bookingWorkday.masters) {
+
+      // curr master is not selected, skip it
+      if (selectedMasterId && masterId === selectedMasterId) {
+        continue;
+      }
+
+      const master = bookingWorkday.masters[masterId];
+
+      for (let serviceId in master.services) {
+        if (selectedServiceId && serviceId === selectedServiceId) {
           continue;
         }
 
-        for (const serviceId in workdayMaster.services) {
-          if (workdayMaster.services.hasOwnProperty(serviceId)) {
-
-            if (serviceIdStr !== "" && serviceId !== serviceIdStr) {
-              continue;
-            }
-
-            const workdayMasterServices = workdayMaster.services[serviceId];
-            const service = salonServicesByIds.get(serviceId);
-
-            results.push({
-              name: service.name,
-              price: prettyPrice(service.price),
-              description: service.description,
-              times: workdayMasterServices.availableTimes.map(function(time) {
-                const hours = time.hours.toString().padStart(2, "0");
-                const minutes = time.minutes.toString().padStart(2, "0");
-                const date = params.date || {
-                  year: workday.period.start.year,
-                  month: workday.period.start.month,
-                  day: workday.period.start.day
-                }
-
-                const queryString: CheckoutURLParams = {
-                  m: masterId,
-                  s: serviceId,
-                  wdps: dateTimeToISODate(workday.period.start),
-                  wdpe: dateTimeToISODate(workday.period.end),
-                  t: timeOfDayToISOTime(time),
-                  d: dateToISODate(date),
-                }
-
-                return {
-                  text: `${hours}:${minutes}`,
-                  url: `/booking/${salonId}/checkout?${stringify(queryString)}`
-                }
-              })
-            })
-          }
+        const service = master.services[serviceId];
+        const result = {
+          masterId: masterId,
+          bookingWorkday: bookingWorkday,
+          availableTimes: service.availableTimes
         }
+
+        results.has(serviceId)
+          ? results.get(serviceId).push(result)
+          : results.set(serviceId, [result])
       }
     }
   }
@@ -90,18 +114,38 @@ export function getResults(params: Params): Result[] {
   return results;
 }
 
-function getSalonServiceByIds(salonServices: SalonService[]) {
-  const result = new Map<string, SalonService>();
+function getUniqAvailableTimes(availableTimes: {
+  masterId: string;
+  bookingWorkday: BookingWorkday;
+  availableTimes: TimeOfDay[]
+}[]): {
+  masterId: string;
+  bookingWorkday: BookingWorkday;
+  availableTime: TimeOfDay
+}[] {
+  const result = [];
+  const addedTimes = new Map<string, boolean>();
 
-  for (let i = 0; i < salonServices.length; i++) {
-    const salonService = salonServices[i];
-    
-    result.set(`${salonService.id}`, salonService);
+  for (let i = 0; i < availableTimes.length; i++) {
+    const item = availableTimes[i];
+
+    for (let j = 0; j < item.availableTimes.length; j++) {
+      const availableTime = item.availableTimes[j];
+      const availableTimesStr = timeOfDayToISOTime(availableTime);
+
+      if (!addedTimes.has(availableTimesStr)) {
+        result.push({
+          masterId: item.masterId,
+          bookingWorkday: item.bookingWorkday,
+          availableTime: availableTime
+        });
+        addedTimes.set(availableTimesStr, true);
+      }
+    }
   }
 
   return result;
 }
-
 
 // todo: add currency to number
 function prettyPrice(price: number) {

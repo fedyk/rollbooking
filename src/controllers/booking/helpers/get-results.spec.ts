@@ -21,7 +21,7 @@ const end: DateTime = {
   seconds: 0,
 }
 
-const workdays: BookingWorkday[] = [{
+const bookingWorkdays: BookingWorkday[] = [{
   period: {
     start,
     end
@@ -73,13 +73,13 @@ const service: SalonService = {
 test("get-results", function () {
   expect(getResults({
     salonId: "1",
-    workdays: workdays,
-    date: null,
+    bookingWorkdays: bookingWorkdays,
+    selectedDate: null,
     salonServices: [service],
     masterId: null,
     serviceId: null
-  })).toBe([{
-    description: "",
+  })).toEqual([{
+    description: "Desc",
     name: "Service 1",
     price: "20",
     times: [{
@@ -87,7 +87,7 @@ test("get-results", function () {
       url: "/booking/1/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
     }, {
       text: "09:00",
-      url: "/booking/1/checkout?m=master-2&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
+      url: "/booking/1/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
     }],
   }])
 })
