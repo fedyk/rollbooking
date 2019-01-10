@@ -4,12 +4,6 @@ import { DateTime } from "../../../models/date-time";
 import { Date as DateObject } from "../../../models/date";
 
 describe("getSelectedWorkdays", function () {
-  const date: DateObject = {
-    year: 2018,
-    month: 1,
-    day: 1
-  };
-
   const start: DateTime = {
     year: 2018,
     month: 1,
@@ -37,7 +31,11 @@ describe("getSelectedWorkdays", function () {
   }]
 
   it("should work", function () {
-    expect(getSelectedWorkdays(bookingWorkdays, date)).toEqual(bookingWorkdays)
+    expect(getSelectedWorkdays(bookingWorkdays, {
+      year: 2018,
+      month: 1,
+      day: 1
+    })).toEqual(bookingWorkdays)
   })
 
   it("should work 2", function () {
