@@ -15,10 +15,7 @@ interface Options {
 export function getDateOptions(params: Options): SelectOption[] {
   const { bookingWorkdays, startDate, nextDays } = params;
   const date = dateObjectToNativeDate(startDate);
-  const options: SelectOption[] = [{
-    value: "",
-    text: "Select date"
-  }];
+  const options: SelectOption[] = [];
   const availableDates = getAvailableDates(bookingWorkdays, params.masterId, params.serviceId);
 
   for (let i = 0; i < nextDays; i++) {

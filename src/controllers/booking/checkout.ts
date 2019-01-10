@@ -5,13 +5,11 @@ import { stringify } from "querystring";
 import { checkout as checkoutView } from "../../views/booking/checkout";
 import { layout as layoutView } from "../../views/booking/layout";
 import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
-import getUserName from "../../utils/get-user-name";
 import { isEmail } from "../../utils/is-email";
 import { User } from "../../models/user";
 import { addMinutes } from "../../helpers/date/add-minutes";
 import { syncBookingWorkdays } from "../../tasks/salon/sync-booking-workdays";
 import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
-import { nativeDateToTime } from "../../helpers/date/native-date-to-time";
 import { CheckoutURLParams } from "./interfaces";
 import { DateTime } from "../../models/date-time";
 import { TimeOfDay } from "../../models/time-of-day";
@@ -58,7 +56,7 @@ export async function checkout(ctx: Context) {
   
     // TODO: this should be covered by TS, any changes and we would know about need to update this part
     const bookingWorkday = await $bookingWorkdays.findOne(
-      byWorkdayPeriod(params.startPeriod, params.endPeriod)
+      byWorkdayPeriod(salon._id, params.startPeriod, params.endPeriod)
     );
   
     ctx.assert(bookingWorkday, 400, "Time is not available anymore")
@@ -145,7 +143,7 @@ export async function checkout(ctx: Context) {
       title: "Test Salon",
       body: checkoutView({
         salonName: salon.name,
-        bookingMasterName: getUserName(salonMaster),
+        bookingMasterName: salonMaster.name,
         bookingServiceName: salonService.name,
         bookingDate: dateTimeToNativeDate({
           year: params.date.year,
@@ -195,8 +193,9 @@ export function parseRequestBody(body: any) {
 }
 
 
-function byWorkdayPeriod(start: DateTime, end: DateTime): FilterQuery<BookingWorkday> {
+function byWorkdayPeriod(salonId: ObjectID, start: DateTime, end: DateTime): FilterQuery<BookingWorkday> {
   return {
+    salonId: salonId,
     "period.start.year": start.year,
     "period.start.month": start.month,
     "period.start.day": start.day,

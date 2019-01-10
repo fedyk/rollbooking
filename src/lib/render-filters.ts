@@ -1,4 +1,3 @@
-import getUserName from '../utils/get-user-name'
 import { getUserRole } from '../utils/get-user-role'
 import {
   getServiceName,
@@ -13,7 +12,6 @@ import getErrorMessage from '../utils/get-error-message'
 import { toDate, toTime } from '../utils/date'
 
 export const renderFilters = [
-  ['getUserName', getUserName],
   ['getUserRole', getUserRole],
   
   ['getServiceName', getServiceName],

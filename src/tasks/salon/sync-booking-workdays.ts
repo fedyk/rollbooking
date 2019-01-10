@@ -1,13 +1,11 @@
 import Debug from "debug";
 import { ObjectID } from "bson";
-import { findTimeZone, getZonedTime, getUnixTime } from "timezone-support";
-import { config } from "../../lib/config";
+import { findTimeZone, getZonedTime } from "timezone-support";
 import { addDay } from "../../utils/date";
 import { getBookingWorkdays } from "../../sagas/booking/get-booking-workdays";
 import { BusinessHours, SpecialHours, Salon } from "../../models/salon";
 import { Reservation } from "../../models/reservation";
 import { DateRange } from "../../lib/date-range";
-import { getEndDay } from "../../helpers/date/get-end-day";
 import { BookingWorkdaysCollection, closeClient, ReservationsCollection, SalonsCollection } from "../../adapters/mongodb";
 import { BookingWorkday } from "../../models/booking-workday";
 import { Date as DateObject } from "../../models/date";
@@ -83,7 +81,7 @@ export async function syncBookingWorkdays(salonsIds: ObjectID[] = null) {
      * 
      */  
     const reservation: Reservation[] = await $reservations.find({
-      salon_id: salon._id.toHexString(),
+      salonId: salon._id,
       start: {
         $lt: endPeriod
       },

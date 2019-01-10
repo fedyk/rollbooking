@@ -42,14 +42,14 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server",
     "test": "jest --coverage --verbose",
     "test:watch": "jest --watch",
     "watch": "tsc --watch",
     "migrate:up": "migrate-up --store=./built/lib/migrations-store.js",
     "setup": "./bin/setup",
     "rimraf:dist": "rimraf dist",
-    "dev": "nodemon dist/server.js --watch dist",
+    "start": "node dist/server",
+    "dev": "nodemon --inspect dist/server --watch dist",
     "heroku-postbuild": "npm run build"
   },
   "author": "Rollbooking Team",

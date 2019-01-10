@@ -28,31 +28,43 @@ export async function generateTestData(timeZones = DEFAULT_TIME_ZONES) {
   const $users = await UsersCollection();
   const $salons = await SalonsCollection();
 
-  const userHash = createHash("sha256").update(Math.random().toString()).digest("hex").substr(0, 8);
-  const user: User = {
-    name: "Auto Generate Test User",
+  const user1: User = {
+    name: "Master 1",
     employers: {
       salons: []
     },
-    email: `email${userHash}@example.com`,
+    email: `email${Math.round(Math.random() * 1000)}@example.com`,
+    password: "",
+    properties: {},
+  }
+  const user2: User = {
+    name: "Master 2",
+    employers: {
+      salons: []
+    },
+    email: `email${Math.round(Math.random() * 1000)}@example.com`,
     password: "",
     properties: {},
   }
 
-  const userInsertResult = await $users.insertOne(user);
+  const userInsertResult1 = await $users.insertOne(user1);
+  const userInsertResult2 = await $users.insertOne(user2);
 
   for (let i = 0; i < timeZones.length; i++) {
     const timezone = timeZones[i];
-    const userHash = createHash("sha256").update(Math.random().toString()).digest("hex").substr(0, 4);
+    const salonHash = Math.round(Math.random() * 1000);
 
     const salon: Salon = {
-      alias: `salon-${userHash}`,
-      name: `Salon ${userHash} ${timezone}`,
+      alias: `salon-${salonHash}`,
+      name: `Salon ${salonHash} ${timezone}`,
       timezone: timezone,
       employees: {
         users: [{
-          id: userInsertResult.insertedId.toHexString(),
-          position: ""
+          id: userInsertResult1.insertedId.toHexString(),
+          position: "Senior master"
+        }, {
+          id: userInsertResult2.insertedId.toHexString(),
+          position: "Master"
         }]
       },
       services: {
@@ -150,27 +162,7 @@ export async function generateTestData(timeZones = DEFAULT_TIME_ZONES) {
       }
     }
 
-    const insertOneResult = await $salons.insertOne(salon);
-
-    console.log("Generated salon with id", insertOneResult.insertedId)
-
-    // const $push: Partial<User> = {
-    //   employers: {
-    //     salonsIds: [{
-    //     }]
-    //   }
-    // }
-
-    // Update user
-    // await $users.updateOne({
-    //   _id: userInsertResult.insertedId
-    // }, {
-    //   $push: {
-    //     "employers.$[].salons": {
-    //       id: insertOneResult.insertedId.toHexString(),
-    //     } as SalonEmployer
-    //   }
-    // })
+    await $salons.insertOne(salon);
   }
 }
 

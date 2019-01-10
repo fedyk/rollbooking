@@ -63,9 +63,6 @@ describe("getDateOptions", function() {
       },
       nextDays: 1,
     })).toEqual([{
-      value: "",
-      text: "Select date"
-    }, {
       value: "2018-01-01",
       text: "2018-01-01",
       disabled: false
@@ -84,9 +81,6 @@ describe("getDateOptions", function() {
       },
       nextDays: 1,
     })).toEqual([{
-      value: "",
-      text: "Select date"
-    }, {
       value: "2018-01-03",
       text: "2018-01-03",
       disabled: true

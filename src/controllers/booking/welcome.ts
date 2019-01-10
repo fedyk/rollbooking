@@ -1,4 +1,5 @@
 import Debug from "debug";
+import * as parseInt from "parse-int";
 import { welcome as welcomeView } from "../../views/booking/welcome";
 import { layout as layoutView } from "../../views/booking/layout";
 import { getDateOptions } from "./helpers/get-date-options";
@@ -74,12 +75,11 @@ export async function welcome(ctx: Context) {
   const selectedService = getSelectedService(params.serviceId);
   const results = getResults({
     salonId,
-    workdays: selectedWorkdays,
-    date: params.date,
+    bookingWorkdays: selectedWorkdays,
+    selectedDate: params.date,
     salonServices,
     masterId: params.masterId,
-    serviceId: params.serviceId,
-    timezoneName: salon.timezone
+    serviceId: params.serviceId
   });
 
   ctx.body = layoutView({
@@ -100,14 +100,14 @@ export async function welcome(ctx: Context) {
 
 const DATE_REGEX = /\d{4}-[01]\d-[0-3]\d/;  // YYYY-MM-DD
 
-function parseRequestParam(param: any): {
-  date: DateObject;
-  masterId: string;
-  serviceId: number;
+export function parseRequestParam(param: any): {
+  date?: DateObject;
+  masterId?: string;
+  serviceId?: number;
 } {
-  const dateStr = `${param && param.date || param.d}`.trim();
-  const masterId = param && param.master_id || param.m;
-  const serviceIdStr = param && param.service_id || param.s;
+  const dateStr = `${param && (param.date || param.d)}`.trim();
+  const masterId = param && (param.master_id || param.m);
+  const serviceIdStr = param && (param.service_id || param.s);
   let date;
 
   if (DATE_REGEX.test(dateStr)) {
@@ -119,6 +119,6 @@ function parseRequestParam(param: any): {
   return {
     date: date instanceof Date && !isNaN(date.getTime()) ? nativeDateToDateObject(date) : null,
     masterId: ObjectID.isValid(masterId) ? masterId : null,
-    serviceId: parseInt(serviceIdStr)
+    serviceId: parseInt(serviceIdStr) || null
   }
 }
