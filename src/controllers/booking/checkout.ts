@@ -2,8 +2,8 @@ import { Context } from "koa";
 import { ObjectID } from "bson";
 import * as parseInt from "parse-int";
 import { stringify } from "querystring";
-import { checkout as checkoutView } from "../../views/booking/checkout";
-import { layout as layoutView } from "../../views/booking/layout";
+import { checkoutView } from "../../views/booking/checkout-view";
+import { bookingLayoutView } from "../../views/booking/booking-layout-view";
 import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
 import { isEmail } from "../../utils/is-email";
 import { User } from "../../models/user";
@@ -139,10 +139,10 @@ export async function checkout(ctx: Context) {
       })}`);
     }
 
-    ctx.body = layoutView({
-      title: "Test Salon",
+    ctx.body = bookingLayoutView({
+      salonName: salon.name,
+      salonId: salon._id.toHexString(),
       body: checkoutView({
-        salonName: salon.name,
         bookingMasterName: salonMaster.name,
         bookingServiceName: salonService.name,
         bookingDate: dateTimeToNativeDate({

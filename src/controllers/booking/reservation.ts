@@ -1,7 +1,5 @@
 import * as parseInt from "parse-int";
-import { layout as layoutView } from "../../views/booking/layout";
-import { connect } from "../../lib/database";
-import { getSalonById } from "../../queries/salons";
+import { bookingLayoutView } from "../../views/booking/booking-layout-view";
 import { Context } from "koa";
 import { ReservationsCollection, SalonsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
@@ -27,8 +25,9 @@ export async function reservation(ctx: Context) {
 
   ctx.assert(reservation, 404, "Reservation doesn't exist")
 
-  ctx.body = layoutView({
-    title: "Test Salon",
+  ctx.body = bookingLayoutView({
+    salonId: salon._id.toHexString(),
+    salonName: salon.name,
     body: `<pre>${JSON.stringify(reservation, null, 2)}</pre>
     `
   })

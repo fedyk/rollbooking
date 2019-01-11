@@ -1,7 +1,7 @@
 import Debug from "debug";
 import * as parseInt from "parse-int";
-import { welcome as welcomeView } from "../../views/booking/welcome";
-import { layout as layoutView } from "../../views/booking/layout";
+import { welcomeView } from "../../views/booking/welcome-view";
+import { bookingLayoutView } from "../../views/booking/booking-layout-view";
 import { getDateOptions } from "./helpers/get-date-options";
 import { getSelectedWorkdays } from "./helpers/get-selected-workdays";
 import { getMastersOptions } from "./helpers/get-masters-options";
@@ -82,10 +82,10 @@ export async function welcome(ctx: Context) {
     serviceId: params.serviceId
   });
 
-  ctx.body = layoutView({
-    title: "Test Salon",
+  ctx.body = bookingLayoutView({
+    salonName: salon.name,
+    salonId: salon._id.toHexString(),
     body: welcomeView({
-      salonName: salon.name,
       showFilters: showFilters,
       dateOptions: dateOptions,
       selectedDate: selectedDate ? dateToISODate(selectedDate) : null,

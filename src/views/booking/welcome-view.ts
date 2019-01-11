@@ -3,7 +3,6 @@ import { stringMapJoin } from "../../helpers/string-map-join";
 import { attrs } from "../../helpers/html";
 
 interface Props {
-  salonName: string;
   showFilters: boolean;
 
   dateOptions: SelectOption[];
@@ -27,13 +26,7 @@ interface Props {
 
 }
 
-export const welcome = (props: Props) => `
-<nav class="site-header py-1 mb-3">
-  <div class="container d-flex flex-column flex-md-row justify-content-between">
-    <a class="py-2 d-inline-block" href="">${props.salonName}</a>
-  </div>
-</nav>
-
+export const welcomeView = (props: Props) => `
 <div class="container">
 
   ${props.showFilters ? `
