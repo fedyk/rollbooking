@@ -17,26 +17,13 @@ import { findTimeZone, getZonedTime } from "timezone-support";
 import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 import { getSelectedDate } from "./helpers/get-selected-date";
-
-const debug = Debug("app:booking:welcome");
+import { Salon } from "../../models/salon";
 
 export async function welcome(ctx: Context) {
-  const salonId = ctx.params.salonId as string;
+  const salon = ctx.state.salon as Salon;
   const params = parseRequestParam({...ctx.params, ...ctx.query});
-  const $salons = await SalonsCollection();
-
-  debug("Salon ID should be a valid BJSON ObjectID")
-
-  ctx.assert(ObjectID.isValid(salonId), 404, "Page doesn't exist")
-
-  const salon = await $salons.findOne({
-    _id: new ObjectID(salonId)
-  });
-
-  ctx.assert(salon, 404, "Page doesn't exist")
 
   const $users = await UsersCollection();
-
   const salonUsers = await $users.find({
     _id: {
       $in: salon.employees.users.map(v => v.id)
@@ -74,7 +61,7 @@ export async function welcome(ctx: Context) {
   const servicesOptions = getServiceOptions(salonServices);
   const selectedService = getSelectedService(params.serviceId);
   const results = getResults({
-    salonId,
+    salonAlias: salon.alias,
     bookingWorkdays: selectedWorkdays,
     selectedDate: params.date,
     salonServices,
@@ -84,7 +71,7 @@ export async function welcome(ctx: Context) {
 
   ctx.body = bookingLayoutView({
     salonName: salon.name,
-    salonId: salon._id.toHexString(),
+    salonAlias: salon.alias,
     body: welcomeView({
       showFilters: showFilters,
       dateOptions: dateOptions,

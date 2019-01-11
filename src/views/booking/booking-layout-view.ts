@@ -1,10 +1,9 @@
 import { escape } from "../../helpers/html";
 
 interface Props {
-  salonId: string;
+  salonAlias: string;
   salonName: string;
   body: String;
-  
 }
 
 export const bookingLayoutView = (props: Props): string => `
@@ -20,7 +19,7 @@ export const bookingLayoutView = (props: Props): string => `
 <body>
   <nav class="site-header py-1 mb-3">
     <div class="container d-flex flex-column flex-md-row justify-content-between">
-      <a class="py-2 d-inline-block" href="/booking/${escape(props.salonId)}">${escape(props.salonName)}</a>
+      <a class="py-2 d-inline-block" href="/${escape(props.salonAlias)}/booking">${escape(props.salonName)}</a>
     </div>
   </nav>
 

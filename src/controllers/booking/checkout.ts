@@ -6,7 +6,6 @@ import { checkoutView } from "../../views/booking/checkout-view";
 import { bookingLayoutView } from "../../views/booking/booking-layout-view";
 import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
 import { isEmail } from "../../utils/is-email";
-import { User } from "../../models/user";
 import { addMinutes } from "../../helpers/date/add-minutes";
 import { syncBookingWorkdays } from "../../tasks/salon/sync-booking-workdays";
 import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
@@ -20,22 +19,14 @@ import { BookingWorkday } from "../../models/booking-workday";
 import { Date as DateObject } from "../../models/date";
 import { isoDateToDateObject } from "../../helpers/date/iso-date-to-date-object";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
+import { Salon } from "../../models/salon";
 
 export async function checkout(ctx: Context) {
-  const salonId = ctx.params.salonId as string;
+  const salon = ctx.state.salon as Salon;  
   const params = parseRequestQuery(ctx.query);
-
-  ctx.assert(salonId, 404, "Page doesn't exist")
-  ctx.assert(ObjectID.isValid(salonId), 404, "Page doesn't exist")
-
-  const $salons = await SalonsCollection();
   const $bookingWorkdays = await BookingWorkdaysCollection();
   const $users = await UsersCollection();
   const $reservations = await ReservationsCollection();
-
-  const salon = await $salons.findOne({
-    _id: new ObjectID(salonId)
-  })
 
   ctx.assert(params.masterId, 400, "Invalid params")
   ctx.assert(params.serviceId, 400, "Invalid params")
@@ -137,14 +128,14 @@ export async function checkout(ctx: Context) {
 
     await syncBookingWorkdays([salon._id]);
 
-    ctx.redirect(`/booking/${salonId}/reservation?${stringify({
+    ctx.redirect(`/${salon.alias}/booking/reservation?${stringify({
       id: reservation.insertedId.toHexString()
     })}`);
   }
 
   ctx.body = bookingLayoutView({
     salonName: salon.name,
-    salonId: salon._id.toHexString(),
+    salonAlias: salon.alias,
     body: checkoutView({
       userEmail: ctx.session.bookingUserEmail || "",
       userName: ctx.session.bookingUserName || "",

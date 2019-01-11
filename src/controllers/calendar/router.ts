@@ -3,4 +3,4 @@ import { calendar } from './calendar';
 
 export const router = new Router();
 
-router.get('/:salonId', calendar);
+router.get('/', calendar);

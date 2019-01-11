@@ -7,18 +7,18 @@
 
 .welcome__container {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
 .welcome__logo {
-  transform: translate(0, -50%);
+  transform: translate(0, 0);
   opacity: 0;
   transition: transform 0.75s ease-out, opacity .5s;
 }
 
 .welcome__logo--ready {
-  transform: translate(0, 0);
+  transform: translate(0, -50%);
   opacity: 1;
 }

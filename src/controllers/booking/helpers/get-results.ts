@@ -9,7 +9,7 @@ import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date
 import { TimeOfDay } from "../../../models/time-of-day";
 
 interface Params {
-  salonId: string;
+  salonAlias: string;
   bookingWorkdays: BookingWorkday[];
   salonServices: SalonService[];
   selectedDate?: DateObject;
@@ -67,7 +67,7 @@ export function getResults(params: Params): Result[] {
 
         return {
           text: `${hours}:${minutes}`,
-          url: `/booking/${params.salonId}/checkout?${stringify(queryString)}`
+          url: `/${params.salonAlias}/booking/checkout?${stringify(queryString)}`
         }
       })
     }

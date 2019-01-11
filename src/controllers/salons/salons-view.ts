@@ -24,8 +24,8 @@ export function salonsView(props: Props) {
           <td>${salon.timezone}</td>
           <td>${salon.employees.users.length}</td>
           <td>
-            <a class="badge badge-light" ${attrs({ href: `/booking/${salon._id.toHexString()}` })}>Booking</a>
-            <a class="badge badge-light" ${attrs({ href: `/calendar/${salon._id.toHexString()}` })}>Calendar</a>
+            <a class="badge badge-light" ${attrs({ href: `/${salon.alias}/booking` })}>Booking</a>
+            <a class="badge badge-light" ${attrs({ href: `/${salon.alias}/calendar` })}>Calendar</a>
           </td>
         </tr>`)}
       </tbody>

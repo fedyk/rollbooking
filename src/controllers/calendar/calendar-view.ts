@@ -1,13 +1,10 @@
 
-import { Salon } from "../../models/salon";
 import { stringMapJoin } from "../../helpers/string-map-join";
 import { attrs } from "../../helpers/html";
 import { Reservation } from "../../models/reservation";
-import { Date as DateObject } from "../../models/date";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
 
 interface Props {
-  date: DateObject
   reservations: Reservation[]
 }
 

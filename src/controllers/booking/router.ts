@@ -5,7 +5,7 @@ import { reservation } from "./reservation";
 
 export const router = new Router();
 
-router.get("/:salonId", welcome);
-router.get("/:salonId/checkout", checkout);
-router.post("/:salonId/checkout", checkout);
-router.get("/:salonId/reservation", reservation);
+router.get("/", welcome);
+router.get("/checkout", checkout);
+router.post("/checkout", checkout);
+router.get("/reservation", reservation);
