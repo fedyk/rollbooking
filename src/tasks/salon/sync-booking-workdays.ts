@@ -65,7 +65,7 @@ export async function syncBookingWorkdays(salonsIds: ObjectID[] = null) {
     };
 
     const masters = salon.employees.users.map(v => ({
-      id: v.id
+      id: v.id.toHexString()
     }))
 
     const services = salon.services.items.map(v => ({

@@ -24,7 +24,7 @@ const DEFAULT_TIME_ZONES = [
   "Pacific/Auckland",
 ]
 
-export async function generateTestData(timeZones = DEFAULT_TIME_ZONES) {
+export async function createTestSalons(timeZones = DEFAULT_TIME_ZONES) {
   const $users = await UsersCollection();
   const $salons = await SalonsCollection();
 
@@ -60,10 +60,10 @@ export async function generateTestData(timeZones = DEFAULT_TIME_ZONES) {
       timezone: timezone,
       employees: {
         users: [{
-          id: userInsertResult1.insertedId.toHexString(),
+          id: userInsertResult1.insertedId,
           position: "Senior master"
         }, {
-          id: userInsertResult2.insertedId.toHexString(),
+          id: userInsertResult2.insertedId,
           position: "Master"
         }]
       },
@@ -171,7 +171,7 @@ if (!module.parent) {
     try {
       console.log("Start")
 
-      await generateTestData()
+      await createTestSalons()
 
       console.log("Success");
     }

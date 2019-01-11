@@ -20,7 +20,7 @@ export interface SalonEmployees {
 }
 
 export interface SalonEmployee {
-  id: string;
+  id: ObjectID;
   position: string;
 }
 

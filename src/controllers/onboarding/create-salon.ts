@@ -1,5 +1,4 @@
 import { ok } from "assert";
-import { connect } from "../../lib/database";
 import debugFactory from 'debug'
 import { Context } from "koa";
 import { User } from "../../models/user";
@@ -7,6 +6,7 @@ import { renderer } from "../../lib/render";
 import { Salon } from "../../models/salon";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { SalonsCollection } from "../../adapters/mongodb";
+import { ObjectID } from "bson";
 
 const debug = debugFactory('controller:onboarding')
 
@@ -18,11 +18,12 @@ interface CreateSalonBody {
 export async function createSalon(ctx: Context): Promise<any> {
   const user = ctx.state.user as User;
   const body = ctx.request.body as CreateSalonBody;
-  const client = await connect();
 
   ctx.assert(body, 400, 'Empty body')
   ctx.assert(body.name, 400, 'Empty salon name')
   ctx.assert(body.timezone, 400, 'Empty salon timezone')
+  ctx.assert(user._id, 500, "INternal error: broken user model")
+  ctx.assert(user._id instanceof ObjectID, 500, "INternal error: broken user identifier")
 
   try {
     const salonData: Salon = {
@@ -49,7 +50,7 @@ export async function createSalon(ctx: Context): Promise<any> {
       },
       employees: {
         users: [{
-          id: user._id.toHexString(),
+          id: user._id,
           position: "Administrator",
         }]
       },
@@ -77,6 +78,4 @@ export async function createSalon(ctx: Context): Promise<any> {
 
     ctx.body = await renderer('onboarding/index.njk', { user, error });
   }
-
-  client.release();
 }
