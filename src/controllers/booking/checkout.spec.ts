@@ -71,19 +71,19 @@ test('parseRequestQuery', function() {
 test('parseRequestBody', function() {
   expect(parseRequestBody(null)).toEqual({
     email: "",
-    fullName: ""
+    name: ""
   })
 
   expect(parseRequestBody({})).toEqual({
     email: "",
-    fullName: ""
+    name: ""
   })
 
   expect(parseRequestBody({
     email: "test",
-    full_name: "test2"
+    name: "test2"
   })).toEqual({
     email: "test",
-    fullName: "test2"
+    name: "test2"
   })
 })

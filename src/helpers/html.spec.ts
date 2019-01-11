@@ -6,7 +6,13 @@ test('html/escape', () => {
 });
 
 test('html/attrs', () => {
-  expect(attrs({ test: 1 })).toBe("test=\"1\"")
+  expect(attrs({
+    test: 1
+  })).toBe("test=\"1\"")
+  expect(attrs({
+    test: 2,
+    test1: false
+  })).toBe("test=\"2\"")
   expect(attrs({
     "class": "open",
     "data-param": "val"

@@ -25,136 +25,141 @@ export async function checkout(ctx: Context) {
   const salonId = ctx.params.salonId as string;
   const params = parseRequestQuery(ctx.query);
 
-    ctx.assert(salonId, 404, "Page doesn't exist")
-    ctx.assert(ObjectID.isValid(salonId), 404, "Page doesn't exist")
+  ctx.assert(salonId, 404, "Page doesn't exist")
+  ctx.assert(ObjectID.isValid(salonId), 404, "Page doesn't exist")
 
-    const $salons = await SalonsCollection();
-    const $bookingWorkdays = await BookingWorkdaysCollection();
-    const $users = await UsersCollection();
-    const $reservations = await ReservationsCollection();
+  const $salons = await SalonsCollection();
+  const $bookingWorkdays = await BookingWorkdaysCollection();
+  const $users = await UsersCollection();
+  const $reservations = await ReservationsCollection();
 
-    const salon = await $salons.findOne({
-      _id: new ObjectID(salonId)
-    })
-  
-    ctx.assert(params.masterId, 400, "Invalid params")
-    ctx.assert(params.serviceId, 400, "Invalid params")
-    ctx.assert(params.startPeriod, 400, "Invalid params")
-    ctx.assert(params.endPeriod, 400, "Invalid params")
-    ctx.assert(params.time, 400, "Invalid params")
-    ctx.assert(params.date, 400, "Invalid params")
+  const salon = await $salons.findOne({
+    _id: new ObjectID(salonId)
+  })
 
-    const salonMaster = await $users.findOne({
-      _id: new ObjectID(params.masterId)
+  ctx.assert(params.masterId, 400, "Invalid params")
+  ctx.assert(params.serviceId, 400, "Invalid params")
+  ctx.assert(params.startPeriod, 400, "Invalid params")
+  ctx.assert(params.endPeriod, 400, "Invalid params")
+  ctx.assert(params.time, 400, "Invalid params")
+  ctx.assert(params.date, 400, "Invalid params")
+
+  const salonMaster = await $users.findOne({
+    _id: new ObjectID(params.masterId)
+  });
+
+  ctx.assert(salonMaster, 400, "Invalid params");
+
+  const salonService = salon.services.items.find(v => v.id === params.serviceId);
+
+  ctx.assert(salonService, 400, "Invalid params");
+
+  // TODO: this should be covered by TS, any changes and we would know about need to update this part
+  const bookingWorkday = await $bookingWorkdays.findOne(
+    byWorkdayPeriod(salon._id, params.startPeriod, params.endPeriod)
+  );
+
+  ctx.assert(bookingWorkday, 400, "Time is not available anymore")
+
+  const bookingWorkdayMaster = bookingWorkday.masters[params.masterId];
+
+  ctx.assert(bookingWorkdayMaster, 400, "Master has no slots for this date")
+
+  const bookingWorkdayService = bookingWorkdayMaster.services[params.serviceId.toString()];
+
+  ctx.assert(bookingWorkdayService, 400, "Barber not doing this service at this date")
+
+  const availableTimes = bookingWorkdayService.availableTimes;
+  const requestedTime = availableTimes.find(v => v.hours === params.time.hours &&
+    v.minutes === params.time.minutes &&
+    v.seconds === params.time.seconds
+  );
+
+  ctx.assert(availableTimes && availableTimes.length > 0, 400, "All time is booked")
+  ctx.assert(requestedTime, 400, "The selected time is already booked")
+
+  // Ok, lets save
+  if (ctx.method === "POST") {
+    const userParams = parseRequestBody(ctx.request.body);
+
+    ctx.assert(isEmail(userParams.email), 400, "Invalid email")
+    ctx.assert(userParams.name, 400, "Name is required")
+    ctx.assert(userParams.name.length < 64, 400, "Name is too long")
+
+    let user = await $users.findOne({
+      email: userParams.email
     });
-  
-    ctx.assert(salonMaster, 400, "Invalid params");
-  
-    const salonService = salon.services.items.find(v => v.id === params.serviceId);
-  
-    ctx.assert(salonService, 400, "Invalid params");
-  
-    // TODO: this should be covered by TS, any changes and we would know about need to update this part
-    const bookingWorkday = await $bookingWorkdays.findOne(
-      byWorkdayPeriod(salon._id, params.startPeriod, params.endPeriod)
-    );
-  
-    ctx.assert(bookingWorkday, 400, "Time is not available anymore")
 
-    const bookingWorkdayMaster = bookingWorkday.masters[params.masterId];
-
-    ctx.assert(bookingWorkdayMaster, 400, "Master has no slots for this date")
-
-    const bookingWorkdayService = bookingWorkdayMaster.services[params.serviceId.toString()];
-
-    ctx.assert(bookingWorkdayService, 400, "Barber not doing this service at this date")
-
-    const availableTimes = bookingWorkdayService.availableTimes;
-    const requestedTime = availableTimes.find(v => v.hours === params.time.hours &&
-      v.minutes === params.time.minutes &&
-      v.seconds === params.time.seconds
-    );
-
-    ctx.assert(availableTimes && availableTimes.length > 0, 400, "All time is booked")
-    ctx.assert(requestedTime, 400, "The selected time is already booked")
-
-    // Ok, lets save
-    if (ctx.method === "POST") {
-      const userParams = parseRequestBody(ctx.request.body);
-
-      ctx.assert(isEmail(userParams.email), 400, "Invalid email")
-      ctx.assert(userParams.fullName, 400, "Name is required")
-      ctx.assert(userParams.fullName.length < 64, 400, "Name is too long")
-      
-      let user: User = await $users.findOne({
-        email: userParams.email
-      });
-
-      if (!user) {
-        user = {
-          email: userParams.email,
-          name: userParams.fullName,
-          password: "",
-          created: new Date(),
-          updated: new Date(),
-          employers: {
-            salons: []
-          },
-          properties: {}
-        }
-        const insertResult = await $users.insertOne(user);
-
-        user._id = insertResult.insertedId;
-
-        await ctx.login(user);
+    if (!user) {
+      user = {
+        email: userParams.email,
+        name: userParams.name,
+        password: "",
+        created: new Date(),
+        updated: new Date(),
+        employers: {
+          salons: []
+        },
+        properties: {}
       }
 
-      const reservationStart = {
+      const { insertedId } = await $users.insertOne(user);
+
+      user._id = insertedId;
+    }
+
+    // Save user input for next time
+    ctx.session.bookingUserName = userParams.name;
+    ctx.session.bookingUserEmail = userParams.email;
+
+    const reservationStart = {
+      year: params.date.year,
+      month: params.date.month,
+      day: params.date.day,
+      hours: requestedTime.hours,
+      minutes: requestedTime.minutes,
+      seconds: requestedTime.seconds,
+    }
+
+    const reservation = await $reservations.insertOne({
+      salonId: salon._id,
+      userId: user._id,
+      masterId: salonMaster._id,
+      serviceId: salonService.id,
+      start: reservationStart,
+      end: nativeDateToDateTime(
+        addMinutes(dateTimeToNativeDate(reservationStart), salonService.duration)
+      ),
+      status: 2, // confirmed
+    })
+
+    ctx.assert(reservation.insertedCount === 1, 500, "Internal error")
+
+    await syncBookingWorkdays([salon._id]);
+
+    ctx.redirect(`/booking/${salonId}/reservation?${stringify({
+      id: reservation.insertedId.toHexString()
+    })}`);
+  }
+
+  ctx.body = bookingLayoutView({
+    salonName: salon.name,
+    salonId: salon._id.toHexString(),
+    body: checkoutView({
+      userEmail: ctx.session.bookingUserEmail || "",
+      userName: ctx.session.bookingUserName || "",
+      bookingMasterName: salonMaster.name,
+      bookingServiceName: salonService.name,
+      bookingDate: dateTimeToNativeDate({
         year: params.date.year,
         month: params.date.month,
         day: params.date.day,
         hours: requestedTime.hours,
         minutes: requestedTime.minutes,
         seconds: requestedTime.seconds,
-      }
-
-      const reservation = await $reservations.insertOne({
-        salonId: salon._id,
-        userId: user._id,
-        masterId: salonMaster._id,
-        serviceId: salonService.id,
-        start: reservationStart,
-        end: nativeDateToDateTime(
-          addMinutes(dateTimeToNativeDate(reservationStart), salonService.duration)
-        ),
-        status: 2, // confirmed
-      })
-
-      ctx.assert(reservation.insertedCount === 1, 500, "Internal error")
-
-      await syncBookingWorkdays([salon._id]);
-
-      ctx.redirect(`/booking/${salonId}/reservation?${stringify({
-        id: reservation.insertedId.toHexString()
-      })}`);
-    }
-
-    ctx.body = bookingLayoutView({
-      salonName: salon.name,
-      salonId: salon._id.toHexString(),
-      body: checkoutView({
-        bookingMasterName: salonMaster.name,
-        bookingServiceName: salonService.name,
-        bookingDate: dateTimeToNativeDate({
-          year: params.date.year,
-          month: params.date.month,
-          day: params.date.day,
-          hours: requestedTime.hours,
-          minutes: requestedTime.minutes,
-          seconds: requestedTime.seconds,
-        }).toLocaleString()
-      })
+      }).toLocaleString()
     })
+  })
 }
 
 export function parseRequestQuery(query: Partial<CheckoutURLParams>): {
@@ -183,12 +188,12 @@ export function parseRequestQuery(query: Partial<CheckoutURLParams>): {
 }
 
 export function parseRequestBody(body: any) {
-  const email: string = body && body.email || '';
-  const fullName: string = body && body.full_name || ''
+  const email: string = body && body.email || "";
+  const name: string = body && body.name || ""
 
   return {
     email,
-    fullName
+    name
   }
 }
 

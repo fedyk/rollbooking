@@ -1,35 +1,57 @@
-import * as koaSession from 'koa-session'
-import { instance } from './redis'
+// import * as Session from "koa-session"
+// import { instance } from "./redis"
 
-const store = {
-  async get(key) {
-    const value = await instance().get(key);
+/**
+ * https://github.com/koajs/session#external-session-stores
+ */
 
-    try {
-      return JSON.parse(value);
-    }
-    catch (e) {
-      return {};
-    }
-  },
+// const store = {
+//   async get(key) {
+//     const value = await instance().get(key);
 
-  async set(key, value) {
-    value = JSON.stringify(value);
+//     try {
+//       return JSON.parse(value);
+//     }
+//     catch (e) {
+//       return {};
+//     }
+//   },
 
-    await instance().set(key, value);
-  },
+//   async set(key, value) {
+//     value = JSON.stringify(value);
 
-  async destroy(key) {
-    await instance().del(key)
-  },
-};
+//     await instance().set(key, value);
+//   },
 
-const config = {
-  key: '_s', // key for Cookie
-  renew: true,
-  store: store,
-};
+//   async destroy(key) {
+//     await instance().del(key)
+//   },
+// };
 
-export function session(app) {
-  return koaSession(config, app);
+// const config = {
+//   key: "_s", // key for Cookie
+//   renew: true,
+//   store: store,
+// };
+
+// export function session(app) {
+//   return Session(config, app);
+// };
+
+
+/**
+ * https://github.com/koajs/session#example
+ */
+export const config = {
+  key: 's', /** (string) cookie key (default is koa:sess) */
+  /** (number || 'session') maxAge in ms (default is 1 days) */
+  /** 'session' will result in a cookie that expires when session/browser is closed */
+  /** Warning: If a session cookie is stolen, this cookie will never expire */
+  maxAge: 86400000,
+  autoCommit: true, /** (boolean) automatically commit headers (default true) */
+  overwrite: true, /** (boolean) can overwrite or not (default true) */
+  httpOnly: true, /** (boolean) httpOnly or not (default true) */
+  signed: true, /** (boolean) signed or not (default true) */
+  rolling: false, /** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. (default is false) */
+  renew: true, /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/
 };

@@ -2,6 +2,8 @@ import { escape } from "../../helpers/html";
 import { input } from "../../helpers/form";
 
 interface Props {
+  userEmail: string;
+  userName: string;
   bookingDate: string;
   bookingMasterName: string;
   bookingServiceName: string;
@@ -46,7 +48,7 @@ export const checkoutView = (props: Props) => `
       <div class="card-body">
         <div class="form-group">
           <label for="booking-date">Name</label>
-          ${input("full_name", "", {
+          ${input("name", props.userName, {
             "class": "form-control",
             "id": "booking-date",
             "required": true
@@ -55,7 +57,7 @@ export const checkoutView = (props: Props) => `
 
         <div class="form-group">
           <label for="booking-master">Email</label>
-          ${input("email", "", {
+          ${input("email", props.userEmail, {
             "type": "email",
             "class": "form-control",
             "id": "booking-master",

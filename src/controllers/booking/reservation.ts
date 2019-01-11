@@ -1,4 +1,3 @@
-import * as parseInt from "parse-int";
 import { bookingLayoutView } from "../../views/booking/booking-layout-view";
 import { Context } from "koa";
 import { ReservationsCollection, SalonsCollection } from "../../adapters/mongodb";
@@ -28,7 +27,6 @@ export async function reservation(ctx: Context) {
   ctx.body = bookingLayoutView({
     salonId: salon._id.toHexString(),
     salonName: salon.name,
-    body: `<pre>${JSON.stringify(reservation, null, 2)}</pre>
-    `
+    body: `<pre>${JSON.stringify(reservation, null, 2)}</pre>`
   })
 }
