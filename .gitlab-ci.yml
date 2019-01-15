@@ -15,6 +15,7 @@ services:
 cache:
   paths:
   - node_modules/
+  - packages/calendar/node_modules/
 
 test:
   script:
