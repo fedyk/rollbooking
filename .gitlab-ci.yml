@@ -22,13 +22,8 @@ test:
    - node -v
    - npm -v
    - npm install
-   - npm run build
-   - npm run test
-
-packages:calendar:
-  script:
-   - node -v
-   - npm -v
    - npm run packages:calendar:install
-   - npm run packages:calendar:test
+   - npm run build
    - npm run packages:calendar:build
+   - npm run test
+   - npm run packages:calendar:test
