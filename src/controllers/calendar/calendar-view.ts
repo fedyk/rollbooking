@@ -10,6 +10,7 @@ interface Props {
 
 export function calendarView(props: Props) {
   return `
+    <div id="calendar"></div>
     <h3>Calendar</h3>
     <table class="table">
       <thead>
@@ -32,5 +33,9 @@ export function calendarView(props: Props) {
         </tr>`)}
       </tbody>
     </table>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="/packages/calendar/index.js"></script>
+    <script>ReactDOM.render(React.createElement(calendar.Calendar, { title: "Hello" }), document.getElementById('calendar'));</script>
   `
 }

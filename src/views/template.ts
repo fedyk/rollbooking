@@ -1,6 +1,24 @@
 interface Props {
   title: string;
   body: String;
+  scripts?: string[];
+  styles?: string[];
+}
+
+export class Template {
+  props: Props;
+
+  constructor(props: Props) {
+    this.props = props;
+  }
+
+  render() {
+    return template(this.props)
+  }
+
+  toString() {
+    return this.render();
+  }
 }
 
 export const template = (props: Props): string => `

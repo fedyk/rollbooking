@@ -45,7 +45,10 @@
     "rimraf:dist": "rimraf dist",
     "start": "node dist/server",
     "dev": "nodemon --inspect dist/server --watch dist",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "packages:calendar:install": "cd packages/calendar/ && npm install",
+    "packages:calendar:test": "cd packages/calendar/ && npm test",
+    "packages:calendar:build": "cd packages/calendar/ && npm run build"
   },
   "author": "Rollbooking Team",
   "license": "ISC"

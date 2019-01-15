@@ -1,7 +1,6 @@
 import { Context } from "koa";
-import { SalonsCollection, ReservationsCollection } from "../../adapters/mongodb";
+import { ReservationsCollection } from "../../adapters/mongodb";
 import { template } from "../../views/template";
-import { Date as DateObject } from "../../models/date";
 import { calendarView } from "./calendar-view";
 import { Salon } from "../../models/salon";
 
