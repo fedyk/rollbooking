@@ -10,7 +10,7 @@ import { getServiceOptions } from "./helpers/get-services-options";
 import { getSelectedService } from "./helpers/get-selected-service";
 import { getResults } from "./helpers/get-results";
 import { Context } from "koa";
-import { dateToISODate } from "../../helpers/booking-workday/date-to-iso-date";
+import { dateToISODate } from "../../helpers/date/date-to-iso-date";
 import { BookingWorkdaysCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";

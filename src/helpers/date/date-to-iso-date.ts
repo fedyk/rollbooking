@@ -1,5 +1,5 @@
 import { Date as DateObject } from "../../models/date";
-import { nativeDateToDateObject } from "../date/native-date-to-date-object";
+import { nativeDateToDateObject } from "./native-date-to-date-object";
 
 /**
  * Convert Date object to string YYYY-MM-DD. Important: Date string will be in UTC

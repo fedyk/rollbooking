@@ -1,4 +1,3 @@
-import { ok } from "assert";
 import debugFactory from 'debug'
 import { Context } from "koa";
 import { User } from "../../models/user";

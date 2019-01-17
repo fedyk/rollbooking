@@ -1,9 +1,7 @@
 import { getDateOptions, getAvailableDates } from "./get-date-options";
 import { SelectOption } from "../../../helpers/form";
-import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
 import { BookingWorkday } from "../../../models/booking-workday";
 import { DateTime } from "../../../models/date-time";
-import { Date as DateObject } from "../../../models/date";
 
 const start: DateTime = {
   year: 2018,

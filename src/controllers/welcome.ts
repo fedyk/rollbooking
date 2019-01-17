@@ -1,39 +1,29 @@
-import { connect } from '../lib/database';
-import { getSalonUsers, getUserSalons } from '../queries/salons'
-import debugFactory from 'debug'
+import Debug from 'debug'
 import { Context } from 'koa';
 import { renderer } from '../lib/render';
 import { User } from '../models/user';
-import { getProperty } from '../utils/get-property';
+import { SalonsCollection } from '../adapters/mongodb';
 
-const debug = debugFactory('controllers:welcome');
+const debug = Debug('controllers:welcome');
 
 export async function welcome(ctx: Context): Promise<any> {
-  
+
   if (ctx.isAuthenticated()) {
     const user = ctx.state.user as User
-    const defaultSalonId = getProperty(user.properties, 'salons', 'default_salon_id');
+    const salons = user.employers.salons;
 
-    debug('try to get salon to show from user meta %o', defaultSalonId)
+    if (salons && salons.length > 0) {
+      const [userSalon] = salons;
+      const salon = await SalonsCollection().then($salons => $salons.findOne({
+        _id: userSalon.id
+      }))
 
-    if (defaultSalonId) {
-      return ctx.redirect(`/schedule${defaultSalonId}`)
-    }
-
-    const client = await connect();
-    const userSalons = user.employers.salons;
-
-    if (userSalons && userSalons.length > 0) {
-      const [userSalon] = userSalons;
-
-      if (userSalon && userSalon.id) {
-        return client.release(), ctx.redirect(`/schedule${userSalon.id}`)
+      if (salon) {
+        return ctx.redirect(`/${salon.alias}/calendar`)
       }
     }
 
     debug('user has no salons. redirect to onboarding')
-
-    return client.release(), ctx.redirect('/onboarding')
   }
 
   ctx.body = await renderer('welcome.njk');

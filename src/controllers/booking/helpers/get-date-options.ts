@@ -1,6 +1,6 @@
 import { BookingWorkday } from "../../../models/booking-workday";
 import { SelectOption } from "../../../helpers/form";
-import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
+import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
 import { Date as DateObject } from "../../../models/date";
 import { dateObjectToNativeDate } from "../../../helpers/date/date-object-to-native-date";
 

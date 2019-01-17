@@ -5,7 +5,7 @@ import { CheckoutURLParams } from "../interfaces";
 import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
 import { timeOfDayToISOTime } from "../../../helpers/date/time-of-day-to-iso-time";
 import { Date as DateObject } from "../../../models/date";
-import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
+import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
 import { TimeOfDay } from "../../../models/time-of-day";
 
 interface Params {

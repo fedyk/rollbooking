@@ -1,6 +1,6 @@
 import { SelectOption } from "../../../helpers/form";
 import { Date as DateObject } from "../../../models/date";
-import { dateToISODate } from "../../../helpers/booking-workday/date-to-iso-date";
+import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
 import { isoDateToDateObject } from "../../../helpers/date/iso-date-to-date-object";
 
 export function getSelectedDate(dates: SelectOption[], selectedDate?: DateObject): DateObject {

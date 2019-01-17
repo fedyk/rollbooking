@@ -9,7 +9,6 @@ if (result.error) {
 
 interface Config {
   PORT: string | number;
-  DATABASE_URL: string;
   MONGODB_URI: string;
   REDIS_URL: string;
   APP_KEYLIST: string;
@@ -23,10 +22,6 @@ interface Config {
 
 if (!process.env.PORT) {
   console.warn('No port config. Set PORT environment variable(default is 3000).');
-}
-
-if (!process.env.DATABASE_URL) {
-  console.error('No database config. Set DATABASE_URL environment variable.');
 }
 
 if (!process.env.MONGODB_URI) {
@@ -67,7 +62,6 @@ if (!process.env.GOOGLE_API_REDIRECT_URIS) {
 
 export const config: Config = {
   PORT: process.env.PORT || 3000,
-  DATABASE_URL: process.env.DATABASE_URL || '',
   MONGODB_URI: process.env.MONGODB_URI || '',
   REDIS_URL: process.env.REDIS_URL || '',
   APP_KEYLIST: process.env.APP_KEYLIST || '',

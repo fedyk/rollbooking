@@ -7,7 +7,6 @@ import { router as bookingRouter } from './controllers/booking/router';
 import { router as authRouter } from './controllers/auth/router';
 import { router as onboardingRouter } from './controllers/onboarding/router';
 import { router as settingsRouter } from './controllers/settings/router';
-import { router as salonSettingsRouter } from './controllers/salon-settings/router';
 import { router as salonsRouter } from './controllers/salons/router';
 import { router as calendarRouter } from './controllers/calendar/router';
 
@@ -19,7 +18,6 @@ router.get('/', welcome)
   .use('/', authRouter.routes(), authRouter.allowedMethods())
   .use('/onboarding', passport.onlyAuthenticated, onboardingRouter.routes(), onboardingRouter.allowedMethods())
   .use('/settings', passport.onlyAuthenticated, settingsRouter.routes(), settingsRouter.allowedMethods())
-  .use('/salon:salonId/settings', passport.onlyAuthenticated, salonSettingsRouter.routes(), salonSettingsRouter.allowedMethods())
   .use('/salons', salonsRouter.routes(), salonsRouter.allowedMethods())
   .use('/auth', passport.router.routes());
 
