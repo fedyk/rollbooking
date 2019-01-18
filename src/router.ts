@@ -12,7 +12,7 @@ import { router as calendarRouter } from './controllers/calendar/router';
 
 import { salonAliasMiddleware } from './middlewares/salon-alias-middleware';
 
-export const router = new Router();
+export const router = new Router<any, any>();
 
 router.get('/', welcome)
   .use('/', authRouter.routes(), authRouter.allowedMethods())
