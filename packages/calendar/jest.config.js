@@ -1,8 +1,8 @@
-{
+module.exports = {
   "transform": {
     "^.+\\.tsx?$": "ts-jest",
     "^.+\\.(css|scss|less)$": "jest-css-modules"
   },
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
-}
+};

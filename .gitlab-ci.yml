@@ -21,9 +21,9 @@ test:
   script:
    - node -v
    - npm -v
+   - cd packages/calendar/ && npm install
+   - cd packages/calendar/ && npm test
+   - cd packages/calendar/ && npm run build
    - npm install
-   - npm run packages:calendar:install
    - npm run build
-   - npm run packages:calendar:build
    - npm run test
-   - npm run packages:calendar:test

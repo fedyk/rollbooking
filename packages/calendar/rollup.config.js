@@ -1,50 +1,51 @@
-import external from 'rollup-plugin-peer-deps-external';
-import resolve from 'rollup-plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript2';
-import { terser } from 'rollup-plugin-terser';
-import filesize from 'rollup-plugin-filesize';
-import progress from 'rollup-plugin-progress';
-import visualizer from 'rollup-plugin-visualizer';
-import postcss from 'rollup-plugin-postcss';
+import resolve from "rollup-plugin-node-resolve";
+import commonjs from "rollup-plugin-commonjs";
+import typescript from "rollup-plugin-typescript2";
+import { terser } from "rollup-plugin-terser";
+import filesize from "rollup-plugin-filesize";
+import progress from "rollup-plugin-progress";
+import visualizer from "rollup-plugin-visualizer";
+import postcss from "rollup-plugin-postcss";
+import replace from "rollup-plugin-replace";
+import pkg from "./package.json";
+
+const minimize = process.env.NODE_ENV === "production";
 
 export default {
-  input: 'src/index.tsx',
+  input: "src/index.tsx",
   output: [
     {
-      file: '../../public/packages/calendar/index.js',
-      format: 'iife',
-      name: 'calendar',
+      file: pkg.browser,
+      format: "iife",
+      name: "calendar",
       sourcemap: false,
     },
   ],
   plugins: [
-    // Automatically externalize peerDependencies in a rollup bundle.
-    external(),
-
-    // Prints out typescript syntactic and semantic diagnostic messages
-    typescript({
-      tsconfigDefaults: {
-        compilerOptions: {
-          declaration: true,
-          jsx: 'react'
-        },
-      },
-    }),
-
-    postcss({
-      minimize: true, // uses cssnano behind scene
-      modules: false, // enable css modules
-      extensions: ['.css', '.scss', '.sass'], // uses node-sass
-    }),
-
-    // Locate modules using the Node resolution algorithm,
-    // for using third party modules in node_modules
     resolve(),
 
-    // minifies es bundles
-    terser(),
+    replace({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
+    }),
 
-    // logs the filesize in cli when done
+    commonjs({
+      namedExports: {
+        "node_modules/react-dom/index.js": ["render"],
+        "node_modules/react/index.js": ["createElement", "PureComponent"],
+      }
+    }),
+
+    typescript(),
+
+    postcss({
+      minimize: minimize,
+      extensions: [".css", ".scss", ".sass"],
+    }),
+
+    // Minimize es bundles
+    minimize && terser(),
+
+    // Logs the filesize in cli when done
     filesize(),
 
     // Progress while building
@@ -52,8 +53,8 @@ export default {
 
     // Generates a statistics page
     visualizer({
-      filename: './statistics.html',
-      title: 'My Bundle',
+      filename: "./statistics.html",
+      title: "My Bundle",
     }),
   ],
 };

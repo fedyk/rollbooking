@@ -1,3 +1,7 @@
 {
-  "compilerOptions": { "jsx": "react" }
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "jsx": "react"
+  }
 }
