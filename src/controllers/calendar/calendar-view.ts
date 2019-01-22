@@ -3,18 +3,29 @@ import { stringMapJoin } from "../../helpers/string-map-join";
 import { attrs } from "../../helpers/html";
 import { Reservation } from "../../models/reservation";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
+import { Date } from "../../models/date";
 
 interface Props {
-  reservations: Reservation[]
+  reservations: Reservation[];
+  date: Date;
+  resources: Array<{
+    id: string;
+    title: string;
+  }>;
+  events: Array<{
+    id: string;
+    title: string;
+    start: string; // iso, local
+    end: string; // iso, local
+    resourceId: string;
+  }>;
 }
 
-export function calendarView(props: Props) {
+export function calendarView({ reservations, date, resources, events }: Props) {
   return `
     <div class="container mt-3">
       <div id="calendar"></div>
     </div>
-
-
     <h3>Calendar</h3>
     <table class="table">
       <thead>
@@ -26,7 +37,7 @@ export function calendarView(props: Props) {
         </tr>
       </thead>
       <tbody>
-        ${stringMapJoin(props.reservations, (reservation) => `<tr>
+        ${stringMapJoin(reservations, (reservation) => `<tr>
           <td>${dateTimeToNativeDate(reservation.start)} - ${dateTimeToNativeDate(reservation.start)}</td>
           <td>${reservation.userId}</td>
           <td>${reservation.salonId}</td>
@@ -38,6 +49,6 @@ export function calendarView(props: Props) {
       </tbody>
     </table>
     <script src="/packages/calendar/calendar.js"></script>
-    <script>calendar.render('#calendar', { title: "Hello" })</script>
+    <script>calendar.render('#calendar', ${JSON.stringify(date)}, ${JSON.stringify(resources)}, ${JSON.stringify(events)})</script>
   `
 }
