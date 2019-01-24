@@ -1,11 +1,12 @@
 import { Context } from "koa";
 import { ReservationsCollection, UsersCollection } from "../../adapters/mongodb";
 import { template } from "../../views/template";
-import { calendarView } from "./calendar-view";
-import { Salon } from "../../models/salon";
+import { calendar as calendarView } from "./views/calendar";
+import { Salon, SalonService } from "../../models/salon";
 import { parseUrlParams } from "./helpers/parse-url-params";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { dateTimeToISODate } from "../../helpers/date/date-time-to-iso-date";
+import { content } from "../../views/shared/content";
 
 export async function calendar(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -41,10 +42,16 @@ export async function calendar(ctx: Context) {
     }]
   }).toArray();
 
+  const servicesMap = new Map<number, SalonService>(salon.services.items.map(function(service): [number, SalonService] {
+    return [service.id, service];
+  }));
+
   const events = reservations.map(function(r) {
+    const title = servicesMap.has(r.serviceId) ? servicesMap.get(r.serviceId).name : "Unknown service";
+
     return {
       id: r._id.toHexString(),
-      title: `serviceId=${r.serviceId}, userId=${r.userId}`,
+      title: title,
       start: dateTimeToISODate(r.start),
       end: dateTimeToISODate(r.end),
       resourceId: r.masterId.toHexString()
@@ -53,11 +60,14 @@ export async function calendar(ctx: Context) {
 
   ctx.body = template({
     title: "Calendar",
-    body: calendarView({
-      date: date,
-      reservations: reservations,
-      resources: resources,
-      events: events
+    body: content({
+      alias: salon.alias,
+      body: calendarView({
+        date: date,
+        reservations: reservations,
+        resources: resources,
+        events: events
+      })
     })
   })
 }

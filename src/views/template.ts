@@ -33,19 +33,15 @@ export const template = (props: Props): string => `
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   ${stringMapJoin([
-    "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css",
+    "https://fonts.googleapis.com/icon?family=Material+Icons"
   ].concat(props.styles), (href => stylesheet(href)))}
   <title>${escape(props.title)}</title>
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
-  <a class="navbar-brand" href="/">
-    <img src="/images/logo-white.svg" height="24" class="d-inline-block align-middle" alt="rollbooking">
-  </a>
-</nav>
-
 ${props.body}
+
 ${stringMapJoin([
   "https://code.jquery.com/jquery-3.3.1.slim.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js",

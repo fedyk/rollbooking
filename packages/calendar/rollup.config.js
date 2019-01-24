@@ -31,7 +31,7 @@ export default {
     commonjs({
       namedExports: {
         "node_modules/react-dom/index.js": ["render"],
-        "node_modules/react/index.js": ["createElement", "PureComponent"],
+        "node_modules/react/index.js": ["createElement", "PureComponent", "Fragment"],
       }
     }),
 
