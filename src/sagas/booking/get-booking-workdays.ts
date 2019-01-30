@@ -107,7 +107,7 @@ export function getPeriods(
 
   let curr = new Date(startDate.getTime());
 
-  while (curr.getFullYear() <= endDate.getFullYear() && curr.getMonth() <= endDate.getMonth() && curr.getDate() <= endDate.getDate()) {
+  while (curr.getTime() <= endDate.getTime()) {
     const currDayOfWeek = curr.getDay() as DayOfWeek;
 
     if (periodsByStartDay.has(currDayOfWeek)) {
