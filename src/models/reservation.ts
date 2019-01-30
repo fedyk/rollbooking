@@ -13,7 +13,7 @@ export interface Reservation {
   meta?: ReservationMeta;
 }
 
-enum Status {
+export enum Status {
   Pending = 1,
   Confirmed = 2,
   Rejected = 3,

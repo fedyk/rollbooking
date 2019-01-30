@@ -7,6 +7,7 @@ import { parseUrlParams } from "./helpers/parse-url-params";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { dateTimeToISODate } from "../../helpers/date/date-time-to-iso-date";
 import { content } from "../../views/shared/content";
+import { reservationToEvent } from "./helpers/reservation-to-event";
 
 export async function calendar(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -46,27 +47,30 @@ export async function calendar(ctx: Context) {
     return [service.id, service];
   }));
 
-  const events = reservations.map(function(r) {
-    const title = servicesMap.has(r.serviceId) ? servicesMap.get(r.serviceId).name : "Unknown service";
-
-    return {
-      id: r._id.toHexString(),
-      title: title,
-      start: dateTimeToISODate(r.start),
-      end: dateTimeToISODate(r.end),
-      resourceId: r.masterId.toHexString()
-    }
-  })
+  const events = reservations.map(function(reservation) {
+    return reservationToEvent(reservation, servicesMap);
+  });
 
   ctx.body = template({
     title: "Calendar",
+    styles: [
+      "/packages/calendar/calendar.css"
+    ],
+    scripts: [
+      "/packages/calendar/calendar.js"
+    ],
     body: content({
       alias: salon.alias,
       body: calendarView({
         date: date,
         reservations: reservations,
         resources: resources,
-        events: events
+        events: events,
+        endpoints: {
+          create: `/${salon.alias}/calendar/events/create`,
+          update: `/${salon.alias}/calendar/events/update`,
+          delete: `/${salon.alias}/calendar/events/delete`,
+        }
       })
     })
   })
