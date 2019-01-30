@@ -1,1 +1,1 @@
-export { Calendar, Props } from './Calendar';
+export { Calendar, Props, Resource, Event } from './Calendar';

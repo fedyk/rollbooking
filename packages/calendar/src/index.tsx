@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom'
-import { Calendar, Props } from "./components/Calendar";
+import { App } from "./components/App";
+import { rawEventToEvent } from './helpers/raw-event-to-event';
 
 export interface Date {
   year: number;
@@ -21,24 +22,35 @@ export interface Event {
   resourceId: string;
 }
 
-export function render(targetSelector, date: Date, resources: Resource[], events: Event[]) {
+export interface Data {
+  date: Date,
+  resources: Resource[],
+  events: Event[],
+  endpoints: {
+    create: string;
+    updates: string;
+    delete: string;
+  }
+}
+
+export function render(targetSelector, data: Data) {
+  const { date } = data
   const target = document.querySelector(targetSelector);
 
   if (!target) {
     throw new Error(`Target for calendar doesn't exist(${targetSelector})`);
   }
 
-  return ReactDOM.render(<Calendar
+  return ReactDOM.render(<App
     date={new Date(date.year, date.month - 1, date.day)}
-    resources={resources}
-    events={events.map(function(event) {
-      return {
-        id: event.id,
-        title: event.title,
-        start: new Date(event.start),
-        end: new Date(event.end),
-        resourceId: event.resourceId
-      };
-    })}
+    resources={data.resources}
+    events={data.events.map(rawEventToEvent)}
+    endpoints={data.endpoints}
   />, target);
+}
+
+const initialState = (window as any).__initialState;
+
+if (initialState) {
+  render("#calendar", initialState)
 }
