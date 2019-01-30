@@ -31,30 +31,31 @@ export default {
     commonjs({
       namedExports: {
         "node_modules/react-dom/index.js": ["render"],
-        "node_modules/react/index.js": ["createElement", "PureComponent", "Fragment"],
+        "node_modules/react/index.js": ["createElement", "PureComponent", "Fragment", "createRef"],
       }
     }),
 
     typescript(),
 
     postcss({
+      extract: true,
       minimize: minimize,
       extensions: [".css", ".scss", ".sass"],
     }),
 
     // Minimize es bundles
-    minimize && terser(),
+    // minimize && terser(),
 
     // Logs the filesize in cli when done
-    filesize(),
+    // filesize(),
 
     // Progress while building
-    progress({ clearLine: false }),
+    // progress({ clearLine: false }),
 
     // Generates a statistics page
-    visualizer({
-      filename: "./statistics.html",
-      title: "My Bundle",
-    }),
+    // visualizer({
+    //   filename: "./statistics.html",
+    //   title: "My Bundle",
+    // }),
   ],
 };
