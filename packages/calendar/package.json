@@ -13,7 +13,8 @@
     "build": "rollup -c",
     "start": "rollup -c -w",
     "test": "jest --config ./jest.config.json",
-    "lint": "lint-staged"
+    "lint": "lint-staged",
+    "pretty": "prettier --write src/**/*.{ts,tsx,js}"
   },
   "peerDependencies": {
     "react": "16.7.0",
@@ -21,40 +22,34 @@
   },
   "devDependencies": {
     "@types/jest": "23.3.13",
-    "@types/react": "16.7.20",
+    "@types/react": "16.7.22",
     "@types/react-big-calendar": "0.20.2",
     "@types/react-dom": "16.0.11",
     "@types/react-test-renderer": "16.0.3",
     "classnames": "2.2.6",
-    "jest": "23.6.0",
+    "jest": "24.0.0",
     "jest-css-modules": "1.1.0",
-    "lint-staged": "8.1.0",
+    "lint-staged": "8.1.1",
     "node-sass": "4.11.0",
-    "prettier": "1.15.3",
+    "prettier": "1.16.3",
     "react": "16.7.0",
     "react-dom": "16.7.0",
     "react-test-renderer": "16.7.0",
-    "rollup": "1.1.0",
+    "rollup": "1.1.2",
     "rollup-plugin-commonjs": "9.2.0",
-    "rollup-plugin-filesize": "6.0.0",
+    "rollup-plugin-filesize": "6.0.1",
     "rollup-plugin-node-resolve": "4.0.0",
-    "rollup-plugin-postcss": "1.6.3",
+    "rollup-plugin-postcss": "2.0.1",
     "rollup-plugin-progress": "1.0.0",
     "rollup-plugin-replace": "2.1.0",
-    "rollup-plugin-terser": "4.0.2",
+    "rollup-plugin-terser": "4.0.3",
     "rollup-plugin-typescript2": "0.19.2",
     "rollup-plugin-visualizer": "0.9.2",
     "ts-jest": "23.10.5",
     "typescript": "3.2.4"
   },
-  "lint-staged": {
-    "*.{ts,tsx,js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
   "dependencies": {
-    "moment": "2.23.0",
+    "moment": "2.24.0",
     "react-big-calendar": "0.20.3"
   }
 }
