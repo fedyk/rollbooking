@@ -1,18 +1,16 @@
 import { Context } from "koa";
-import { ReservationsCollection, UsersCollection } from "../../adapters/mongodb";
+import { UsersCollection } from "../../adapters/mongodb";
 import { template } from "../../views/template";
 import { calendar as calendarView } from "./views/calendar";
-import { Salon, SalonService } from "../../models/salon";
+import { Salon } from "../../models/salon";
 import { parseUrlParams } from "./helpers/parse-url-params";
 import { findTimeZone, getZonedTime } from "timezone-support";
-import { dateTimeToISODate } from "../../helpers/date/date-time-to-iso-date";
 import { content } from "../../views/shared/content";
-import { reservationToEvent } from "./helpers/reservation-to-event";
+import { getEvents } from "./helpers/get-events";
 
 export async function calendar(ctx: Context) {
   const salon = ctx.state.salon as Salon;
   const params = parseUrlParams(ctx.query);
-  const $reservations = await ReservationsCollection();
   const $users = await UsersCollection();
 
   const users = await $users.find({
@@ -29,27 +27,7 @@ export async function calendar(ctx: Context) {
   });
 
   const date = params.date ? params.date : getZonedTime(new Date(), findTimeZone(salon.timezone));
-
-  const reservations = await $reservations.find({
-    salonId: salon._id,
-    $or: [{
-      "start.year": date.year,
-      "start.month": date.month,
-      "start.day": date.day
-    }, {
-      "end.year": date.year,
-      "end.month": date.month,
-      "end.day": date.day
-    }]
-  }).toArray();
-
-  const servicesMap = new Map<number, SalonService>(salon.services.items.map(function(service): [number, SalonService] {
-    return [service.id, service];
-  }));
-
-  const events = reservations.map(function(reservation) {
-    return reservationToEvent(reservation, servicesMap);
-  });
+  const events = await getEvents(salon, date);
 
   ctx.body = template({
     title: "Calendar",
@@ -63,7 +41,6 @@ export async function calendar(ctx: Context) {
       alias: salon.alias,
       body: calendarView({
         date: date,
-        reservations: reservations,
         resources: resources,
         events: events,
         endpoints: {

@@ -34,5 +34,7 @@ export async function create(ctx: Context) {
     return [service.id, service];
   }));
 
-  ctx.body = reservationToEvent(reservation, servicesMap);
+  const usersMap = new Map();
+
+  ctx.body = reservationToEvent(reservation, servicesMap, usersMap);
 }
