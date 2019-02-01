@@ -1,24 +1,21 @@
 {
   "name": "@rollbooking/calendar",
+  "private": true,
   "files": [
     "../../public/packages/calendar"
   ],
   "browser": "../../public/packages/calendar/calendar.js",
-  "description": "Calendar Component",
+  "description": "Calendar Component for Rollbooking",
   "keywords": [],
-  "author": "Andrew Fedyk <fedyk72@gmail.com> (https://afedyk.com/)",
+  "author": "Rollbooking Team",
   "license": "MIT",
   "version": "0.0.1",
   "scripts": {
     "build": "rollup -c",
     "start": "rollup -c -w",
-    "test": "jest --config ./jest.config.json",
+    "test": "jest",
     "lint": "lint-staged",
     "pretty": "prettier --write src/**/*.{ts,tsx,js}"
-  },
-  "peerDependencies": {
-    "react": "16.7.0",
-    "react-dom": "16.7.0"
   },
   "devDependencies": {
     "@types/jest": "23.3.13",
@@ -50,6 +47,8 @@
   },
   "dependencies": {
     "moment": "2.24.0",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
     "react-big-calendar": "0.20.3"
   }
 }
