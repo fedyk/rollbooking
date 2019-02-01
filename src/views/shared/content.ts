@@ -14,5 +14,5 @@ export const content = ({ body, alias }: Props) => `
 ${body}
 </div>
 
-<div class="container pt-4">© 2019 rollbooking</nav>
+<div class="container pt-4 pb-4">© 2019 rollbooking</nav>
 `

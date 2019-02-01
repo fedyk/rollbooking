@@ -33,8 +33,6 @@ export class App extends React.PureComponent<Props, State> {
   }
 
   onSelectSlot = (slotInfo: any) => {
-    console.log("onSelectSlot", slotInfo);
-
     const { start, end, resourceId } = slotInfo;
     const tempEventId = `${Math.round(Math.random() * 1000000)}`;
     const tempEventTitle = "Saving..";

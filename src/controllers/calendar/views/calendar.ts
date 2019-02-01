@@ -23,9 +23,17 @@ interface Props {
 
 export const calendar = ({ date, resources, events, endpoints }: Props) => `
 
-<h5 class="h5 d-flex justify-content-between align-items-center">Calendar</h5>
-
-<div id="calendar"></div>
+<div class="card">
+  <div class="card-body">
+    <div id="calendar">
+      <div class="d-flex justify-content-center m-5">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>var __INITIAL_STATE__ = ${JSON.stringify({
   date,
