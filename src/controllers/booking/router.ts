@@ -3,7 +3,7 @@ import { welcome } from "./welcome";
 import { checkout } from "./checkout";
 import { reservation } from "./reservation";
 
-export const router = new Router();
+export const router = new Router<any, any>();
 
 router.get("/", welcome);
 router.get("/checkout", checkout);

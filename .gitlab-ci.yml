@@ -15,11 +15,16 @@ services:
 cache:
   paths:
   - node_modules/
+  - packages/calendar/node_modules/
 
-test:
+build-job:
+  variables:
+    NODE_ENV: "production"
   script:
    - node -v
    - npm -v
+   - echo $NODE_ENV
+   - node scripts/packages/build.js
    - npm install
    - npm run build
    - npm run test
