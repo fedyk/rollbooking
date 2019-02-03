@@ -24,11 +24,7 @@ build-job:
    - node -v
    - npm -v
    - echo $NODE_ENV
-   - cd packages/calendar
-   - npm install
-   - npm test
-   - npm run build
-   - cd ../..
+   - node scripts/packages/build.js
    - npm install
    - npm run build
    - npm run test
