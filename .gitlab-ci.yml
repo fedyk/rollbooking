@@ -18,8 +18,6 @@ cache:
   - packages/calendar/node_modules/
 
 build-job:
-  variables:
-    NODE_ENV: "production"
   script:
    - node -v
    - npm -v
@@ -28,3 +26,13 @@ build-job:
    - npm install
    - npm run build
    - npm run test
+
+deploy-heroku:
+  type: deploy
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=rollbooking --api-key=$HEROKU_ROLLBOOKING_API_KEY
+  only:
+    - master
