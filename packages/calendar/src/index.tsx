@@ -2,49 +2,28 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./components/App";
 import { rawEventToEvent } from "./helpers/raw-event-to-event";
-
-export interface Date {
-  year: number;
-  month: number;
-  day: number;
-}
-
-export interface Resource {
-  id: string;
-  title: string;
-}
-
-export interface Event {
-  id: string;
-  title: string;
-  start: string; // iso, local
-  end: string; // iso, local
-  resourceId: string;
-}
-
-export interface Data {
-  date: Date;
-  resources: Resource[];
-  events: Event[];
-  endpoints: {
-    create: string;
-    updates: string;
-    delete: string;
-  };
-}
+import { Data } from "./types";
+import { assert } from "./helpers/assert";
 
 export function render(targetSelector, data: Data) {
   const { date } = data;
   const target = document.querySelector(targetSelector);
 
-  if (!target) {
-    throw new Error(`Target for calendar doesn't exist(${targetSelector})`);
-  }
+  assert(target, `Target for calendar doesn't exist(${targetSelector})`);
+  assert(data, `Calendar require initial state`);
+  assert(data.date, "`data.date` is required");
+  assert(data.date.day, "`data.date` should follow `DateObject` interface");
+  assert(data.date.month, "`data.date` should follow `DateObject` interface");
+  assert(data.date.year, "`data.date` should follow `DateObject` interface");
+  assert(data.events, "`data.events` is required");
+  assert(data.masters, "`data.masters` is required");
+  assert(data.services, "`data.services` is required");
+  assert(data.endpoints, "`data.endpoints` is required");
 
   return ReactDOM.render(
     <App
       date={new Date(date.year, date.month - 1, date.day)}
-      resources={data.resources}
+      masters={data.masters}
       events={data.events.map(rawEventToEvent)}
       endpoints={data.endpoints}
     />,

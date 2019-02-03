@@ -1,5 +1,4 @@
 import * as React from "react";
-// import * as Bootstrap from "bootstrap";
 import { DateLocalizer } from "react-big-calendar";
 import { Event } from "../../types";
 import { CalendarContext } from "../CalendarContext";
@@ -67,7 +66,7 @@ export class CalendarEvent extends React.PureComponent<Props> {
   openEventModal = () => {
     this.popover.hide();
     this.context.openEventModal(this.props.event.id);
-  }
+  };
 
   render() {
     return (
@@ -75,20 +74,30 @@ export class CalendarEvent extends React.PureComponent<Props> {
         {this.props.title}
 
         <div hidden>
-            <div ref={this.popoverContent}>
-              <div className="mb-2">
-                <div className="font-weight-bold">Service</div>
-                <div>{this.props.event.serviceName || "None"}</div>
-              </div>
-              <div className="mb-2">
-                <div className="font-weight-bold">Client</div>
-                <div>{this.props.event.userName || "None"}</div>
-              </div>
-              <div className="d-flex justify-content-between">
-                <button className="btn btn-sm btn-outline-danger" onClick={this.deleteEvent}>Delete</button>
-                <button className="btn btn-sm btn-primary" onClick={this.openEventModal}>Edit</button>
-              </div>
+          <div ref={this.popoverContent}>
+            <div className="mb-2">
+              <div className="font-weight-bold">Service</div>
+              <div>{this.props.event.serviceName || "None"}</div>
             </div>
+            <div className="mb-2">
+              <div className="font-weight-bold">Client</div>
+              <div>{this.props.event.clientName || "None"}</div>
+            </div>
+            <div className="d-flex justify-content-between">
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={this.deleteEvent}
+              >
+                Delete
+              </button>
+              <button
+                className="btn btn-sm btn-primary"
+                onClick={this.openEventModal}
+              >
+                Edit
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );

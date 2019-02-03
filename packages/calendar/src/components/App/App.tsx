@@ -1,24 +1,28 @@
 import * as React from "react";
-import { Calendar, Resource, Event } from "../Calendar";
+import { Calendar } from "../Calendar";
 import { rawEventToEvent } from "../../helpers/raw-event-to-event";
 import { dateToLocalISOString } from "../../helpers/date-to-local-iso-string";
-import { CalendarContext } from "../CalendarContext";
+import { CalendarContext } from "./../CalendarContext";
+import { CalendarModal } from "../CalendarModal";
+import { find } from "../../helpers/find";
+import { Event, Master } from "../../types";
 
 interface Props {
   date: Date;
-  resources: Resource[];
+  masters: Master[];
   events: Event[];
   endpoints: {
     create: string;
-    updates: string;
+    update: string;
     delete: string;
   };
 }
 
 interface State {
   date: Date;
-  resources: Resource[];
+  masters: Master[];
   events: Event[];
+  modalEventId: string;
 }
 
 export class App extends React.PureComponent<Props, State> {
@@ -27,17 +31,21 @@ export class App extends React.PureComponent<Props, State> {
 
     this.state = {
       date: props.date,
-      resources: props.resources,
-      events: props.events
+      masters: props.masters,
+      events: props.events,
+      modalEventId: null
     };
   }
 
   onSelectSlot = (slotInfo: any) => {
     const { start, end, resourceId } = slotInfo;
+
+    // todo check if slotInfo has resourceId or masterId
+    debugger;
+
     const tempEventId = `${Math.round(Math.random() * 1000000)}`;
     const tempEventTitle = "Saving..";
-
-    fetch(this.props.endpoints.create, {
+    const fetchOptions = {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -49,10 +57,10 @@ export class App extends React.PureComponent<Props, State> {
         end: dateToLocalISOString(end),
         resourceId
       })
-    })
-      .then((response) => {
-        return response.json();
-      })
+    };
+
+    fetch(this.props.endpoints.create, fetchOptions)
+      .then((response) => response.json())
       .then((rawEvent) => {
         // Replace temp event to real one
         const events = this.state.events.map((v) =>
@@ -65,21 +73,46 @@ export class App extends React.PureComponent<Props, State> {
         console.error(reason);
       });
 
+    // Add temp event in state
     this.setState({
       events: this.state.events.concat({
         id: tempEventId,
         title: tempEventTitle,
         start,
         end,
-        resourceId
+        masterId: resourceId
       })
     });
 
     return true;
   };
 
+  updateEvent = (event: Event) => {
+    const options = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(event)
+    };
+
+    fetch(this.props.endpoints.update, options)
+      .then((response) => response.json())
+      .then((rawEvent) => {
+        const events = this.state.events.map((v) =>
+          v.id === rawEvent.id ? rawEventToEvent(rawEvent) : v
+        );
+
+        this.setState({ events });
+      })
+      .catch((reason) => {
+        console.error(reason);
+      });
+  };
+
   onSelectEvent = (selectEvent: Event) => {
-    const events = this.state.events.map(function (event) {
+    const events = this.state.events.map(function(event) {
       return {
         ...event,
         ...{
@@ -94,26 +127,49 @@ export class App extends React.PureComponent<Props, State> {
   };
 
   deleteEvent = (eventId: string) => {
-    alert('delete event ' + eventId)
-  }
+    alert("delete event " + eventId);
+  };
 
-  openEventModal = (eventId: string) => {
-    alert('open modal ' + eventId)
-  }
+  openEventModal = (modalEventId: string) => {
+    this.setState({ modalEventId });
+  };
+
+  onDoubleClickEvent = (event, clickEvent) => {
+    clickEvent.preventDefault();
+    this.openEventModal(event.id);
+  };
+
+  onCloseCalendarModal = () => {
+    this.setState({ modalEventId: null });
+  };
 
   render() {
+    const modalEvent = this.state.modalEventId
+      ? find(this.state.events, (v) => v.id === this.state.modalEventId)
+      : null;
+
     return (
-      <CalendarContext.Provider value={({
-        deleteEvent: this.deleteEvent,
-        openEventModal: this.openEventModal
-      })}>
+      <CalendarContext.Provider
+        value={{
+          deleteEvent: this.deleteEvent,
+          updateEvent: this.updateEvent,
+          openEventModal: this.openEventModal
+        }}
+      >
         <Calendar
           date={this.state.date}
-          resources={this.state.resources}
+          resources={this.state.masters}
           events={this.state.events}
           onSelectSlot={this.onSelectSlot}
+          onDoubleClickEvent={this.onDoubleClickEvent}
           onSelectEvent={this.onSelectEvent}
         />
+        {modalEvent && (
+          <CalendarModal
+            event={modalEvent}
+            onClose={this.onCloseCalendarModal}
+          />
+        )}
       </CalendarContext.Provider>
     );
   }

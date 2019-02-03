@@ -11,38 +11,26 @@ import {
 } from "react-big-calendar";
 import moment from "moment";
 import { CalendarEvent } from "../CalendarEvent";
+import { Event, Master } from "../../types";
 
 const localizer = BigCalendar.momentLocalizer(moment);
 
-export interface Resource {
-  id: string;
-  title: string;
-}
-
-export interface Event {
-  id: string;
-  title: string;
-  start: Date;
-  end: Date;
-  resourceId: string;
-  showPopover?: boolean;
-}
-
 export interface Props {
   date: Date;
-  resources: Resource[];
+  resources: Master[];
   events: Event[];
   onNavigate?: (newDate: Date, view: View, action: Navigate) => void;
-  onSelectSlot?: (
-    slotInfo: {
-      start: stringOrDate;
-      end: stringOrDate;
-      resourceId?: string;
-      slots: Date[] | string[];
-      action: "select" | "click" | "doubleClick";
-    }
+  onSelectSlot?: (slotInfo: {
+    start: stringOrDate;
+    end: stringOrDate;
+    resourceId?: string;
+    slots: Date[] | string[];
+    action: "select" | "click" | "doubleClick";
+  }) => void;
+  onDoubleClickEvent?: (
+    event: Event,
+    clickEvent?: React.SyntheticEvent
   ) => void;
-  onDoubleClickEvent?: (event: Event) => void;
   onSelectEvent?: (event: Event) => void;
 }
 
@@ -52,7 +40,11 @@ export class Calendar extends React.PureComponent<Props> {
       <BigCalendar
         defaultDate={this.props.date}
         events={this.props.events}
+        titleAccessor={(event) => event.title}
         resources={this.props.resources}
+        resourceAccessor={(event: Event) => event.masterId}
+        resourceIdAccessor={(resource) => resource.id}
+        resourceTitleAccessor={(resource) => resource.name}
         selectable={true}
         localizer={localizer}
         defaultView={BigCalendar.Views.DAY}
@@ -73,6 +65,6 @@ export class Calendar extends React.PureComponent<Props> {
 
 class Test extends React.PureComponent<ToolbarProps> {
   render() {
-    return <h5 className="card-title">Calendar</h5>
+    return <h5 className="card-title">Calendar</h5>;
   }
 }
