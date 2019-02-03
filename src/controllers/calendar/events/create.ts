@@ -12,7 +12,7 @@ export async function create(ctx: Context) {
   const master = salon.employees.users.find(v => v.id.toHexString() === body.resourceId);
   const reservation = {
     salonId: salon._id,
-    userId: null,
+    clientId: null,
     masterId: master ? master.id : null,
     serviceId: null,
     start: isoDateTimeToDateTime(body.start),

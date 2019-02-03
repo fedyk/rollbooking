@@ -19,15 +19,21 @@ export async function calendar(ctx: Context) {
     }
   }).toArray();
 
-  const resources = users.map(function(user) {
+  const masters = users.map(function(user) {
     return {
       id: user._id.toHexString(),
-      title: user.name
+      name: user.name
     }
   });
 
   const date = params.date ? params.date : getZonedTime(new Date(), findTimeZone(salon.timezone));
   const events = await getEvents(salon, date);
+
+  const services = salon.services.items.map(service => ({
+    id: service.id,
+    name: service.name,
+    duration: service.duration
+  }))
 
   ctx.body = template({
     title: "Calendar",
@@ -41,9 +47,12 @@ export async function calendar(ctx: Context) {
       alias: salon.alias,
       body: calendarView({
         date: date,
-        resources: resources,
+        masters: masters,
         events: events,
+        services: services,
         endpoints: {
+          base: `/${salon.alias}/calendar`,
+          list: `/${salon.alias}/calendar/events/list`,
           create: `/${salon.alias}/calendar/events/create`,
           update: `/${salon.alias}/calendar/events/update`,
           delete: `/${salon.alias}/calendar/events/delete`,

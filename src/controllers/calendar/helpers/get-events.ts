@@ -1,13 +1,15 @@
 import { Date } from "../../../models/date";
 import { Salon, SalonService } from "../../../models/salon";
-import { ReservationsCollection, UsersCollection } from "../../../adapters/mongodb";
+import { ReservationsCollection, ClientsCollection } from "../../../adapters/mongodb";
 import { reservationToEvent } from "./reservation-to-event";
-import { User } from "../../../models/user";
+import { Client } from "../../../models/client";
+import { ObjectID } from "bson";
 
 export async function getEvents(salon: Salon, date: Date) {
   const $reservations = await ReservationsCollection();
-  const $users = await UsersCollection();
+  const $clients = await ClientsCollection();
 
+  // TODO cover this params by TS
   const reservations = await $reservations.find({
     salonId: salon._id,
     $or: [{
@@ -25,23 +27,19 @@ export async function getEvents(salon: Salon, date: Date) {
     return [service.id, service];
   }));
 
-  const usersIds = reservations.filter(function(reservation) {
-    return !!reservation.userId;
-  }).map(function(reservation) {
-    return reservation.userId;
-  });
+  const clientsIds = reservations.filter(reservation => ObjectID.isValid(reservation.clientId)).map(reservation => reservation.clientId);
 
-  const users = await $users.find({
+  const clients = clientsIds.length > 0 ? await $clients.find({
     _id: {
-      $in: usersIds
+      $in: clientsIds
     }
-  }).toArray();
+  }).toArray() : [];
 
-  const usersMap = new Map<string, User>(users.map(function(user): [string, User] {
-    return [user._id.toHexString(), user];
+  const clientsMap = new Map<string, Client>(clients.map(function(client): [string, Client] {
+    return [client._id.toHexString(), client];
   }));
 
   return reservations.map(function(reservation) {
-    return reservationToEvent(reservation, servicesMap, usersMap);
+    return reservationToEvent(reservation, servicesMap, clientsMap);
   });
 }

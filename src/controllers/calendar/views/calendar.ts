@@ -3,25 +3,32 @@ import { Date } from "../../../models/date";
 
 interface Props {
   date: Date;
-  resources: Array<{
+  masters: Array<{
     id: string;
-    title: string;
+    name: string;
   }>;
   events: Array<{
     id: string;
     title: string;
     start: string; // iso, local
     end: string; // iso, local
-    resourceId: string;
+    masterId: string;
   }>;
+  services: Array<{
+    id: number;
+    name: string;
+    duration: number;
+  }>
   endpoints: {
+    base: string;
+    list: string;
     create: string;
     update: string;
     delete: string;
   }
 }
 
-export const calendar = ({ date, resources, events, endpoints }: Props) => `
+export const calendar = ({ date, masters, events, endpoints, services }: Props) => `
 
 <div class="card">
   <div class="card-body">
@@ -38,7 +45,8 @@ export const calendar = ({ date, resources, events, endpoints }: Props) => `
 <script>var __INITIAL_STATE__ = ${JSON.stringify({
   date,
   events,
-  resources,
-  endpoints
+  masters,
+  endpoints,
+  services
 })}</script>
 `

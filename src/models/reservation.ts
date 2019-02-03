@@ -4,7 +4,7 @@ import { DateTime } from "./date-time";
 export interface Reservation {
   _id?: ObjectID;
   salonId: ObjectID;
-  userId: ObjectID;
+  clientId: ObjectID;
   masterId: ObjectID;
   serviceId: number;
   start: DateTime;
@@ -17,6 +17,7 @@ export enum Status {
   Pending = 1,
   Confirmed = 2,
   Rejected = 3,
+  Deleted = 4,
 }
 
 interface ReservationMeta {
@@ -38,7 +39,7 @@ interface ReservationMeta {
  */
 const reservation: Reservation = {
   salonId: new ObjectID("5c2715c874a20f11b784517a"),
-  userId: new ObjectID("5c2715c874a20f11b784517b"),
+  clientId: new ObjectID("5c2715c874a20f11b784517b"),
   masterId: new ObjectID("5c2715c874a20f11b784517b"),
   serviceId: 1,
   start: {
