@@ -17,13 +17,18 @@ cache:
   - node_modules/
   - packages/calendar/node_modules/
 
-test:
+build-job:
+  variables:
+    NODE_ENV: "production"
   script:
    - node -v
    - npm -v
-   - cd packages/calendar/ && npm install
-   - cd packages/calendar/ && npm test
-   - cd packages/calendar/ && npm run build
+   - echo $NODE_ENV
+   - cd packages/calendar
+   - npm install
+   - npm test
+   - npm run build
+   - cd ../..
    - npm install
    - npm run build
    - npm run test
