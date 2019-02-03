@@ -18,7 +18,7 @@ export default {
       file: pkg.browser,
       format: "iife",
       name: "calendar",
-      sourcemap: false,
+      sourcemap: true,
     },
   ],
   plugins: [
@@ -44,10 +44,10 @@ export default {
     }),
 
     // Minimize es bundles
-    // minimize && terser(),
+    minimize && terser(),
 
     // Logs the filesize in cli when done
-    // filesize(),
+    filesize(),
 
     // Progress while building
     // progress({ clearLine: false }),
