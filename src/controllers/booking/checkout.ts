@@ -4,7 +4,7 @@ import * as parseInt from "parse-int";
 import { stringify } from "querystring";
 import { checkoutView } from "../../views/booking/checkout-view";
 import { bookingLayoutView } from "../../views/booking/booking-layout-view";
-import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
+import { BookingWorkdaysCollection, ReservationsCollection, UsersCollection, ClientsCollection } from "../../adapters/mongodb";
 import { isEmail } from "../../utils/is-email";
 import { addMinutes } from "../../helpers/date/add-minutes";
 import { syncBookingWorkdays } from "../../tasks/salon/sync-booking-workdays";
@@ -26,6 +26,7 @@ export async function checkout(ctx: Context) {
   const params = parseRequestQuery(ctx.query);
   const $bookingWorkdays = await BookingWorkdaysCollection();
   const $users = await UsersCollection();
+  const $clients = await ClientsCollection();
   const $reservations = await ReservationsCollection();
 
   ctx.assert(params.masterId, 400, "Invalid params")
@@ -71,37 +72,30 @@ export async function checkout(ctx: Context) {
 
   // Ok, lets save
   if (ctx.method === "POST") {
-    const userParams = parseRequestBody(ctx.request.body);
+    const clientParams = parseRequestBody(ctx.request.body);
 
-    ctx.assert(isEmail(userParams.email), 400, "Invalid email")
-    ctx.assert(userParams.name, 400, "Name is required")
-    ctx.assert(userParams.name.length < 64, 400, "Name is too long")
+    ctx.assert(isEmail(clientParams.email), 400, "Invalid email")
+    ctx.assert(clientParams.name, 400, "Name is required")
+    ctx.assert(clientParams.name.length < 64, 400, "Name is too long")
 
-    let user = await $users.findOne({
-      email: userParams.email
-    });
+    let client = await $clients.findOne({ email: clientParams.email });
 
-    if (!user) {
-      user = {
-        email: userParams.email,
-        name: userParams.name,
-        password: "",
+    if (!client) {
+      client = {
+        email: clientParams.email,
+        name: clientParams.name,
         created: new Date(),
         updated: new Date(),
-        employers: {
-          salons: []
-        },
-        properties: {}
       }
 
-      const { insertedId } = await $users.insertOne(user);
+      const { insertedId } = await $clients.insertOne(client);
 
-      user._id = insertedId;
+      client._id = insertedId;
     }
 
     // Save user input for next time
-    ctx.session.bookingUserName = userParams.name;
-    ctx.session.bookingUserEmail = userParams.email;
+    ctx.session.bookingUserName = clientParams.name;
+    ctx.session.bookingUserEmail = clientParams.email;
 
     const reservationStart = {
       year: params.date.year,
@@ -114,7 +108,7 @@ export async function checkout(ctx: Context) {
 
     const reservation = await $reservations.insertOne({
       salonId: salon._id,
-      userId: user._id,
+      clientId: client._id,
       masterId: salonMaster._id,
       serviceId: salonService.id,
       start: reservationStart,

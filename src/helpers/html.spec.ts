@@ -1,4 +1,4 @@
-import { escape, attrs, classes } from "./html";
+import { escape, attrs, classes, script, stylesheet } from "./html";
 
 test('html/escape', () => {
   expect(escape("test")).toBe("test")
@@ -27,4 +27,12 @@ test('html/classes', () => {
     "class-name-2": true,
     "class-name-3": true
   })).toBe("class-name-2 class-name-3")
+});
+
+test('html/script', () => {
+  expect(script("test.js")).toBe("<script src=\"test.js\" type=\"text/javascript\"></script>")
+});
+
+test('html/script', () => {
+  expect(stylesheet("test.css")).toBe("<link href=\"test.css\" rel=\"stylesheet\">")
 });

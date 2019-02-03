@@ -269,6 +269,42 @@ describe("getPeriods", function () {
       )
     ])
   })
+  
+  it("should work 3", function () {
+    debugger
+    expect(getPeriods({
+      year: 2018,
+      month: 12,
+      day: 28
+    }, {
+      year: 2019,
+      month: 1,
+      day: 2
+    }, {
+      periods: [{
+        openDay: DayOfWeek.WEDNESDAY,
+        openTime: {
+          hours: 10,
+          minutes: 0,
+          seconds: 0
+        },
+        closeDay: DayOfWeek.WEDNESDAY,
+        closeTime: {
+          hours: 16,
+          minutes: 0,
+          seconds: 0
+        },
+      }]
+    }, {
+        periods: []
+      }
+    )).toEqual([
+      new DateRange(
+        new Date(2019, 0, 2, 10, 0),
+        new Date(2019, 0, 2, 16, 0)
+      )
+    ])
+  })
 })
 
 describe("getGroupedPeriodsByDayOfWeek", function () {

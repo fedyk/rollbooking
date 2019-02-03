@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import { Salon } from "../models/salon";
 import { Reservation } from "../models/reservation";
 import { BookingWorkday } from "../models/booking-workday";
+import { Client } from "../models/client";
 
 const client = new MongoClient(config.MONGODB_URI, {
   useNewUrlParser: true
@@ -41,40 +42,6 @@ export async function BookingWorkdaysCollection(): Promise<Collection<BookingWor
   return await getCollection("booking-workdays");
 }
 
-
-
-// TODO: leftovers
-
-// export function Mongo(MONGODB_URI): IMongo {
-//   const connect: Promise<MongoClient> = new Promise((resolve, reject) => {
-//     MongoClient.connect(MONGODB_URI, {
-//       useNewUrlParser: true
-//     }, (error, mongoClient) => error ? reject(error) : resolve(mongoClient));
-//   })
-//   connect
-//     .then(() => debug("connected to mongo server"))
-//     .catch(error => debug("error connect to mongo %O", error));
-  
-//   async function db(): Promise<Db> {
-//     return connect.then(client => client.db());
-//   }
-
-//   async function collection(collectionName) {
-//     return db().then(db => db.collection(collectionName))
-//   }
-
-//   async function activities(): Promise<Collection<Activity>> {
-//     return collection("activities");
-//   }
-
-//   async function close() {
-//     return connect.then(client => client.close())
-//   }
-
-//   return {
-//     db,
-//     collection,
-//     activities,
-//     close,
-//   }
-// }
+export async function ClientsCollection(): Promise<Collection<Client>> {
+  return await getCollection("clients");
+}

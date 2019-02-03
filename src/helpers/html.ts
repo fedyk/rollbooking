@@ -211,3 +211,24 @@ export function escape(_html) {
   if (lastIndex !== i) return result + html.substring(lastIndex, i);
   else return result;
 };
+
+
+export function script(src: string, attributes: object = {}) {
+  const a = Object.assign({
+    src,
+    type: 'text/javascript'
+  }, attributes);
+
+  return `<script ${attrs(a)}></script>`;
+  
+}
+
+export function stylesheet(href: string, attributes: object = {}) {
+  const a = Object.assign({
+    href,
+    rel: "stylesheet",
+  }, attributes);
+
+  return `<link ${attrs(a)}>`;
+  
+}

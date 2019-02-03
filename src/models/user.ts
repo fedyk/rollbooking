@@ -23,14 +23,13 @@ export interface SalonEmployer {
 export interface UserProperties {
   google?: {
     accessToken?: string;
-    emails: string[];
     scope?: string[];
     refreshToken?: string;
   };
   invitation?: {
     from_user_id: number;
     to_salon_id: number;
-  },
+  };
   salons?: {
     default_salon_id?: number
   }
