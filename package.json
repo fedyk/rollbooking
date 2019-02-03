@@ -1,8 +1,6 @@
 {
-  "name": "rollbooking.com",
+  "private": true,
   "version": "0.0.1",
-  "description": "The first version of Rollbooking web app",
-  "main": "index.js",
   "dependencies": {
     "@types/koa-session": "^5.7.4",
     "dotenv": "^6.2.0",
@@ -46,7 +44,5 @@
     "start": "node dist/server",
     "dev": "nodemon --inspect dist/server --watch dist",
     "heroku-postbuild": "npm run build"
-  },
-  "author": "Rollbooking Team",
-  "license": "ISC"
+  }
 }
