@@ -1,4 +1,10 @@
-build-job:
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
   image: node:lts
   services:
     - mongo:latest
@@ -16,12 +22,35 @@ build-job:
    - npm run build
    - npm run test
 
-deploy-heroku:
-  type: deploy
+deploy:
+  image: node:lts
+  cache:
+    paths:
+      - node_modules/
+      - packages/calendar/node_modules/
   script:
+   - node -v
+   - npm -v
+   - echo $NODE_ENV
+   - node scripts/packages/build.js
+   - npm install
+   - npm run build
+
+deploy-heroku:
+  image: node:lts
+  stage: deploy
+  script:
+    - node -v
+    - npm -v
+    - echo $NODE_ENV
+    - node scripts/packages/build.js
+    - npm install
+    - npm run build
+    - echo "Install ryby-dev & gem#dpl"
     - apt-get update -qy
     - apt-get install -y ruby-dev
     - gem install dpl
+    - echo "Deploy to heroku"
     - dpl --provider=heroku --app=rollbooking --api-key=$HEROKU_ROLLBOOKING_API_KEY
   only:
     - master
