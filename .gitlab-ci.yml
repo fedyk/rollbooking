@@ -23,20 +23,7 @@ build:
    - npm run test
 
 deploy:
-  image: node:lts
-  cache:
-    paths:
-      - node_modules/
-      - packages/calendar/node_modules/
-  script:
-   - node -v
-   - npm -v
-   - echo $NODE_ENV
-   - node scripts/packages/build.js
-   - npm install
-   - npm run build
-
-deploy-heroku:
+  stage: deploy
   image: node:lts
   stage: deploy
   script:
