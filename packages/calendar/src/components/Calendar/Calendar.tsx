@@ -1,13 +1,12 @@
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "./Calendar.scss";
+import "./Calendar.css";
 
 import * as React from "react";
 import {
   default as BigCalendar,
   Navigate,
   View,
-  stringOrDate,
-  ToolbarProps
+  stringOrDate
 } from "react-big-calendar";
 import moment from "moment";
 import { CalendarEvent } from "../CalendarEvent";
@@ -51,7 +50,7 @@ export class Calendar extends React.PureComponent<Props> {
         views={["day"]}
         step={15}
         components={{
-          toolbar: Test,
+          toolbar: () => null,
           event: CalendarEvent
         }}
         onNavigate={this.props.onNavigate}
@@ -60,11 +59,5 @@ export class Calendar extends React.PureComponent<Props> {
         onSelectEvent={this.props.onSelectEvent}
       />
     );
-  }
-}
-
-class Test extends React.PureComponent<ToolbarProps> {
-  render() {
-    return <h5 className="card-title">Calendar</h5>;
   }
 }

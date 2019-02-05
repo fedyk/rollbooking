@@ -1,4 +1,4 @@
-export function dateToLocalISOString(date: Date): string {
+export function dateToISODateTime(date: Date): string {
   return (
     date.getUTCFullYear() +
     "-" +
