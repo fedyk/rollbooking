@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DateLocalizer } from "react-big-calendar";
 import { Event } from "../../types";
-import { CalendarContext } from "../CalendarContext";
+import { CalendarContext } from "../CalendarContext/CalendarContext";
 
 declare const bootstrap: any;
 

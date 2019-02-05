@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Event } from "../../types";
-import { CalendarContext } from "../CalendarContext";
+import { CalendarContext } from "../CalendarContext/CalendarContext";
 import { dateToTimeString } from "../../helpers/date-to-time-string";
 
 declare const jQuery: any;

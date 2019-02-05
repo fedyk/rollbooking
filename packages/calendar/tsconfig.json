@@ -2,6 +2,8 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "jsx": "react"
+    "jsx": "react",
+    "sourceMap": true,
+    "target": "es2015"
   }
 }

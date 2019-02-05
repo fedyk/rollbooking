@@ -1,15 +1,15 @@
 import * as React from "react";
-import { Calendar } from "../Calendar";
+import { Calendar } from "../Calendar/Calendar";
 import { rawEventToEvent } from "../../helpers/raw-event-to-event";
 import { dateToISODateTime } from "../../helpers/date-to-iso-datetime";
-import { CalendarContext } from "./../CalendarContext";
-import { CalendarModal } from "../CalendarModal";
-import { find } from "../../helpers/find";
+import { CalendarContext } from "../CalendarContext/CalendarContext";
+import { CalendarModal } from "../CalendarModal/CalendarModal";
 import { Event, Master, Endpoints } from "../../types";
-import { Toolbar } from "../Toolbar";
+import { Toolbar } from "../Toolbar/Toolbar";
 import { dateToISODate } from "../../helpers/date-to-iso-date";
 import { indexBy } from "../../helpers/index-by";
 import { values } from "../../helpers/values";
+import { delay } from "../../helpers/delay";
 
 interface Props {
   date: Date;
@@ -75,9 +75,7 @@ export class App extends React.PureComponent<Props, State> {
 
         this.setState({ events });
       })
-      .catch((reason) => {
-        console.error(reason);
-      });
+      .catch((reason) => console.error(reason));
 
     // Add temp event in state
     const tempEvent = {
@@ -169,7 +167,23 @@ export class App extends React.PureComponent<Props, State> {
   };
 
   deleteEvent = (eventId: string) => {
-    alert("delete event " + eventId);
+    const url = `${this.props.endpoints.delete}/${eventId}`;
+    const options = {
+      method: "POST"
+    };
+
+    fetch(url, options)
+      .catch(() => delay(1000))
+      .then(() => fetch(url, options))
+      .then(() => {
+        const events = {
+          ...this.state.events,
+          [eventId]: null
+        };
+
+        this.setState({ events });
+      })
+      .catch((err) => console.error(err));
   };
 
   openEventModal = (modalEventId: string) => {

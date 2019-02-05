@@ -2,17 +2,17 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./Calendar.css";
 
 import * as React from "react";
+import globalize from "globalize";
 import {
   default as BigCalendar,
   Navigate,
   View,
   stringOrDate
 } from "react-big-calendar";
-import moment from "moment";
-import { CalendarEvent } from "../CalendarEvent";
+import { CalendarEvent } from "../CalendarEvent/CalendarEvent";
 import { Event, Master } from "../../types";
 
-const localizer = BigCalendar.momentLocalizer(moment);
+const localizer = BigCalendar.globalizeLocalizer(globalize);
 
 export interface Props {
   date: Date;
@@ -57,6 +57,7 @@ export class Calendar extends React.PureComponent<Props> {
         onSelectSlot={this.props.onSelectSlot}
         onDoubleClickEvent={this.props.onDoubleClickEvent}
         onSelectEvent={this.props.onSelectEvent}
+        culture="en"
       />
     );
   }

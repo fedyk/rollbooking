@@ -36,7 +36,7 @@
     "typescript": "3.3.1"
   },
   "dependencies": {
-    "moment": "2.24.0",
+    "globalize": "1.4.0",
     "react": "16.7.0",
     "react-big-calendar": "0.20.3",
     "react-dom": "16.7.0"
