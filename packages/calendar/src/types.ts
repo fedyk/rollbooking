@@ -30,15 +30,18 @@ export interface DateObject {
   day: number;
 }
 
+export interface Endpoints {
+  base: string;
+  list: string;
+  create: string;
+  update: string;
+  "delete": string;
+}
+
 export interface Data {
   date: DateObject;
   events: Event[];
   masters: Master[];
   services: Service[];
-  endpoints: {
-    base: string,
-    create: string;
-    update: string;
-    "delete": string;
-  };
+  endpoints: Endpoints;
 }

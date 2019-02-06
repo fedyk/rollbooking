@@ -40,14 +40,14 @@ export default {
     postcss({
       extract: true,
       minimize: minimize,
-      extensions: [".css", ".scss", ".sass"],
+      extensions: [".css"],
     }),
 
     // Minimize es bundles
     minimize && terser(),
 
     // Logs the filesize in cli when done
-    filesize(),
+    // filesize(),
 
     // Progress while building
     // progress({ clearLine: false }),
@@ -55,7 +55,6 @@ export default {
     // Generates a statistics page
     // visualizer({
     //   filename: "./statistics.html",
-    //   title: "My Bundle",
     // }),
   ],
 };

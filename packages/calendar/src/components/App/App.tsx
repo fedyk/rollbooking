@@ -1,27 +1,29 @@
 import * as React from "react";
-import { Calendar } from "../Calendar";
+import { Calendar } from "../Calendar/Calendar";
 import { rawEventToEvent } from "../../helpers/raw-event-to-event";
-import { dateToLocalISOString } from "../../helpers/date-to-local-iso-string";
-import { CalendarContext } from "./../CalendarContext";
-import { CalendarModal } from "../CalendarModal";
-import { find } from "../../helpers/find";
-import { Event, Master } from "../../types";
+import { dateToISODateTime } from "../../helpers/date-to-iso-datetime";
+import { CalendarContext } from "../CalendarContext/CalendarContext";
+import { CalendarModal } from "../CalendarModal/CalendarModal";
+import { Event, Master, Endpoints } from "../../types";
+import { Toolbar } from "../Toolbar/Toolbar";
+import { dateToISODate } from "../../helpers/date-to-iso-date";
+import { indexBy } from "../../helpers/index-by";
+import { values } from "../../helpers/values";
+import { delay } from "../../helpers/delay";
 
 interface Props {
   date: Date;
   masters: Master[];
   events: Event[];
-  endpoints: {
-    create: string;
-    update: string;
-    delete: string;
-  };
+  endpoints: Endpoints;
 }
 
 interface State {
   date: Date;
   masters: Master[];
-  events: Event[];
+  events: {
+    [key: string]: Event;
+  };
   modalEventId: string;
 }
 
@@ -32,10 +34,15 @@ export class App extends React.PureComponent<Props, State> {
     this.state = {
       date: props.date,
       masters: props.masters,
-      events: props.events,
+      events: indexBy(props.events, "id"),
       modalEventId: null
     };
   }
+
+  onNavigate = (date: Date) => {
+    this.setState({ date });
+    this.fetchEvents(date);
+  };
 
   onSelectSlot = (slotInfo: any) => {
     const { start, end, resourceId } = slotInfo;
@@ -53,8 +60,8 @@ export class App extends React.PureComponent<Props, State> {
       },
       body: JSON.stringify({
         title: tempEventTitle,
-        start: dateToLocalISOString(start),
-        end: dateToLocalISOString(end),
+        start: dateToISODateTime(start),
+        end: dateToISODateTime(end),
         resourceId
       })
     };
@@ -62,27 +69,36 @@ export class App extends React.PureComponent<Props, State> {
     fetch(this.props.endpoints.create, fetchOptions)
       .then((response) => response.json())
       .then((rawEvent) => {
-        // Replace temp event to real one
-        const events = this.state.events.map((v) =>
-          v.id === tempEventId ? rawEventToEvent(rawEvent) : v
-        );
+        const event = rawEventToEvent(rawEvent);
+        const events = {
+          ...this.state.events,
+          ...{
+            [event.id]: event,
+            [tempEventId]: null
+          }
+        };
 
         this.setState({ events });
       })
-      .catch((reason) => {
-        console.error(reason);
-      });
+      .catch((reason) => console.error(reason));
 
     // Add temp event in state
-    this.setState({
-      events: this.state.events.concat({
-        id: tempEventId,
-        title: tempEventTitle,
-        start,
-        end,
-        masterId: resourceId
-      })
-    });
+    const tempEvent = {
+      id: tempEventId,
+      title: tempEventTitle,
+      start,
+      end,
+      masterId: resourceId
+    };
+
+    const events = {
+      ...this.state.events,
+      ...{
+        [tempEventId]: tempEvent
+      }
+    };
+
+    this.setState({ events });
 
     return true;
   };
@@ -100,26 +116,55 @@ export class App extends React.PureComponent<Props, State> {
     fetch(this.props.endpoints.update, options)
       .then((response) => response.json())
       .then((rawEvent) => {
-        const events = this.state.events.map((v) =>
-          v.id === rawEvent.id ? rawEventToEvent(rawEvent) : v
-        );
+        const event = rawEventToEvent(rawEvent);
+        const events = {
+          ...this.state.events,
+          ...{
+            [event.id]: event
+          }
+        };
 
         this.setState({ events });
       })
-      .catch((reason) => {
-        console.error(reason);
-      });
+      .catch((reason) => console.error(reason));
   };
 
+  fetchEvents(date: Date) {
+    const url = `${this.props.endpoints.list}?date=${dateToISODate(date)}`;
+    const options = {
+      method: "POST",
+      headers: {
+        Accept: "application/json"
+      }
+    };
+
+    fetch(url, options)
+      .then((response) => response.json())
+      .then((rawEvents) => {
+        const incomingEvents = indexBy(
+          rawEvents.map(rawEventToEvent) as Event[],
+          "id"
+        );
+        const events = { ...this.state.events, ...incomingEvents };
+
+        this.setState({ events });
+      })
+      .catch((error) => console.error(error));
+  }
+
   onSelectEvent = (selectEvent: Event) => {
-    const events = this.state.events.map(function(event) {
-      return {
-        ...event,
-        ...{
-          showPopover: event.id === selectEvent.id
-        }
-      };
-    });
+    const event = {
+      ...this.state.events[selectEvent.id],
+      ...{
+        showPopover: true
+      }
+    };
+    const events = {
+      ...this.state.events,
+      ...{
+        [event.id]: event
+      }
+    };
 
     this.setState({ events });
 
@@ -127,7 +172,23 @@ export class App extends React.PureComponent<Props, State> {
   };
 
   deleteEvent = (eventId: string) => {
-    alert("delete event " + eventId);
+    const url = `${this.props.endpoints.delete}/${eventId}`;
+    const options = {
+      method: "POST"
+    };
+
+    fetch(url, options)
+      .catch(() => delay(1000))
+      .then(() => fetch(url, options))
+      .then(() => {
+        const events = {
+          ...this.state.events,
+          [eventId]: null
+        };
+
+        this.setState({ events });
+      })
+      .catch((err) => console.error(err));
   };
 
   openEventModal = (modalEventId: string) => {
@@ -143,10 +204,33 @@ export class App extends React.PureComponent<Props, State> {
     this.setState({ modalEventId: null });
   };
 
+  onPrev = () => {
+    const date = new Date(this.state.date.getTime());
+
+    date.setDate(date.getDate() - 1);
+
+    this.setState({ date });
+    this.fetchEvents(date);
+  };
+
+  onNext = () => {
+    const date = new Date(this.state.date.getTime());
+
+    date.setDate(date.getDate() + 1);
+
+    this.setState({ date });
+    this.fetchEvents(date);
+  };
+
+  onToday = () => {
+    const date = new Date();
+
+    this.setState({ date });
+    this.fetchEvents(date);
+  };
+
   render() {
-    const modalEvent = this.state.modalEventId
-      ? find(this.state.events, (v) => v.id === this.state.modalEventId)
-      : null;
+    const modalEvent = this.state.events[this.state.modalEventId];
 
     return (
       <CalendarContext.Provider
@@ -156,14 +240,26 @@ export class App extends React.PureComponent<Props, State> {
           openEventModal: this.openEventModal
         }}
       >
-        <Calendar
-          date={this.state.date}
-          resources={this.state.masters}
-          events={this.state.events}
-          onSelectSlot={this.onSelectSlot}
-          onDoubleClickEvent={this.onDoubleClickEvent}
-          onSelectEvent={this.onSelectEvent}
-        />
+        <div className="card">
+          <div className="card-body">
+            <Toolbar
+              date={this.state.date}
+              onPrev={this.onPrev}
+              onToday={this.onToday}
+              onNext={this.onNext}
+            />
+
+            <Calendar
+              date={this.state.date}
+              resources={this.state.masters}
+              events={values(this.state.events)}
+              onNavigate={this.onNavigate}
+              onSelectSlot={this.onSelectSlot}
+              onDoubleClickEvent={this.onDoubleClickEvent}
+              onSelectEvent={this.onSelectEvent}
+            />
+          </div>
+        </div>
         {modalEvent && (
           <CalendarModal
             event={modalEvent}
