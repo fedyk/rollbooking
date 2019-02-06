@@ -2,7 +2,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./Calendar.css";
 
 import * as React from "react";
-import globalize from "globalize";
 import {
   default as BigCalendar,
   Navigate,
@@ -12,7 +11,9 @@ import {
 import { CalendarEvent } from "../CalendarEvent/CalendarEvent";
 import { Event, Master } from "../../types";
 
-const localizer = BigCalendar.globalizeLocalizer(globalize);
+import moment from "moment";
+
+const localizer = BigCalendar.momentLocalizer(moment);
 
 export interface Props {
   date: Date;
@@ -37,7 +38,7 @@ export class Calendar extends React.PureComponent<Props> {
   render() {
     return (
       <BigCalendar
-        defaultDate={this.props.date}
+        date={this.props.date}
         events={this.props.events}
         titleAccessor={(event) => event.title}
         resources={this.props.resources}

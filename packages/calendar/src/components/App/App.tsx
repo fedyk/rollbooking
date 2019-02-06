@@ -39,6 +39,11 @@ export class App extends React.PureComponent<Props, State> {
     };
   }
 
+  onNavigate = (date: Date) => {
+    this.setState({ date });
+    this.fetchEvents(date);
+  };
+
   onSelectSlot = (slotInfo: any) => {
     const { start, end, resourceId } = slotInfo;
 
@@ -248,6 +253,7 @@ export class App extends React.PureComponent<Props, State> {
               date={this.state.date}
               resources={this.state.masters}
               events={values(this.state.events)}
+              onNavigate={this.onNavigate}
               onSelectSlot={this.onSelectSlot}
               onDoubleClickEvent={this.onDoubleClickEvent}
               onSelectEvent={this.onSelectEvent}
