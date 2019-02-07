@@ -8,7 +8,7 @@ export interface Event extends BigCalendarEvent {
   masterId: string;
   clientId?: string;
   clientName?: string;
-  serviceId?: string;
+  serviceId?: number;
   serviceName?: string;
   showPopover?: boolean;
 }

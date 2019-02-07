@@ -15,7 +15,7 @@ interface State {
   startTime: string;
   endTime: string;
   masterId: string;
-  serviceId: string;
+  serviceId: number;
   clientId: string;
 }
 

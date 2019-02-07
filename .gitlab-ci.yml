@@ -16,8 +16,8 @@ build:
   script:
    - node -v
    - npm -v
-   - echo $NODE_ENV
-   - node scripts/packages/build.js
+   - node scripts/packages/install.js
+   - node scripts/packages/test.js
    - npm install
    - npm run build
    - npm run test
@@ -29,10 +29,10 @@ deploy:
   script:
     - node -v
     - npm -v
-    - echo $NODE_ENV
-    - node scripts/packages/build.js
+    - node scripts/packages/install.js
+    - NODE_ENV=production node scripts/packages/build.js
     - npm install
-    - npm run build
+    - NODE_ENV=production npm run build
     - echo "Install ryby-dev & gem#dpl"
     - apt-get update -qy
     - apt-get install -y ruby-dev

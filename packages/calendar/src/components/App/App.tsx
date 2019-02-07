@@ -4,7 +4,7 @@ import { rawEventToEvent } from "../../helpers/raw-event-to-event";
 import { dateToISODateTime } from "../../helpers/date-to-iso-datetime";
 import { CalendarContext } from "../CalendarContext/CalendarContext";
 import { CalendarModal } from "../CalendarModal/CalendarModal";
-import { Event, Master, Endpoints } from "../../types";
+import { Event, Master, Endpoints, Service } from "../../types";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { dateToISODate } from "../../helpers/date-to-iso-date";
 import { indexBy } from "../../helpers/index-by";
@@ -14,6 +14,7 @@ import { delay } from "../../helpers/delay";
 interface Props {
   date: Date;
   masters: Master[];
+  services: Service[];
   events: Event[];
   endpoints: Endpoints;
 }
@@ -235,6 +236,7 @@ export class App extends React.PureComponent<Props, State> {
     return (
       <CalendarContext.Provider
         value={{
+          services: this.props.services,
           deleteEvent: this.deleteEvent,
           updateEvent: this.updateEvent,
           openEventModal: this.openEventModal
