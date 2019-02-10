@@ -44,7 +44,6 @@ export async function calendar(ctx: Context) {
       "/packages/calendar/calendar.js"
     ],
     body: content({
-      alias: salon.alias,
       body: calendarView({
         date: date,
         masters: masters,
