@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { App } from "./components/App";
+import { App } from "./components/App/App";
 import { rawEventToEvent } from "./helpers/raw-event-to-event";
 import { Data } from "./types";
 import { assert } from "./helpers/assert";
@@ -23,8 +23,9 @@ export function render(targetSelector, data: Data) {
   return ReactDOM.render(
     <App
       date={new Date(date.year, date.month - 1, date.day)}
-      masters={data.masters}
       events={data.events.map(rawEventToEvent)}
+      masters={data.masters}
+      services={data.services}
       endpoints={data.endpoints}
     />,
     target
