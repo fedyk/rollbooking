@@ -39,7 +39,7 @@ describe("CalendarEventForm", function() {
     expect(component).toBeTruthy();
     expect(component.find("#starts").props().value).toBe("10:00");
     expect(component.find("#ends").props().value).toBe("11:00");
-    expect(component.find("#service").props().value).toBe(1);
+    expect(component.find("#service").props().value).toBe("1");
   });
 
   test("it should update start time", function() {

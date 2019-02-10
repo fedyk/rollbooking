@@ -137,7 +137,7 @@ export class CalendarEventForm extends React.PureComponent<Props> {
             <div className="col-sm-8">
               <select
                 className="form-control"
-                defaultValue={`${this.props.event.serviceId || ""}`}
+                value={`${this.props.event.serviceId || ""}`}
                 onChange={this.onChangeServiceId}
                 id="service"
               >
