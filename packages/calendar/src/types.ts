@@ -10,7 +10,6 @@ export interface Event extends BigCalendarEvent {
   clientName?: string;
   serviceId?: number;
   serviceName?: string;
-  showPopover?: boolean;
 }
 
 export interface Master {
