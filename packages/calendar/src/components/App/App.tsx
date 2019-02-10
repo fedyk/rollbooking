@@ -149,9 +149,9 @@ export class App extends React.PureComponent<Props, State> {
   onSelectEvent = (selectEvent: Event) => {
     const event = {
       ...this.state.events[selectEvent.id],
-      ...{
-        showPopover: true
-      }
+      // ...{
+      //   showPopover: true
+      // }
     };
     const events = {
       ...this.state.events,

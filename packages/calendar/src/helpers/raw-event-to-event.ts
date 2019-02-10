@@ -10,7 +10,6 @@ export function rawEventToEvent(event): Event {
     clientId: event.clientId,
     clientName: event.clientName,
     serviceId: event.serviceId,
-    serviceName: event.serviceName,
-    showPopover: false
+    serviceName: event.serviceName
   };
 }
