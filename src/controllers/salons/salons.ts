@@ -2,6 +2,7 @@ import { Context } from "koa";
 import { SalonsCollection } from "../../adapters/mongodb";
 import { template } from "../../views/template";
 import { salonsView } from "./salons-view";
+import { content } from "../../views/shared/content";
 
 export async function salons(ctx: Context) {
   const $salons = await SalonsCollection();
@@ -9,8 +10,8 @@ export async function salons(ctx: Context) {
 
   ctx.body = template({
     title: "Salons",
-    body: salonsView({
-      salons
+    body: content({
+      body: salonsView({ salons })
     })
   })
 }

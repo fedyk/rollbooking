@@ -1,9 +1,8 @@
 interface Props {
   body: string;
-  alias: string;
 }
 
-export const content = ({ body, alias }: Props) => `
+export const content = ({ body }: Props) => `
 <nav class="navbar navbar-dark bg-dark">
   <a class="navbar-brand" href="/">
     <img src="/images/logo-white.svg" height="24" class="d-inline-block align-middle" alt="rollbooking">
