@@ -4,5 +4,6 @@ module.exports = {
     "^.+\\.(css|scss|less)$": "jest-css-modules"
   },
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+  "setupFilesAfterEnv": ["<rootDir>/enzyme.config.js"]
 };

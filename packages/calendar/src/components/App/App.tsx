@@ -3,8 +3,7 @@ import { Calendar } from "../Calendar/Calendar";
 import { rawEventToEvent } from "../../helpers/raw-event-to-event";
 import { dateToISODateTime } from "../../helpers/date-to-iso-datetime";
 import { CalendarContext } from "../CalendarContext/CalendarContext";
-import { CalendarModal } from "../CalendarModal/CalendarModal";
-import { Event, Master, Endpoints } from "../../types";
+import { Event, Master, Endpoints, Service } from "../../types";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { dateToISODate } from "../../helpers/date-to-iso-date";
 import { indexBy } from "../../helpers/index-by";
@@ -14,6 +13,7 @@ import { delay } from "../../helpers/delay";
 interface Props {
   date: Date;
   masters: Master[];
+  services: Service[];
   events: Event[];
   endpoints: Endpoints;
 }
@@ -24,7 +24,6 @@ interface State {
   events: {
     [key: string]: Event;
   };
-  modalEventId: string;
 }
 
 export class App extends React.PureComponent<Props, State> {
@@ -34,8 +33,7 @@ export class App extends React.PureComponent<Props, State> {
     this.state = {
       date: props.date,
       masters: props.masters,
-      events: indexBy(props.events, "id"),
-      modalEventId: null
+      events: indexBy(props.events, "id")
     };
   }
 
@@ -46,10 +44,6 @@ export class App extends React.PureComponent<Props, State> {
 
   onSelectSlot = (slotInfo: any) => {
     const { start, end, resourceId } = slotInfo;
-
-    // todo check if slotInfo has resourceId or masterId
-    debugger;
-
     const tempEventId = `${Math.round(Math.random() * 1000000)}`;
     const tempEventTitle = "Saving..";
     const fetchOptions = {
@@ -172,36 +166,19 @@ export class App extends React.PureComponent<Props, State> {
   };
 
   deleteEvent = (eventId: string) => {
-    const url = `${this.props.endpoints.delete}/${eventId}`;
+    const url = `${this.props.endpoints.delete}?rid=${eventId}`;
     const options = {
       method: "POST"
     };
 
-    fetch(url, options)
-      .catch(() => delay(1000))
-      .then(() => fetch(url, options))
-      .then(() => {
-        const events = {
-          ...this.state.events,
-          [eventId]: null
-        };
+    fetch(url, options).then(() => {
+      const events = Object.assign({}, this.state.events);
+      
+      delete events[eventId];
 
-        this.setState({ events });
-      })
-      .catch((err) => console.error(err));
-  };
-
-  openEventModal = (modalEventId: string) => {
-    this.setState({ modalEventId });
-  };
-
-  onDoubleClickEvent = (event, clickEvent) => {
-    clickEvent.preventDefault();
-    this.openEventModal(event.id);
-  };
-
-  onCloseCalendarModal = () => {
-    this.setState({ modalEventId: null });
+      this.setState({ events });
+    })
+    .catch((err) => console.error(err));
   };
 
   onPrev = () => {
@@ -230,14 +207,12 @@ export class App extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const modalEvent = this.state.events[this.state.modalEventId];
-
     return (
       <CalendarContext.Provider
         value={{
+          services: this.props.services,
           deleteEvent: this.deleteEvent,
-          updateEvent: this.updateEvent,
-          openEventModal: this.openEventModal
+          updateEvent: this.updateEvent
         }}
       >
         <div className="card">
@@ -255,17 +230,10 @@ export class App extends React.PureComponent<Props, State> {
               events={values(this.state.events)}
               onNavigate={this.onNavigate}
               onSelectSlot={this.onSelectSlot}
-              onDoubleClickEvent={this.onDoubleClickEvent}
               onSelectEvent={this.onSelectEvent}
             />
           </div>
         </div>
-        {modalEvent && (
-          <CalendarModal
-            event={modalEvent}
-            onClose={this.onCloseCalendarModal}
-          />
-        )}
       </CalendarContext.Provider>
     );
   }
