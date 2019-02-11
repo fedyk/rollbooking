@@ -128,7 +128,7 @@ export class CalendarModal extends React.PureComponent<Props, State> {
                 <button
                   type="button"
                   className="btn btn-outline-danger mr-auto"
-                  onClick={this.handleCancel}
+                  onClick={this.handleDelete}
                   disabled={this.props.isSaving}
                 >
                   Delete
@@ -140,7 +140,7 @@ export class CalendarModal extends React.PureComponent<Props, State> {
                     role="status"
                     aria-hidden="true"
                   />
-                  <span className="sr-only">Deleting...</span>
+                  Deleting...
                 </button>
               )}
 
@@ -168,7 +168,7 @@ export class CalendarModal extends React.PureComponent<Props, State> {
                     role="status"
                     aria-hidden="true"
                   />
-                  <span className="sr-only">Saving...</span>
+                  Saving...
                 </button>
               )}
             </div>

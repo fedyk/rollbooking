@@ -9,6 +9,7 @@ import { dateToISODate } from "../../helpers/date-to-iso-date";
 import { indexBy } from "../../helpers/index-by";
 import { values } from "../../helpers/values";
 import { CalendarModal } from "../CalendarModal/CalendarModal";
+import { eventToRawEvent } from "../../helpers/event-to-raw-event";
 
 interface Props {
   date: Date;
@@ -110,7 +111,7 @@ export class App extends React.PureComponent<Props, State> {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(event)
+      body: JSON.stringify(eventToRawEvent(event))
     };
 
     this.setState({ isSavingEvent: true });
@@ -216,7 +217,7 @@ export class App extends React.PureComponent<Props, State> {
 
   handleModalSave = async (event: Event) => {
     try {
-      this.updateEvent(event);
+      await this.updateEvent(event);
     } finally {
       this.setState({ selectedEventId: null });
     }
@@ -224,7 +225,7 @@ export class App extends React.PureComponent<Props, State> {
 
   handleModalDelete = async (eventId: string) => {
     try {
-      this.deleteEvent(eventId);
+      await this.deleteEvent(eventId);
     } finally {
       this.setState({ selectedEventId: null });
     }
