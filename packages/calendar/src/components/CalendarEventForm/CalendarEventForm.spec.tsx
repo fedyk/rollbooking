@@ -31,7 +31,6 @@ describe("CalendarEventForm", function() {
       <CalendarEventForm
         event={event}
         services={services}
-        onDelete={() => {}}
         onUpdate={() => {}}
       />
     );
@@ -48,7 +47,6 @@ describe("CalendarEventForm", function() {
       <CalendarEventForm
         event={event}
         services={services}
-        onDelete={() => {}}
         onUpdate={onUpdate}
       />
     );
@@ -72,7 +70,6 @@ describe("CalendarEventForm", function() {
       <CalendarEventForm
         event={event}
         services={services}
-        onDelete={() => {}}
         onUpdate={onUpdate}
       />
     );
@@ -96,7 +93,6 @@ describe("CalendarEventForm", function() {
       <CalendarEventForm
         event={event}
         services={services}
-        onDelete={() => {}}
         onUpdate={onUpdate}
       />
     );
@@ -111,7 +107,7 @@ describe("CalendarEventForm", function() {
     expect(onUpdate.mock.calls[0][0]).toMatchObject({
       serviceId: 2,
       start: new Date(2018, 0, 1, 10, 0, 0),
-      end: new Date(2018, 0, 1, 12, 0, 0),
+      end: new Date(2018, 0, 1, 12, 0, 0)
     } as Partial<Event>);
   });
 });

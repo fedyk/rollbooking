@@ -9,18 +9,13 @@ var MS_PER_MINUTE = 60000;
 
 interface Props {
   event: Event;
-  services?: Service[];
+  services: Service[];
   onUpdate(event: Event): void;
-  onDelete(eventId: string): void;
 }
 
 export class CalendarEventForm extends React.PureComponent<Props> {
   static defaultProps = {
     services: []
-  };
-
-  onDelete = () => {
-    this.props.onDelete(this.props.event.id);
   };
 
   onChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,17 +75,19 @@ export class CalendarEventForm extends React.PureComponent<Props> {
       return;
     }
 
-    const service = find(this.props.services, v => v.id === serviceId);
+    const service = find(this.props.services, (v) => v.id === serviceId);
 
     if (service && service.duration) {
       end.setTime(start.getTime() + service.duration * MS_PER_MINUTE);
     }
 
-    this.props.onUpdate(Object.assign({}, this.props.event, {
-      start,
-      end,
-      serviceId
-    }))
+    this.props.onUpdate(
+      Object.assign({}, this.props.event, {
+        start,
+        end,
+        serviceId
+      })
+    );
   };
 
   render() {
@@ -150,15 +147,6 @@ export class CalendarEventForm extends React.PureComponent<Props> {
             </div>
           </div>
         )}
-
-        <div className="d-flex justify-content-between">
-          <button
-            className="btn btn-sm btn-outline-danger"
-            onClick={this.onDelete}
-          >
-            Delete
-          </button>
-        </div>
       </div>
     );
   }

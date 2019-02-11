@@ -8,7 +8,6 @@ import { Toolbar } from "../Toolbar/Toolbar";
 import { dateToISODate } from "../../helpers/date-to-iso-date";
 import { indexBy } from "../../helpers/index-by";
 import { values } from "../../helpers/values";
-import { delay } from "../../helpers/delay";
 import { CalendarModal } from "../CalendarModal/CalendarModal";
 
 interface Props {
@@ -26,6 +25,8 @@ interface State {
     [key: string]: Event;
   };
   selectedEventId: string;
+  isSavingEvent: boolean;
+  isDeletingEvent: boolean;
 }
 
 export class App extends React.PureComponent<Props, State> {
@@ -36,7 +37,9 @@ export class App extends React.PureComponent<Props, State> {
       date: props.date,
       masters: props.masters,
       events: indexBy(props.events, "id"),
-      selectedEventId: null
+      selectedEventId: null,
+      isSavingEvent: false,
+      isDeletingEvent: false
     };
   }
 
@@ -100,7 +103,7 @@ export class App extends React.PureComponent<Props, State> {
     return true;
   };
 
-  updateEvent = (event: Event) => {
+  updateEvent = async (event: Event) => {
     const options = {
       method: "POST",
       headers: {
@@ -110,20 +113,19 @@ export class App extends React.PureComponent<Props, State> {
       body: JSON.stringify(event)
     };
 
-    fetch(this.props.endpoints.update, options)
-      .then((response) => response.json())
-      .then((rawEvent) => {
-        const event = rawEventToEvent(rawEvent);
-        const events = {
-          ...this.state.events,
-          ...{
-            [event.id]: event
-          }
-        };
+    this.setState({ isSavingEvent: true });
 
-        this.setState({ events });
-      })
-      .catch((reason) => console.error(reason));
+    try {
+      const response = await fetch(this.props.endpoints.update, options);
+      const rawEvent = await response.json();
+      const updatedEvent = rawEventToEvent(rawEvent);
+      const events = { ...this.state.events, [event.id]: updatedEvent };
+
+      this.setState({ events, isSavingEvent: false });
+    } catch (error) {
+      this.setState({ isSavingEvent: false });
+      console.error(error);
+    }
   };
 
   fetchEvents(date: Date) {
@@ -150,34 +152,41 @@ export class App extends React.PureComponent<Props, State> {
   }
 
   onSelectEvent = (selectEvent: Event) => {
-    return this.setState({
-      selectedEventId: selectEvent.id
-    }), true;
+    return (
+      this.setState({
+        selectedEventId: selectEvent.id
+      }),
+      true
+    );
   };
 
   onUnselectEvent = () => {
     return this.setState({
       selectedEventId: null
     });
-  }
+  };
 
-  deleteEvent = (eventId: string): Promise<void> => {
+  deleteEvent = async (eventId: string) => {
     const url = `${this.props.endpoints.delete}?rid=${eventId}`;
     const options = {
       method: "POST"
     };
 
-    return fetch(url, options).then(() => {
-      const events = Object.assign({}, this.state.events);
-      const selectedEventId = this.state.selectedEventId === eventId
-        ? null
-        : this.state.selectedEventId;
-      
+    try {
+      const response = await fetch(url, options);
+      const events = { ...this.state.events };
+      const selectedEventId =
+        this.state.selectedEventId === eventId
+          ? null
+          : this.state.selectedEventId;
+
       delete events[eventId];
 
-      this.setState({ events, selectedEventId });
-    })
-    .catch((err) => console.error(err));
+      this.setState({ events, selectedEventId, isDeletingEvent: false });
+    } catch (error) {
+      this.setState({ isDeletingEvent: false });
+      console.error(error);
+    }
   };
 
   onPrev = () => {
@@ -205,40 +214,65 @@ export class App extends React.PureComponent<Props, State> {
     this.fetchEvents(date);
   };
 
-  render() {
-    return (<React.Fragment>
-      <CalendarContext.Provider
-        value={{
-          services: this.props.services,
-          deleteEvent: this.deleteEvent,
-          updateEvent: this.updateEvent
-        }}
-      >
-        <div className="card">
-          <div className="card-body">
-            <Toolbar
-              date={this.state.date}
-              onPrev={this.onPrev}
-              onToday={this.onToday}
-              onNext={this.onNext}
-            />
+  handleModalSave = async (event: Event) => {
+    try {
+      this.updateEvent(event);
+    } finally {
+      this.setState({ selectedEventId: null });
+    }
+  };
 
-            <Calendar
-              date={this.state.date}
-              resources={this.state.masters}
-              events={values(this.state.events)}
-              onNavigate={this.onNavigate}
-              onSelectSlot={this.onSelectSlot}
-              onSelectEvent={this.onSelectEvent}
-            />
+  handleModalDelete = async (eventId: string) => {
+    try {
+      this.deleteEvent(eventId);
+    } finally {
+      this.setState({ selectedEventId: null });
+    }
+  };
+
+  render() {
+    return (
+      <React.Fragment>
+        <CalendarContext.Provider
+          value={{
+            services: this.props.services,
+            deleteEvent: this.deleteEvent,
+            updateEvent: this.updateEvent
+          }}
+        >
+          <div className="card">
+            <div className="card-body">
+              <Toolbar
+                date={this.state.date}
+                onPrev={this.onPrev}
+                onToday={this.onToday}
+                onNext={this.onNext}
+              />
+
+              <Calendar
+                date={this.state.date}
+                selected={this.state.events[this.state.selectedEventId]}
+                resources={this.state.masters}
+                events={values(this.state.events)}
+                onNavigate={this.onNavigate}
+                onSelectSlot={this.onSelectSlot}
+                onSelectEvent={this.onSelectEvent}
+              />
+            </div>
           </div>
-        </div>
-      </CalendarContext.Provider>
-      {this.state.selectedEventId && <CalendarModal
-        event={this.state.events[this.state.selectedEventId]}
-        onClose={this.onUnselectEvent}
-      />}
-    </React.Fragment>);
+        </CalendarContext.Provider>
+
+        <CalendarModal
+          event={this.state.events[this.state.selectedEventId]}
+          services={this.props.services}
+          isOpen={Boolean(this.state.selectedEventId)}
+          isSaving={this.state.isSavingEvent}
+          isDeleting={this.state.isDeletingEvent}
+          onCancel={this.onUnselectEvent}
+          onSave={this.handleModalSave}
+          onDelete={this.handleModalDelete}
+        />
+      </React.Fragment>
+    );
   }
 }
- 

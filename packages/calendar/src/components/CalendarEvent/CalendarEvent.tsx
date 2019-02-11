@@ -11,9 +11,6 @@ interface Props {
 
 export class CalendarEvent extends React.PureComponent<Props> {
   render() {
-    return (
-      <div>{this.props.title}</div>
-    );
+    return <div>{this.props.title}</div>;
   }
 }
-
