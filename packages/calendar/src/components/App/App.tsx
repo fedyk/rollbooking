@@ -9,6 +9,7 @@ import { dateToISODate } from "../../helpers/date-to-iso-date";
 import { indexBy } from "../../helpers/index-by";
 import { values } from "../../helpers/values";
 import { delay } from "../../helpers/delay";
+import { CalendarModal } from "../CalendarModal/CalendarModal";
 
 interface Props {
   date: Date;
@@ -24,6 +25,7 @@ interface State {
   events: {
     [key: string]: Event;
   };
+  selectedEventId: string;
 }
 
 export class App extends React.PureComponent<Props, State> {
@@ -33,7 +35,8 @@ export class App extends React.PureComponent<Props, State> {
     this.state = {
       date: props.date,
       masters: props.masters,
-      events: indexBy(props.events, "id")
+      events: indexBy(props.events, "id"),
+      selectedEventId: null
     };
   }
 
@@ -147,36 +150,32 @@ export class App extends React.PureComponent<Props, State> {
   }
 
   onSelectEvent = (selectEvent: Event) => {
-    const event = {
-      ...this.state.events[selectEvent.id],
-      // ...{
-      //   showPopover: true
-      // }
-    };
-    const events = {
-      ...this.state.events,
-      ...{
-        [event.id]: event
-      }
-    };
-
-    this.setState({ events });
-
-    return true;
+    return this.setState({
+      selectedEventId: selectEvent.id
+    }), true;
   };
 
-  deleteEvent = (eventId: string) => {
+  onUnselectEvent = () => {
+    return this.setState({
+      selectedEventId: null
+    });
+  }
+
+  deleteEvent = (eventId: string): Promise<void> => {
     const url = `${this.props.endpoints.delete}?rid=${eventId}`;
     const options = {
       method: "POST"
     };
 
-    fetch(url, options).then(() => {
+    return fetch(url, options).then(() => {
       const events = Object.assign({}, this.state.events);
+      const selectedEventId = this.state.selectedEventId === eventId
+        ? null
+        : this.state.selectedEventId;
       
       delete events[eventId];
 
-      this.setState({ events });
+      this.setState({ events, selectedEventId });
     })
     .catch((err) => console.error(err));
   };
@@ -207,7 +206,7 @@ export class App extends React.PureComponent<Props, State> {
   };
 
   render() {
-    return (
+    return (<React.Fragment>
       <CalendarContext.Provider
         value={{
           services: this.props.services,
@@ -235,6 +234,11 @@ export class App extends React.PureComponent<Props, State> {
           </div>
         </div>
       </CalendarContext.Provider>
-    );
+      {this.state.selectedEventId && <CalendarModal
+        event={this.state.events[this.state.selectedEventId]}
+        onClose={this.onUnselectEvent}
+      />}
+    </React.Fragment>);
   }
 }
+ 
