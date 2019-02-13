@@ -13,7 +13,7 @@ export async function update(ctx: Context) {
   // id to reservation should be valid
   ctx.assert(ObjectID.isValid(body.id), 404, "Item doesn't exist");
 
-  const master = salon.employees.users.find(v => v.id.toHexString() === body.resourceId);
+  const master = salon.employees.users.find(v => v.id.toHexString() === body.masterId);
   const service = salon.services.items.find(v => v.id === body.serviceId);
   const start = isoDateTimeToDateTime(body.start);
   const end = isoDateTimeToDateTime(body.end);

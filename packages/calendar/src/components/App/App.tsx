@@ -63,7 +63,7 @@ export class App extends React.PureComponent<Props, State> {
         title: tempEventTitle,
         start: dateToISODateTime(start),
         end: dateToISODateTime(end),
-        resourceId
+        masterId: resourceId
       })
     };
 

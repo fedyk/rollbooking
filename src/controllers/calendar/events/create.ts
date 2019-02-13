@@ -9,7 +9,7 @@ import { reservationToEvent } from "../helpers/reservation-to-event";
 export async function create(ctx: Context) {
   const salon = ctx.state.salon as Salon;
   const body = ctx.request.body || {} as any;
-  const master = salon.employees.users.find(v => v.id.toHexString() === body.resourceId);
+  const master = salon.employees.users.find(v => v.id.toHexString() === body.masterId);
   const reservation = {
     salonId: salon._id,
     clientId: null,
