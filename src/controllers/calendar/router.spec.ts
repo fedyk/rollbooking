@@ -10,6 +10,8 @@ import { deleteTestSalon } from "../../tasks/salon/delete-test-salon";
 import { Reservation } from "../../models/reservation";
 import { createTestReservation } from "../../tasks/salon/create-test-reservation";
 import { closeClient } from "../../adapters/mongodb";
+import { Client } from "../../models/client";
+import { createTestClient } from "../../tasks/salon/create-test-client";
 
 describe("calendar", function () {
   let salon: Salon = null;
@@ -66,12 +68,17 @@ describe("calendar", function () {
 
   describe("/events/update", function () {
     let reservation: Reservation = null;
+    let client: Client = null;
 
     beforeEach(async function () {
       reservation = await createTestReservation({
         salonId: salon._id,
         masterId: salon.employees.users[0].id
-      })
+      });
+    })
+
+    beforeAll(async function() {
+      client = await createTestClient({ salonId: salon._id });
     })
 
     it("should update reservation start and end dates", function (done) {
@@ -134,14 +141,88 @@ describe("calendar", function () {
           done();
         });
     })
+    
+    it("should update reservation clientId", function (done) {
+      const app = new Koa();
+      const router = new Router();
+      const id = reservation._id.toHexString();
+      const clientId = client._id.toHexString();
+      const clientName = client.name;
+
+      router.use(salonMiddleware, calendarRouter.routes());
+
+      request(http.createServer(app.use(bodyParser()).use(router.routes()).callback()))
+        .post("/events/update")
+        .send({ id, clientId })
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) return done(err);
+          expect(res.body).toMatchObject({ id, clientId, clientName })
+          done();
+        });
+    })
   })
 
-  // it("should works: /events/list", function (done) {
-  // })
+  describe("/events/list", function () {
+    let reservation: Reservation;
 
-  // it("should works: /events/update", function (done) {
-  // })
-  // it("should works: /events/delete", function (done) {
-  // })
+    beforeAll(async function() {
+      reservation = await createTestReservation({
+        salonId: salon._id,
+        masterId: salon.employees.users[0].id,
+        date: new Date(2017, 0, 1)
+      })
+    })
 
+    it("should return list of events", function(done) {
+      const app = new Koa();
+      const router = new Router();
+
+      router.use(salonMiddleware, calendarRouter.routes());
+
+      request(http.createServer(app.use(bodyParser()).use(router.routes()).callback()))
+        .post("/events/list?date=2017-01-01")
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) return done(err);
+          expect(res.body).toMatchObject([{
+            id: reservation._id.toHexString(),
+            masterId: reservation.masterId.toHexString(),
+            start: "2017-01-01T10:00:00",
+            end: "2017-01-01T11:00:00"
+          }])
+          done();
+        });
+    })
+  })
+
+  describe("/events/delete", function () {
+    let reservation: Reservation;
+
+    beforeAll(async function () {
+      reservation = await createTestReservation({
+        salonId: salon._id,
+        masterId: salon.employees.users[0].id
+      })
+    })
+
+    it("should delete event", function (done) {
+      const app = new Koa();
+      const router = new Router();
+
+      router.use(salonMiddleware, calendarRouter.routes());
+
+      request(http.createServer(app.use(bodyParser()).use(router.routes()).callback()))
+        .post(`/events/delete?rid=${reservation._id.toHexString()}`)
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) return done(err);
+          expect(res.text).toBe("ok");
+          done();
+        });
+    })
+  })
 });

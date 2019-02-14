@@ -1,6 +1,6 @@
 import { ok } from "assert";
 import { ObjectID } from "bson";
-import { UsersCollection, SalonsCollection, ReservationsCollection, BookingWorkdaysCollection, closeClient } from "../../adapters/mongodb";
+import { UsersCollection, SalonsCollection, ReservationsCollection, BookingWorkdaysCollection, closeClient, ClientsCollection } from "../../adapters/mongodb";
 
 export async function deleteTestSalon(salonId: string) {
   ok(ObjectID.isValid(salonId), "salonId argument is not valid ObjectID");
@@ -9,6 +9,7 @@ export async function deleteTestSalon(salonId: string) {
   const $salons = await SalonsCollection();
   const $reservations = await ReservationsCollection();
   const $bookingWorkdays = await BookingWorkdaysCollection();
+  const $clients = await ClientsCollection();
   const salon = await $salons.findOne({
     _id: new ObjectID(salonId)
   });
@@ -29,11 +30,16 @@ export async function deleteTestSalon(salonId: string) {
     ok(deleteResult.deletedCount === usersIds.length, `Deleted users count is not equal to requested users to delete(${deleteResult.deletedCount}/${usersIds.length})`);
   }
 
-  $reservations.deleteMany({
+  await $reservations.deleteMany({
     salonId: salon._id
   });
 
-  $bookingWorkdays.deleteMany({
+
+  await $bookingWorkdays.deleteMany({
+    salonId: salon._id
+  });
+
+  await $clients.deleteMany({
     salonId: salon._id
   });
 
@@ -41,7 +47,7 @@ export async function deleteTestSalon(salonId: string) {
     _id: salon._id
   });
 
-  ok(deletedSalonsCount === 1, "Only one salon should be deleted, something want wrong");
+  ok(deletedSalonsCount === 1, "Only one salon should be deleted, something went wrong");
 }
 
 if (!module.parent) {

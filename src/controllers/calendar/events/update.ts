@@ -1,7 +1,7 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
 import { Salon, SalonService } from "../../../models/salon";
-import { ReservationsCollection } from "../../../adapters/mongodb";
+import { ReservationsCollection, ClientsCollection } from "../../../adapters/mongodb";
 import { reservationToEvent } from "../helpers/reservation-to-event";
 import { isoDateTimeToDateTime } from "../../../helpers/date/iso-date-time-to-date-time";
 import { Reservation, Status } from "../../../models/reservation";
@@ -65,6 +65,17 @@ export async function update(ctx: Context) {
   }));
 
   const usersMap = new Map();
+
+  if (ObjectID.isValid(updatedReservation.value.clientId)) {
+    const $clients = await ClientsCollection();
+    const client = await $clients.findOne({
+      _id: updatedReservation.value.clientId
+    });
+
+    if (client) {
+      usersMap.set(client._id.toHexString(), client);
+    }
+  }
 
   ctx.body = reservationToEvent(updatedReservation.value, servicesMap, usersMap);
 }

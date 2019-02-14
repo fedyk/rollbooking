@@ -5,14 +5,15 @@ import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-tim
 
 interface Options {
   salonId: ObjectID,
-  masterId: ObjectID
+  masterId: ObjectID,
+  date?: Date
 }
 
 export async function createTestReservation(options: Options) {
   const $reservations = await ReservationsCollection();
-  const now = new Date();
-  const start = nativeDateToDateTime(now);
-  const end = nativeDateToDateTime(now);
+  const date = options.date || new Date();
+  const start = nativeDateToDateTime(date);
+  const end = nativeDateToDateTime(date);
 
   start.hours = 10;
   start.minutes = 0;
