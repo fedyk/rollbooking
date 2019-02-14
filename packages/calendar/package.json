@@ -40,8 +40,10 @@
     "typescript": "3.3.3"
   },
   "dependencies": {
+    "@types/react-autocomplete": "1.8.4",
     "moment": "^2.24.0",
     "react": "16.8.1",
+    "react-autocomplete": "1.8.1",
     "react-big-calendar": "^0.20.3",
     "react-dom": "16.8.1"
   }

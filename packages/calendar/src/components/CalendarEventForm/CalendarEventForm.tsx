@@ -1,8 +1,10 @@
 import * as React from "react";
+import * as Autocomplete from 'react-autocomplete';
 import { Event, Service } from "../../types";
 import { parseTime } from "../../helpers/parse-time";
 import { dateToTimeString } from "../../helpers/date-to-time-string";
 import { find } from "../../helpers/find";
+
 import "./CalendarEventForm.css";
 
 var MS_PER_MINUTE = 60000;
@@ -90,6 +92,12 @@ export class CalendarEventForm extends React.PureComponent<Props> {
     );
   };
 
+  onChangeClientId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.onUpdate({...this.props.event, ...{
+      clientId: e.target.value
+    }});
+  }
+
   render() {
     const startTime = dateToTimeString(this.props.event.start);
     const endTime = dateToTimeString(this.props.event.end);
@@ -144,6 +152,32 @@ export class CalendarEventForm extends React.PureComponent<Props> {
                   </option>
                 ))}
               </select>
+            </div>
+          </div>
+        )}
+        
+        {this.props.services.length > 0 && (
+          <div className="form-group row">
+            <label htmlFor="service" className="col-sm-4 col-form-label text-right">
+              client
+            </label>
+            <div className="col-sm-8">
+              <Autocomplete
+                getItemValue={(item) => item.label}
+                items={[
+                  { label: 'apple' },
+                  { label: 'banana' },
+                  { label: 'pear' }
+                ]}
+                renderItem={(item, isHighlighted) =>
+                  <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
+                    {item.label}
+                  </div>
+                }
+                value={this.props.event.clientId}
+                onChange={this.onChangeClientId}
+                // onSelect={(val) => this.prop}
+              />
             </div>
           </div>
         )}
