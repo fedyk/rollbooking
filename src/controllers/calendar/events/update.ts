@@ -5,6 +5,7 @@ import { ReservationsCollection } from "../../../adapters/mongodb";
 import { reservationToEvent } from "../helpers/reservation-to-event";
 import { isoDateTimeToDateTime } from "../../../helpers/date/iso-date-time-to-date-time";
 import { Reservation, Status } from "../../../models/reservation";
+import { toDottedObject } from "../../../helpers/to-dotted-object";
 
 export async function update(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -38,8 +39,9 @@ export async function update(ctx: Context) {
     partialReservation.end = end;
   }
 
-  // Client id is not required, so can be overwrite
-  partialReservation.clientId = clientId;
+  if (clientId) {
+    partialReservation.clientId = clientId;
+  }
 
   if (status) {
     partialReservation.status = status;
@@ -51,6 +53,8 @@ export async function update(ctx: Context) {
     salonId: salon._id
   }, {
     $set: partialReservation
+  }, {
+    returnOriginal: false
   });
 
   // no update item, looks like it doesn't exist
