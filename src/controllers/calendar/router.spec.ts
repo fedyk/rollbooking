@@ -9,6 +9,7 @@ import { createTestSalon } from "../../tasks/salon/create-test-salon";
 import { deleteTestSalon } from "../../tasks/salon/delete-test-salon";
 import { Reservation } from "../../models/reservation";
 import { createTestReservation } from "../../tasks/salon/create-test-reservation";
+import { closeClient } from "../../adapters/mongodb";
 
 describe("calendar", function () {
   let salon: Salon = null;
@@ -22,6 +23,7 @@ describe("calendar", function () {
 
   afterAll(async function () {
     await deleteTestSalon(salon._id.toHexString());
+    closeClient();
   })
 
   it("should return calendar html", function (done) {
