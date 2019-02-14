@@ -97,7 +97,7 @@ export class CalendarEventForm extends React.PureComponent<Props> {
     return (
       <div className="calendar-event-container">
         <div className="form-group row">
-          <label htmlFor="starts" className="col-sm-4 col-form-label">
+          <label htmlFor="starts" className="col-sm-4 col-form-label text-right">
             starts
           </label>
           <div className="col-sm-8">
@@ -112,7 +112,7 @@ export class CalendarEventForm extends React.PureComponent<Props> {
         </div>
 
         <div className="form-group row">
-          <label htmlFor="ends" className="col-sm-4 col-form-label">
+          <label htmlFor="ends" className="col-sm-4 col-form-label text-right">
             ends
           </label>
           <div className="col-sm-8">
@@ -128,7 +128,7 @@ export class CalendarEventForm extends React.PureComponent<Props> {
 
         {this.props.services.length > 0 && (
           <div className="form-group row">
-            <label htmlFor="service" className="col-sm-4 col-form-label">
+            <label htmlFor="service" className="col-sm-4 col-form-label text-right">
               service
             </label>
             <div className="col-sm-8">
