@@ -25,7 +25,7 @@ describe("calendar", function () {
 
   afterAll(async function () {
     await deleteTestSalon(salon._id.toHexString());
-    closeClient();
+    await closeClient();
   })
 
   it("should return calendar html", function (done) {

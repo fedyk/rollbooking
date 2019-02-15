@@ -4,7 +4,10 @@ import { closeClient, ClientsCollection } from "../../adapters/mongodb";
 
 interface Options {
   salonId: ObjectID,
-  userId?: ObjectID
+  userId?: ObjectID,
+  name?: string;
+  email?: string;
+  phone?: string;
 }
 
 export async function createTestClient(options: Options) {
@@ -15,9 +18,9 @@ export async function createTestClient(options: Options) {
   const client: Client = {
     salonId,
     userId,
-    name: "Test User",
-    email: "email@example.com",
-    phone: "666666666"
+    name: options.name || "Test User",
+    email: options.email || "email@example.com",
+    phone: options.phone || "666666666"
   }
 
   const { ops: [insertedClient] } = await $clients.insertOne(client);
