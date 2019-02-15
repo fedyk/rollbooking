@@ -1,10 +1,9 @@
 import * as React from "react";
-import * as Autocomplete from 'react-autocomplete';
+import Autocomplete from 'react-autocomplete';
 import { Event, Service } from "../../types";
 import { parseTime } from "../../helpers/parse-time";
 import { dateToTimeString } from "../../helpers/date-to-time-string";
 import { find } from "../../helpers/find";
-
 import "./CalendarEventForm.css";
 
 var MS_PER_MINUTE = 60000;
@@ -15,10 +14,22 @@ interface Props {
   onUpdate(event: Event): void;
 }
 
-export class CalendarEventForm extends React.PureComponent<Props> {
+interface State {
+  clientName: string;
+}
+
+export class CalendarEventForm extends React.PureComponent<Props, State> {
   static defaultProps = {
     services: []
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      clientName: this.props.event.clientName || ""
+    }
+  }
 
   onChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { event } = this.props;
@@ -92,10 +103,12 @@ export class CalendarEventForm extends React.PureComponent<Props> {
     );
   };
 
-  onChangeClientId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.onUpdate({...this.props.event, ...{
-      clientId: e.target.value
-    }});
+  onChangeClient = (e, clientName: string) => {
+    this.setState({ clientName })
+  }
+
+  onSelectClient = (value) => {
+    console.log(value);
   }
 
   render() {
@@ -125,7 +138,7 @@ export class CalendarEventForm extends React.PureComponent<Props> {
           </label>
           <div className="col-sm-8">
             <input
-              type="time"
+              type="time" 
               className="form-control"
               id="ends"
               value={endTime}
@@ -163,20 +176,28 @@ export class CalendarEventForm extends React.PureComponent<Props> {
             </label>
             <div className="col-sm-8">
               <Autocomplete
-                getItemValue={(item) => item.label}
+                value={this.state.clientName}
+                onChange={this.onChangeClient}
+                onSelect={this.onSelectClient}
+                autoHighlight={false}
+                wrapperStyle={({
+                  display: "block"
+                })}
+                inputProps={({
+                  className: "form-control"
+                })}
+                getItemValue={(item) => item.id}
                 items={[
-                  { label: 'apple' },
-                  { label: 'banana' },
-                  { label: 'pear' }
+                  { id: "1", name: 'apple' },
+                  { id: "2", name: 'banana' },
+                  { id: "3", name: 'pear' }
                 ]}
-                renderItem={(item, isHighlighted) =>
-                  <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-                    {item.label}
-                  </div>
+                renderMenu={(items, value, style) =>
+                  <ul className="list-group" style={{ ...style, position: "fixed" }} children={items} />
                 }
-                value={this.props.event.clientId}
-                onChange={this.onChangeClientId}
-                // onSelect={(val) => this.prop}
+                renderItem={(item, isHighlighted) =>
+                  <li key={item.id} className={`list-group-item ${isHighlighted ? "list-group-item-action" : ""}`}>{item.name}</li>
+                }
               />
             </div>
           </div>
