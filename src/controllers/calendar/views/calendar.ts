@@ -14,21 +14,29 @@ interface Props {
     end: string; // iso, local
     masterId: string;
   }>;
+  clients: Array<{
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  }>;
   services: Array<{
     id: number;
     name: string;
     duration: number;
-  }>
+  }>;
   endpoints: {
     base: string;
     list: string;
     create: string;
     update: string;
     delete: string;
-  }
+    createClient: string;
+    suggestClients: string;
+  };
 }
 
-export const calendar = ({ date, masters, events, endpoints, services }: Props) => `
+export const calendar = (props) => `
 
 <div id="calendar">
   <div class="d-flex justify-content-center align-items-center vh-100">
@@ -38,11 +46,5 @@ export const calendar = ({ date, masters, events, endpoints, services }: Props) 
   </div>
 </div>
   
-<script>var __INITIAL_STATE__ = ${JSON.stringify({
-  date,
-  events,
-  masters,
-  endpoints,
-  services
-})}</script>
+<script>var __INITIAL_STATE__ = ${JSON.stringify(props)}</script>
 `

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Event, Service } from "../../types";
+import { Event, Service, Client } from "../../types";
 import { CalendarContext } from "../CalendarContext/CalendarContext";
 import { CalendarEventForm } from "../CalendarEventForm/CalendarEventForm";
 
@@ -8,6 +8,7 @@ declare const bootstrap: any;
 
 interface Props {
   event: Event;
+  clients: Client[];
   services: Service[];
   isSaving?: boolean;
   isDeleting?: boolean;
@@ -118,6 +119,7 @@ export class CalendarModal extends React.PureComponent<Props, State> {
               {this.state.event && (
                 <CalendarEventForm
                   event={this.state.event}
+                  clients={this.props.clients}
                   services={this.props.services}
                   onUpdate={this.handleUpdate}
                 />
@@ -157,7 +159,10 @@ export class CalendarModal extends React.PureComponent<Props, State> {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.handleSave}
-                  disabled={this.props.isDeleting}
+                  disabled={
+                    this.props.isDeleting ||
+                    this.state.event === this.props.event
+                  }
                 >
                   Save
                 </button>

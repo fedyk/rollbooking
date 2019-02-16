@@ -1,7 +1,7 @@
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { CalendarEventForm } from "./CalendarEventForm";
-import { Event, Service } from "../../types";
+import { Event, Service, Client } from "../../types";
 
 const event: Event = {
   id: "1",
@@ -11,6 +11,8 @@ const event: Event = {
   serviceId: 1,
   masterId: "1"
 };
+
+const clients: Client[] = [];
 
 const services: Service[] = [
   {
@@ -30,6 +32,7 @@ describe("CalendarEventForm", function() {
     const component = shallow(
       <CalendarEventForm
         event={event}
+        clients={clients}
         services={services}
         onUpdate={() => {}}
       />
@@ -46,6 +49,7 @@ describe("CalendarEventForm", function() {
     const component = mount(
       <CalendarEventForm
         event={event}
+        clients={clients}
         services={services}
         onUpdate={onUpdate}
       />
@@ -69,6 +73,7 @@ describe("CalendarEventForm", function() {
     const component = mount(
       <CalendarEventForm
         event={event}
+        clients={clients}
         services={services}
         onUpdate={onUpdate}
       />
@@ -92,6 +97,7 @@ describe("CalendarEventForm", function() {
     const component = mount(
       <CalendarEventForm
         event={event}
+        clients={clients}
         services={services}
         onUpdate={onUpdate}
       />

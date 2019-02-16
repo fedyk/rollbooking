@@ -3,7 +3,7 @@ import { Calendar } from "../Calendar/Calendar";
 import { rawEventToEvent } from "../../helpers/raw-event-to-event";
 import { dateToISODateTime } from "../../helpers/date-to-iso-datetime";
 import { CalendarContext } from "../CalendarContext/CalendarContext";
-import { Event, Master, Endpoints, Service } from "../../types";
+import { Event, Master, Endpoints, Service, Client } from "../../types";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { dateToISODate } from "../../helpers/date-to-iso-date";
 import { indexBy } from "../../helpers/index-by";
@@ -14,6 +14,7 @@ import { eventToRawEvent } from "../../helpers/event-to-raw-event";
 interface Props {
   date: Date;
   masters: Master[];
+  clients: Client[];
   services: Service[];
   events: Event[];
   endpoints: Endpoints;
@@ -22,6 +23,7 @@ interface Props {
 interface State {
   date: Date;
   masters: Master[];
+  clients: Client[];
   events: {
     [key: string]: Event;
   };
@@ -37,6 +39,7 @@ export class App extends React.PureComponent<Props, State> {
     this.state = {
       date: props.date,
       masters: props.masters,
+      clients: props.clients,
       events: indexBy(props.events, "id"),
       selectedEventId: null,
       isSavingEvent: false,
@@ -140,14 +143,17 @@ export class App extends React.PureComponent<Props, State> {
 
     fetch(url, options)
       .then((response) => response.json())
-      .then((rawEvents) => {
+      .then((data) => {
+        const rawEvents = data.events;
+        const clients = data.clients;
+
         const incomingEvents = indexBy(
           rawEvents.map(rawEventToEvent) as Event[],
           "id"
         );
         const events = { ...this.state.events, ...incomingEvents };
 
-        this.setState({ events });
+        this.setState({ events, clients });
       })
       .catch((error) => console.error(error));
   }
@@ -231,14 +237,49 @@ export class App extends React.PureComponent<Props, State> {
     }
   };
 
+  createClient = async (text: string): Promise<Client> => {
+    const options = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text })
+    };
+
+    return fetch(this.props.endpoints.createClient, options)
+      .then((r) => r.json())
+      .then((client) => client)
+      .catch((error) => console.error(error));
+  };
+
+  suggestClients = async (query: string): Promise<Client[]> => {
+    const options = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ query })
+    };
+
+    return fetch(this.props.endpoints.suggestClients, options)
+      .then((r) => r.json())
+      .then((clients) => clients)
+      .catch((error) => console.error(error));
+  };
+
   render() {
     return (
       <React.Fragment>
         <CalendarContext.Provider
           value={{
+            clients: this.state.clients,
             services: this.props.services,
             deleteEvent: this.deleteEvent,
-            updateEvent: this.updateEvent
+            updateEvent: this.updateEvent,
+            createClient: this.createClient,
+            suggestClients: this.suggestClients
           }}
         >
           <div className="card">
@@ -261,18 +302,18 @@ export class App extends React.PureComponent<Props, State> {
               />
             </div>
           </div>
+          <CalendarModal
+            event={this.state.events[this.state.selectedEventId]}
+            clients={this.props.clients}
+            services={this.props.services}
+            isOpen={Boolean(this.state.selectedEventId)}
+            isSaving={this.state.isSavingEvent}
+            isDeleting={this.state.isDeletingEvent}
+            onCancel={this.onUnselectEvent}
+            onSave={this.handleModalSave}
+            onDelete={this.handleModalDelete}
+          />
         </CalendarContext.Provider>
-
-        <CalendarModal
-          event={this.state.events[this.state.selectedEventId]}
-          services={this.props.services}
-          isOpen={Boolean(this.state.selectedEventId)}
-          isSaving={this.state.isSavingEvent}
-          isDeleting={this.state.isDeletingEvent}
-          onCancel={this.onUnselectEvent}
-          onSave={this.handleModalSave}
-          onDelete={this.handleModalDelete}
-        />
       </React.Fragment>
     );
   }

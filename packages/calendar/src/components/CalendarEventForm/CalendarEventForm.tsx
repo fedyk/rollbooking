@@ -1,17 +1,16 @@
 import * as React from "react";
-import * as ReactAutocomplete from "react-autocomplete";
-import { Event, Service } from "../../types";
+import { Event, Service, Client } from "../../types";
 import { parseTime } from "../../helpers/parse-time";
 import { dateToTimeString } from "../../helpers/date-to-time-string";
 import { find } from "../../helpers/find";
 import "./CalendarEventForm.css";
-
-const Autocomplete = (ReactAutocomplete as any).default || ReactAutocomplete;
+import { CalendarEventClient } from "../EventClientFormControl/EventClientFormControl";
 
 var MS_PER_MINUTE = 60000;
 
 interface Props {
   event: Event;
+  clients: Client[];
   services: Service[];
   onUpdate(event: Event): void;
 }
@@ -105,14 +104,6 @@ export class CalendarEventForm extends React.PureComponent<Props, State> {
     );
   };
 
-  onChangeClient = (e, clientName: string) => {
-    this.setState({ clientName });
-  };
-
-  onSelectClient = (value) => {
-    console.log(value);
-  };
-
   render() {
     const startTime = dateToTimeString(this.props.event.start);
     const endTime = dateToTimeString(this.props.event.end);
@@ -186,40 +177,10 @@ export class CalendarEventForm extends React.PureComponent<Props, State> {
               client
             </label>
             <div className="col-sm-8">
-              <Autocomplete
-                value={this.state.clientName}
-                onChange={this.onChangeClient}
-                onSelect={this.onSelectClient}
-                autoHighlight={false}
-                wrapperStyle={{
-                  display: "block"
-                }}
-                inputProps={{
-                  className: "form-control"
-                }}
-                getItemValue={(item) => item.id}
-                items={[
-                  { id: "1", name: "apple" },
-                  { id: "2", name: "banana" },
-                  { id: "3", name: "pear" }
-                ]}
-                renderMenu={(items, value, style) => (
-                  <ul
-                    className="list-group"
-                    style={{ ...style, position: "fixed" }}
-                    children={items}
-                  />
-                )}
-                renderItem={(item, isHighlighted) => (
-                  <li
-                    key={item.id}
-                    className={`list-group-item ${
-                      isHighlighted ? "list-group-item-action" : ""
-                    }`}
-                  >
-                    {item.name}
-                  </li>
-                )}
+              <CalendarEventClient
+                event={this.props.event}
+                clients={this.props.clients}
+                onUpdate={this.props.onUpdate}
               />
             </div>
           </div>
