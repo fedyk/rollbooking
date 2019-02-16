@@ -187,12 +187,15 @@ describe("calendar", function () {
         .expect(200)
         .end(function (err, res) {
           if (err) return done(err);
-          expect(res.body).toMatchObject([{
-            id: reservation._id.toHexString(),
-            masterId: reservation.masterId.toHexString(),
-            start: "2017-01-01T10:00:00",
-            end: "2017-01-01T11:00:00"
-          }])
+          expect(res.body).toMatchObject({
+            events: [{
+              id: reservation._id.toHexString(),
+              masterId: reservation.masterId.toHexString(),
+              start: "2017-01-01T10:00:00",
+              end: "2017-01-01T11:00:00"
+            }],
+            clients: []
+          })
           done();
         });
     })

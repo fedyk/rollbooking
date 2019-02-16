@@ -1,6 +1,5 @@
 import { UsersCollection, SalonsCollection, closeClient } from "../../adapters/mongodb";
-import { User, SalonEmployer } from "../../models/user";
-import { createHash } from "crypto";
+import { User } from "../../models/user";
 import { Salon } from "../../models/salon";
 import { DayOfWeek } from "../../models/dat-of-week";
 
@@ -37,6 +36,7 @@ export async function createTestSalons(timeZones = DEFAULT_TIME_ZONES) {
     password: "",
     properties: {},
   }
+
   const user2: User = {
     name: "Master 2",
     employers: {

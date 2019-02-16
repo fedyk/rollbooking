@@ -14,13 +14,14 @@ export async function createTestClient(options: Options) {
   const $clients = await ClientsCollection();
   const salonId = options.salonId || null;
   const userId = options.userId || null;
+  const randomId = Math.round(Math.random() * 1000)
 
   const client: Client = {
     salonId,
     userId,
-    name: options.name || "Test User",
-    email: options.email || "email@example.com",
-    phone: options.phone || "666666666"
+    name: options.name || `Test Client ${randomId}`,
+    email: options.email || `email${randomId}@example.com`,
+    phone: options.phone || `${randomId}666666`
   }
 
   const { ops: [insertedClient] } = await $clients.insertOne(client);
