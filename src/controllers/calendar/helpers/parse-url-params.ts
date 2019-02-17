@@ -6,7 +6,7 @@ export interface UrlParams {
 }
 
 export function parseUrlParams(params: any): UrlParams {
-  const dateString = params && (params.date || params.d) || "";
+  const dateString = params ? (params.date || params.d) : "";
   let date: Date = null;
 
   if (dateString) {

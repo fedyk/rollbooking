@@ -39,7 +39,12 @@ export async function getEvents(salon: Salon, date: Date) {
     return [client._id.toHexString(), client];
   }));
 
-  return reservations.map(function(reservation) {
+  const events = reservations.map(function(reservation) {
     return reservationToEvent(reservation, servicesMap, clientsMap);
   });
+
+  return {
+    events,
+    clients
+  }
 }

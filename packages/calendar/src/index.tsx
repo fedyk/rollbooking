@@ -17,14 +17,24 @@ export function render(targetSelector, data: Data) {
   assert(data.date.year, "`data.date` should follow `DateObject` interface");
   assert(data.events, "`data.events` is required");
   assert(data.masters, "`data.masters` is required");
+  assert(data.clients, "`data.clients` is required");
   assert(data.services, "`data.services` is required");
   assert(data.endpoints, "`data.endpoints` is required");
+  assert(
+    data.endpoints.createClient,
+    "`data.endpoints.createClient` is required"
+  );
+  assert(
+    data.endpoints.suggestClients,
+    "`data.endpoints.suggestClients` is required"
+  );
 
   return ReactDOM.render(
     <App
       date={new Date(date.year, date.month - 1, date.day)}
       events={data.events.map(rawEventToEvent)}
       masters={data.masters}
+      clients={data.clients}
       services={data.services}
       endpoints={data.endpoints}
     />,

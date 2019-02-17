@@ -271,7 +271,6 @@ describe("getPeriods", function () {
   })
   
   it("should work 3", function () {
-    debugger
     expect(getPeriods({
       year: 2018,
       month: 12,

@@ -1,10 +1,11 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
 import { Salon, SalonService } from "../../../models/salon";
-import { ReservationsCollection } from "../../../adapters/mongodb";
+import { ReservationsCollection, ClientsCollection } from "../../../adapters/mongodb";
 import { reservationToEvent } from "../helpers/reservation-to-event";
 import { isoDateTimeToDateTime } from "../../../helpers/date/iso-date-time-to-date-time";
 import { Reservation, Status } from "../../../models/reservation";
+import { toDottedObject } from "../../../helpers/to-dotted-object";
 
 export async function update(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -13,7 +14,7 @@ export async function update(ctx: Context) {
   // id to reservation should be valid
   ctx.assert(ObjectID.isValid(body.id), 404, "Item doesn't exist");
 
-  const master = salon.employees.users.find(v => v.id.toHexString() === body.resourceId);
+  const master = salon.employees.users.find(v => v.id.toHexString() === body.masterId);
   const service = salon.services.items.find(v => v.id === body.serviceId);
   const start = isoDateTimeToDateTime(body.start);
   const end = isoDateTimeToDateTime(body.end);
@@ -38,8 +39,9 @@ export async function update(ctx: Context) {
     partialReservation.end = end;
   }
 
-  // Client id is not required, so can be overwrite
-  partialReservation.clientId = clientId;
+  if (clientId) {
+    partialReservation.clientId = clientId;
+  }
 
   if (status) {
     partialReservation.status = status;
@@ -51,6 +53,8 @@ export async function update(ctx: Context) {
     salonId: salon._id
   }, {
     $set: partialReservation
+  }, {
+    returnOriginal: false
   });
 
   // no update item, looks like it doesn't exist
@@ -61,6 +65,17 @@ export async function update(ctx: Context) {
   }));
 
   const usersMap = new Map();
+
+  if (ObjectID.isValid(updatedReservation.value.clientId)) {
+    const $clients = await ClientsCollection();
+    const client = await $clients.findOne({
+      _id: updatedReservation.value.clientId
+    });
+
+    if (client) {
+      usersMap.set(client._id.toHexString(), client);
+    }
+  }
 
   ctx.body = reservationToEvent(updatedReservation.value, servicesMap, usersMap);
 }

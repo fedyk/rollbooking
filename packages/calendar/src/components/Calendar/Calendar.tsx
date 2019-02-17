@@ -17,6 +17,7 @@ const localizer = BigCalendar.momentLocalizer(moment);
 
 export interface Props {
   date: Date;
+  selected: Event;
   resources: Master[];
   events: Event[];
   onNavigate?: (newDate: Date, view: View, action: Navigate) => void;
@@ -39,6 +40,7 @@ export class Calendar extends React.PureComponent<Props> {
     return (
       <BigCalendar
         date={this.props.date}
+        selected={this.props.selected}
         events={this.props.events}
         titleAccessor={(event) => event.title}
         resources={this.props.resources}

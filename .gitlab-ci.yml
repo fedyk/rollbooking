@@ -9,6 +9,8 @@ build:
   services:
     - mongo:latest
     - redis:latest
+  variables:
+    MONGODB_URI: mongodb://mongo:27017/test
   cache:
     paths:
       - node_modules/
