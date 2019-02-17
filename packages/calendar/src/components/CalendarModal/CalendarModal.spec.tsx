@@ -1,7 +1,7 @@
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import { CalendarModal } from "./CalendarModal";
-import { Event, Service } from "../../types";
+import { Event, Service, Client } from "../../types";
 
 const event: Event = {
   id: "1",
@@ -11,6 +11,8 @@ const event: Event = {
   serviceId: 1,
   masterId: "1"
 };
+
+const clients: Client[] = []
 
 const services: Service[] = [
   {
@@ -51,6 +53,7 @@ describe("CalendarEventForm", function() {
     const component = shallow(
       <CalendarModal
         event={event}
+        clients={clients}
         isSaving={false}
         services={services}
         onSave={() => {}}
