@@ -18,9 +18,16 @@ export interface Master {
 }
 
 export interface Service {
-  id: number,
-  name: string,
+  id: number;
+  name: string;
   duration: number;
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
 }
 
 export interface DateObject {
@@ -35,12 +42,15 @@ export interface Endpoints {
   create: string;
   update: string;
   "delete": string;
+  createClient: string;
+  suggestClients: string;
 }
 
 export interface Data {
   date: DateObject;
   events: Event[];
   masters: Master[];
+  clients: Client[];
   services: Service[];
   endpoints: Endpoints;
 }

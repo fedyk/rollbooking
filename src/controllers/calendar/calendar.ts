@@ -27,7 +27,7 @@ export async function calendar(ctx: Context) {
   });
 
   const date = params.date ? params.date : getZonedTime(new Date(), findTimeZone(salon.timezone));
-  const events = await getEvents(salon, date);
+  const { events, clients } = await getEvents(salon, date);
 
   const services = salon.services.items.map(service => ({
     id: service.id,
@@ -48,6 +48,12 @@ export async function calendar(ctx: Context) {
         date: date,
         masters: masters,
         events: events,
+        clients: clients.map(v => ({
+          id: v._id.toHexString(),
+          name: v.name,
+          email: v.email,
+          phone: v.phone
+        })),
         services: services,
         endpoints: {
           base: `/${salon.alias}/calendar`,
@@ -55,6 +61,8 @@ export async function calendar(ctx: Context) {
           create: `/${salon.alias}/calendar/events/create`,
           update: `/${salon.alias}/calendar/events/update`,
           delete: `/${salon.alias}/calendar/events/delete`,
+          createClient: `/${salon.alias}/calendar/clients/quick-create`,
+          suggestClients: `/${salon.alias}/calendar/clients/suggest`,
         }
       })
     })

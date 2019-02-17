@@ -1,27 +1,36 @@
 import * as React from "react";
-import { Event, Service } from "../../types";
+import { Event, Service, Client } from "../../types";
 import { parseTime } from "../../helpers/parse-time";
 import { dateToTimeString } from "../../helpers/date-to-time-string";
 import { find } from "../../helpers/find";
 import "./CalendarEventForm.css";
+import { CalendarEventClient } from "../EventClientFormControl/EventClientFormControl";
 
 var MS_PER_MINUTE = 60000;
 
 interface Props {
   event: Event;
-  services?: Service[];
+  clients: Client[];
+  services: Service[];
   onUpdate(event: Event): void;
-  onDelete(eventId: string): void;
 }
 
-export class CalendarEventForm extends React.PureComponent<Props> {
+interface State {
+  clientName: string;
+}
+
+export class CalendarEventForm extends React.PureComponent<Props, State> {
   static defaultProps = {
     services: []
   };
 
-  onDelete = () => {
-    this.props.onDelete(this.props.event.id);
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      clientName: this.props.event.clientName || ""
+    };
+  }
 
   onChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { event } = this.props;
@@ -80,17 +89,19 @@ export class CalendarEventForm extends React.PureComponent<Props> {
       return;
     }
 
-    const service = find(this.props.services, v => v.id === serviceId);
+    const service = find(this.props.services, (v) => v.id === serviceId);
 
     if (service && service.duration) {
       end.setTime(start.getTime() + service.duration * MS_PER_MINUTE);
     }
 
-    this.props.onUpdate(Object.assign({}, this.props.event, {
-      start,
-      end,
-      serviceId
-    }))
+    this.props.onUpdate(
+      Object.assign({}, this.props.event, {
+        start,
+        end,
+        serviceId
+      })
+    );
   };
 
   render() {
@@ -100,7 +111,10 @@ export class CalendarEventForm extends React.PureComponent<Props> {
     return (
       <div className="calendar-event-container">
         <div className="form-group row">
-          <label htmlFor="starts" className="col-sm-4 col-form-label">
+          <label
+            htmlFor="starts"
+            className="col-sm-4 col-form-label text-right"
+          >
             starts
           </label>
           <div className="col-sm-8">
@@ -115,7 +129,7 @@ export class CalendarEventForm extends React.PureComponent<Props> {
         </div>
 
         <div className="form-group row">
-          <label htmlFor="ends" className="col-sm-4 col-form-label">
+          <label htmlFor="ends" className="col-sm-4 col-form-label text-right">
             ends
           </label>
           <div className="col-sm-8">
@@ -131,7 +145,10 @@ export class CalendarEventForm extends React.PureComponent<Props> {
 
         {this.props.services.length > 0 && (
           <div className="form-group row">
-            <label htmlFor="service" className="col-sm-4 col-form-label">
+            <label
+              htmlFor="service"
+              className="col-sm-4 col-form-label text-right"
+            >
               service
             </label>
             <div className="col-sm-8">
@@ -151,14 +168,23 @@ export class CalendarEventForm extends React.PureComponent<Props> {
           </div>
         )}
 
-        <div className="d-flex justify-content-between">
-          <button
-            className="btn btn-sm btn-outline-danger"
-            onClick={this.onDelete}
-          >
-            Delete
-          </button>
-        </div>
+        {this.props.services.length > 0 && (
+          <div className="form-group row">
+            <label
+              htmlFor="service"
+              className="col-sm-4 col-form-label text-right"
+            >
+              client
+            </label>
+            <div className="col-sm-8">
+              <CalendarEventClient
+                event={this.props.event}
+                clients={this.props.clients}
+                onUpdate={this.props.onUpdate}
+              />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
