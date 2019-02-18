@@ -31,6 +31,8 @@ export async function createTestReservation(options: Options) {
     start,
     end,
     status: Status.Confirmed,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   }
 
   const { ops: [insertedReservation] } = await $reservations.insertOne(reservation);

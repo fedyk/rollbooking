@@ -153,6 +153,8 @@ export async function post(ctx: Context) {
         addMinutes(dateTimeToNativeDate(reservationStart), salonService.duration)
       ),
       status: 2, // confirmed
+      createdAt: new Date(),
+      updatedAt: new Date()
     })
 
     ctx.assert(reservation.insertedCount === 1, 500, "Internal error")
