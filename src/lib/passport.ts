@@ -16,7 +16,7 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_OAUTH2_CLIENT_ID,
   clientSecret: process.env.GOOGLE_OAUTH2_SECRET,
   callbackURL: process.env.GOOGLE_OAUTH2_REDIRECT_URL,
-}, passportGoogleStrategy);
+}, passportGoogleStrategy));
 
 router.get('/google', passport.authenticate('google', {
   scope,

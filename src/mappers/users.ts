@@ -5,7 +5,8 @@ export function mapGoogleProfileToUser(
   profile: plus_v1.Schema$Person,
   {
     accessToken,
-    refreshToken
+    refreshToken,
+    scope
   }
 ): User {
   const name = `${profile.name && profile.name.givenName} ${profile.name && profile.name.familyName}`.trim();
@@ -17,6 +18,7 @@ export function mapGoogleProfileToUser(
     google: {
       accessToken,
       refreshToken,
+      scope
     },
   }
 
