@@ -2,6 +2,7 @@ import { escape } from "../../helpers/html";
 import { input } from "../../helpers/form";
 
 interface Props {
+  isAuthenticated: boolean;
   userEmail: string;
   userName: string;
   bookingDate: string;
@@ -46,7 +47,7 @@ export const checkoutView = (props: Props) => `
 
     <div class="card mb-3">
       <div class="card-body">
-        <div class="form-group">
+        ${!props.isAuthenticated ? `<div class="form-group">
           <label for="booking-date">Name</label>
           ${input("name", props.userName, {
             "class": "form-control",
@@ -63,10 +64,19 @@ export const checkoutView = (props: Props) => `
             "id": "booking-master",
             "required": true
           })}
-        </div>
-
-        <button type="submit" class="btn btn-primary">Book</button>
+        </div>` : `
+          <a href="/profile">
+            <h6 class="h6">Contact details</h6>
+            <p>
+              <strong>${props.userName}</strong>
+              <br />
+              <strong class="text-muted">${props.userEmail}</strong>
+            </p>
+          </a>
+        `}
       </div>
     </div>
+
+    <button type="submit" class="btn btn-block btn-primary">Book</button>
   </form>
 </div>`

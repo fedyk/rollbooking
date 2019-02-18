@@ -1,10 +1,10 @@
-import { parseRequestQuery, parseRequestBody } from "./checkout";
-import { DateTime } from "../../models/date-time";
-import { TimeOfDay } from "../../models/time-of-day";
-import { Date as DateObject } from "../../models/date";
+import { parseCheckoutRequestQuery } from "./parse-checkout-request-query";
+import { DateTime } from "../../../models/date-time";
+import { Date as DateObject } from "../../../models/date";
+import { TimeOfDay } from "../../../models/time-of-day";
 
-test('parseRequestQuery', function() {
-  expect(parseRequestQuery({})).toEqual({
+test('parseCheckoutRequestQuery', function () {
+  expect(parseCheckoutRequestQuery({})).toEqual({
     masterId: null,
     serviceId: null,
     startPeriod: null,
@@ -13,9 +13,9 @@ test('parseRequestQuery', function() {
     date: null,
   })
 
-  expect(parseRequestQuery({
-    m: "5c24a58a86211ebcbbde0c26",
-    s: "1",
+  expect(parseCheckoutRequestQuery({
+    mid: "5c24a58a86211ebcbbde0c26",
+    sid: "1",
     wdps: "2018-01-01T01:01:01",
     wdpe: "2018-01-01T10:01:01",
     t: "08:00",
@@ -51,9 +51,9 @@ test('parseRequestQuery', function() {
     } as DateObject,
   })
 
-  expect(parseRequestQuery({
-    m: "test",
-    s: "test",
+  expect(parseCheckoutRequestQuery({
+    mid: "test",
+    sid: "test",
     wdps: "test",
     wdpe: "test",
     d: "test",
@@ -65,25 +65,5 @@ test('parseRequestQuery', function() {
     endPeriod: null,
     time: null,
     date: null,
-  })
-})
-
-test('parseRequestBody', function() {
-  expect(parseRequestBody(null)).toEqual({
-    email: "",
-    name: ""
-  })
-
-  expect(parseRequestBody({})).toEqual({
-    email: "",
-    name: ""
-  })
-
-  expect(parseRequestBody({
-    email: "test",
-    name: "test2"
-  })).toEqual({
-    email: "test",
-    name: "test2"
   })
 })
