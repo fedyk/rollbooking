@@ -3,9 +3,14 @@ import * as Koa from "koa";
 import * as session from "koa-session";
 import * as request from "supertest";
 import { config } from "./session";
+import { closeClient } from "../adapters/mongodb";
 
 describe("session", function () {
   let cookie;
+
+  afterAll(async function() {
+    await closeClient();
+  })
 
   it("should save value in session", function(done) {
     const app = new Koa();

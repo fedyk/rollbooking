@@ -37,7 +37,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "jest --coverage --verbose",
+    "test": "jest --coverage --verbose --detectOpenHandles",
     "test:watch": "jest --watch",
     "watch": "tsc --watch",
     "rimraf:dist": "rimraf dist",
