@@ -16,9 +16,9 @@ export function mapGoogleProfileToUser(
   
   const properties: UserProperties = {
     google: {
-      scope,
       accessToken,
       refreshToken,
+      scope
     },
   }
 

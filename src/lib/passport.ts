@@ -3,19 +3,42 @@ import * as passport from "koa-passport";
 import * as Router from "koa-router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { mapGoogleProfileToUser } from "../mappers/users";
-import { SalonsCollection, UsersCollection } from "../adapters/mongodb";
+import { UsersCollection } from "../adapters/mongodb";
 import { User } from "../models/user";
 
 export const router = new Router()
 
-const scope = ['email', 'profile']
+const scope = ['email', 'profile'];
 
-passport.serializeUser(function(user: User, done) {
-  done(null, user._id.toHexString())
-})
+passport.serializeUser(serializeUser)
+passport.deserializeUser(deserializeUser);
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_OAUTH2_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_OAUTH2_SECRET,
+  callbackURL: process.env.GOOGLE_OAUTH2_REDIRECT_URL,
+}, passportGoogleStrategy));
 
-passport.deserializeUser(async function(id: number, done) {
-  const $users = await SalonsCollection()
+router.get('/google', passport.authenticate('google', {
+  scope,
+  successRedirect: '/',
+  failureRedirect: '/'
+}));
+
+router.get('/logout', ctx => {
+  ctx.logout()
+  ctx.redirect('/login')
+});
+
+export const initialize = () => passport.initialize();
+export const session = () => passport.session();
+export const onlyAuthenticated = async (ctx, next) => !ctx.isAuthenticated() ? ctx.redirect('/login') : next()
+
+async function serializeUser(user: User, done) {
+  done(null, user._id.toHexString());
+}
+
+async function deserializeUser(id: number, done) {
+  const $users = await UsersCollection();
 
   if (!ObjectID.isValid(id)) {
     return done(new Error("User id is not valid ObjectID"))
@@ -28,16 +51,12 @@ passport.deserializeUser(async function(id: number, done) {
 
     done(null, user)
   }
-  catch(err) {
+  catch (err) {
     done(err)
   }
-});
+}
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_OAUTH2_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_OAUTH2_SECRET,
-  callbackURL: process.env.GOOGLE_OAUTH2_REDIRECT_URL,
-}, async function(accessToken, refreshToken, profile, done: (err: Error, user: User) => void) {
+async function passportGoogleStrategy(accessToken, refreshToken, profile, done: (err: Error, user: User) => void) {
   try {
     const $user = await UsersCollection();
 
@@ -60,22 +79,7 @@ passport.use(new GoogleStrategy({
 
     done(null, user)
   }
-  catch(err) {
+  catch (err) {
     done(err, null);
   }
-}));
-
-router.get('/google', passport.authenticate('google', {
-  scope,
-  successRedirect: '/',
-  failureRedirect: '/'
-}));
-
-router.get('/logout', ctx => {
-  ctx.logout()
-  ctx.redirect('/login')
-});
-
-export const initialize = () => passport.initialize();
-export const session = () => passport.session();
-export const onlyAuthenticated = async (ctx, next) => !ctx.isAuthenticated() ? ctx.redirect('/login') : next()
+}

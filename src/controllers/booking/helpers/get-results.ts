@@ -57,8 +57,8 @@ export function getResults(params: Params): Result[] {
         }
 
         const queryString: CheckoutURLParams = {
-          m: masterId,
-          s: salonService.id.toString(),
+          mid: masterId,
+          sid: salonService.id.toString(),
           wdps: dateTimeToISODate(workday.period.start),
           wdpe: dateTimeToISODate(workday.period.end),
           t: timeOfDayToISOTime(time),

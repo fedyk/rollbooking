@@ -3,12 +3,12 @@ export interface CheckoutURLParams {
   /**
    * Master Id
    */
-  m: string;
+  mid: string;
   
   /**
    * Service Id
    */
-  s: string;
+  sid: string;
 
   /**
    * Start of workday period, YYYY-MM-DDTHH-MM-SS

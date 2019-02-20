@@ -1,4 +1,3 @@
-import Debug from "debug";
 import * as parseInt from "parse-int";
 import { welcomeView } from "../../views/booking/welcome-view";
 import { bookingLayoutView } from "../../views/booking/booking-layout-view";

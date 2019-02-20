@@ -5,6 +5,7 @@ import { Salon } from "../models/salon";
 import { Reservation } from "../models/reservation";
 import { BookingWorkday } from "../models/booking-workday";
 import { Client } from "../models/client";
+import { Session } from "../models/session";
 
 const client = new MongoClient(config.MONGODB_URI, {
   useNewUrlParser: true
@@ -44,4 +45,8 @@ export async function BookingWorkdaysCollection(): Promise<Collection<BookingWor
 
 export async function ClientsCollection(): Promise<Collection<Client>> {
   return await getCollection("clients");
+}
+
+export async function SessionCollection(): Promise<Collection<Session>> {
+  return await getCollection("sessions");
 }
