@@ -10,6 +10,7 @@ import { User } from "../../../models/user";
 import { SessionPayload } from "../../../models/session";
 import { parseCheckoutRequestQuery } from "../helpers/parse-checkout-request-query";
 import { toDottedObject } from "../../../helpers/to-dotted-object";
+import { getUserAvatarUrl } from "../../../helpers/user/get-user-avatar-url";
 
 export async function get(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -21,6 +22,7 @@ export async function get(ctx: Context) {
   const session = ctx.session as SessionPayload;
   const userName = isAuthenticated ? (user.name) : session.clientName;
   const userEmail = isAuthenticated ? user.email : session.clientEmail;
+  const userAvatarUrl = isAuthenticated ? getUserAvatarUrl(user) : "";
 
   ctx.assert(params.masterId, 400, "Invalid params")
   ctx.assert(params.serviceId, 400, "Invalid params")
@@ -69,6 +71,9 @@ export async function get(ctx: Context) {
   ctx.assert(requestedTime, 400, "The selected time is already booked")
 
   ctx.body = bookingLayoutView({
+    isAuthenticated: isAuthenticated,
+    userName: userName,
+    userAvatarUrl,
     salonName: salon.name,
     salonAlias: salon.alias,
     body: checkoutView({

@@ -17,10 +17,16 @@ import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 import { getSelectedDate } from "./helpers/get-selected-date";
 import { Salon } from "../../models/salon";
+import { User } from "../../models/user";
+import { getUserAvatarUrl } from "../../helpers/user/get-user-avatar-url";
 
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
+  const isAuthenticated = ctx.isAuthenticated()
   const params = parseRequestParam({...ctx.params, ...ctx.query});
+  const user = ctx.state.user as User;
+  const userName = isAuthenticated ? user.name : null;
+  const userAvatarUrl = isAuthenticated ? getUserAvatarUrl(user) : null;
 
   const $users = await UsersCollection();
   const salonUsers = await $users.find({
@@ -69,6 +75,9 @@ export async function welcome(ctx: Context) {
   });
 
   ctx.body = bookingLayoutView({
+    isAuthenticated,
+    userName,
+    userAvatarUrl,
     salonName: salon.name,
     salonAlias: salon.alias,
     body: welcomeView({

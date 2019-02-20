@@ -1,3 +1,5 @@
+import { footer } from "./footer";
+
 interface Props {
   body: string;
 }
@@ -13,5 +15,5 @@ export const content = ({ body }: Props) => `
 ${body}
 </div>
 
-<div class="container pt-4 pb-4">© 2019 rollbooking</nav>
+${footer()}
 `

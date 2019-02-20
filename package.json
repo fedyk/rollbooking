@@ -42,6 +42,6 @@
     "watch": "tsc --watch",
     "rimraf:dist": "rimraf dist",
     "start": "node dist/server",
-    "dev": "nodemon --inspect dist/server --watch dist"
+    "dev": "nodemon --inspect --watch dist dist/server"
   }
 }

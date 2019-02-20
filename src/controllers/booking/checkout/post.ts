@@ -8,8 +8,6 @@ import { isEmail } from "../../../utils/is-email";
 import { addMinutes } from "../../../helpers/date/add-minutes";
 import { syncBookingWorkdays } from "../../../tasks/salon/sync-booking-workdays";
 import { nativeDateToDateTime } from "../../../helpers/date/native-date-to-date-time";
-import { DateTime } from "../../../models/date-time";
-import { FilterQuery } from "mongodb";
 import { BookingWorkday } from "../../../models/booking-workday";
 import { dateTimeToNativeDate } from "../../../helpers/date/date-time-to-native-date";
 import { Salon } from "../../../models/salon";
@@ -19,6 +17,7 @@ import { SessionPayload } from "../../../models/session";
 import { parseCheckoutRequestQuery } from "../helpers/parse-checkout-request-query";
 import { parseCheckoutRequestBody } from "../helpers/parse-checkout-request-body";
 import { toDottedObject } from "../../../helpers/to-dotted-object";
+import { getUserAvatarUrl } from "../../../helpers/user/get-user-avatar-url";
 
 export async function post(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -32,6 +31,7 @@ export async function post(ctx: Context) {
   const session = ctx.session as SessionPayload;
   const userName = isAuthenticated ? (user.name) : session.clientName;
   const userEmail = isAuthenticated ? user.email : session.clientEmail;
+  const userAvatarUrl = isAuthenticated ? getUserAvatarUrl(user) : "";
 
   ctx.assert(params.masterId, 400, "Invalid params")
   ctx.assert(params.serviceId, 400, "Invalid params")
@@ -167,6 +167,9 @@ export async function post(ctx: Context) {
   }
 
   ctx.body = bookingLayoutView({
+    isAuthenticated: isAuthenticated,
+    userName: userName,
+    userAvatarUrl,
     salonName: salon.name,
     salonAlias: salon.alias,
     body: checkoutView({

@@ -1,10 +1,15 @@
+import * as Debug from "debug";
 import { SessionCollection } from "../adapters/mongodb";
+
+const debug = Debug("app:session");
 
 /**
  * Functions for external storage
  * https://github.com/koajs/session#external-session-stores
  */
 export async function get(key, maxAge, { rolling }) {
+  debug("get session by key %s", key);
+
   const $sessions = await SessionCollection();
   const session = await $sessions.findOne({ _id: key });
 
@@ -12,6 +17,8 @@ export async function get(key, maxAge, { rolling }) {
 }
 
 export async function set(key: string, payload, maxAge, { rolling, changed }) {
+  debug("set session by key %s", key);
+
   const $sessions = await SessionCollection();
   const filter = { _id: key };
   const update = {
@@ -29,6 +36,8 @@ export async function set(key: string, payload, maxAge, { rolling, changed }) {
 }
 
 export async function destroy(key) {
+  debug("destroy session by key %s", key);
+
   const $sessions = await SessionCollection();
 
   await $sessions.deleteOne({

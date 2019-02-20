@@ -31,6 +31,13 @@ export interface UserProperties {
     to_salon_id: number;
   };
   salons?: {
-    default_salon_id?: number
-  }
+    default_salon_id?: number;
+  },
+  avatar?: UserAvatar;
+}
+
+export interface UserAvatar {
+  small: string;
+  medium: string;
+  big: string;
 }
