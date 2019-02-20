@@ -11,7 +11,6 @@ interface Props {
 }
 
 export const checkoutView = (props: Props) => `
-
 <div class="container">
   <form method="post" action="">
     <div class="card mb-3">
@@ -45,9 +44,10 @@ export const checkoutView = (props: Props) => `
       </div>
     </div>
 
+    ${!props.isAuthenticated ? `
     <div class="card mb-3">
       <div class="card-body">
-        ${!props.isAuthenticated ? `<div class="form-group">
+        <div class="form-group">
           <label for="booking-date">Name</label>
           ${input("name", props.userName, {
             "class": "form-control",
@@ -64,18 +64,19 @@ export const checkoutView = (props: Props) => `
             "id": "booking-master",
             "required": true
           })}
-        </div>` : `
-          <a href="/profile">
-            <h6 class="h6">Contact details</h6>
-            <p>
-              <strong>${props.userName}</strong>
-              <br />
-              <strong class="text-muted">${props.userEmail}</strong>
-            </p>
-          </a>
-        `}
+        </div>
       </div>
-    </div>
+    </div>`:
+    `<div class="list-group mb-3">
+      <div class="list-group-item lh-condensed">
+        <h6 class="mb-0">Account</h6>
+      </div>
+
+      <a href="#" class="list-group-item lh-condensed border-left-0 border-right-0">
+        <h6 class="mb-0 text-body">${escape(props.userName)}</h6>
+        <small class="text-muted">${escape(props.userEmail)}</small>
+      </a>
+    </div>`}
 
     <button type="submit" class="btn btn-block btn-primary">Book</button>
   </form>
