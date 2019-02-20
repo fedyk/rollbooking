@@ -120,10 +120,10 @@ describe("get-results", function () {
       price: "20",
       times: [{
         text: "08:00",
-        url: "/salon-1/booking/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
       }, {
         text: "09:00",
-        url: "/salon-1/booking/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
       }],
     }])
   })
@@ -142,10 +142,10 @@ describe("get-results", function () {
       price: "20",
       times: [{
         text: "08:00",
-        url: "/salon-1/booking/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
       }, {
         text: "09:00",
-        url: "/salon-1/booking/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
       }],
     }])
   })
@@ -164,7 +164,7 @@ describe("get-results", function () {
       price: "20",
       times: [{
         text: "09:00",
-        url: "/salon-1/booking/checkout?m=master-2&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-2&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
       }],
     }])
   })
@@ -194,10 +194,10 @@ describe("get-results", function () {
       price: "20",
       times: [{
         text: "08:00",
-        url: "/salon-1/booking/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
       }, {
         text: "09:00",
-        url: "/salon-1/booking/checkout?m=master-1&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
       }],
     }])
   })
@@ -216,10 +216,10 @@ describe("get-results", function () {
       price: "20",
       times: [{
         text: "08:00",
-        url: "/salon-1/booking/checkout?m=master-2&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-2&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
       }, {
         text: "09:00",
-        url: "/salon-1/booking/checkout?m=master-2&s=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
+        url: "/salon-1/booking/checkout?mid=master-2&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
       }],
     }])
   })

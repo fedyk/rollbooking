@@ -2,6 +2,7 @@ import { escape } from "../../helpers/html";
 import { input } from "../../helpers/form";
 
 interface Props {
+  isAuthenticated: boolean;
   userEmail: string;
   userName: string;
   bookingDate: string;
@@ -10,7 +11,6 @@ interface Props {
 }
 
 export const checkoutView = (props: Props) => `
-
 <div class="container">
   <form method="post" action="">
     <div class="card mb-3">
@@ -44,6 +44,7 @@ export const checkoutView = (props: Props) => `
       </div>
     </div>
 
+    ${!props.isAuthenticated ? `
     <div class="card mb-3">
       <div class="card-body">
         <div class="form-group">
@@ -64,9 +65,19 @@ export const checkoutView = (props: Props) => `
             "required": true
           })}
         </div>
-
-        <button type="submit" class="btn btn-primary">Book</button>
       </div>
-    </div>
+    </div>`:
+    `<div class="list-group mb-3">
+      <div class="list-group-item lh-condensed">
+        <h6 class="mb-0">Account</h6>
+      </div>
+
+      <a href="#" class="list-group-item lh-condensed border-left-0 border-right-0">
+        <h6 class="mb-0 text-body">${escape(props.userName)}</h6>
+        <small class="text-muted">${escape(props.userEmail)}</small>
+      </a>
+    </div>`}
+
+    <button type="submit" class="btn btn-block btn-primary">Book</button>
   </form>
 </div>`

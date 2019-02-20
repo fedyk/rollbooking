@@ -11,6 +11,8 @@ export interface Reservation {
   end: DateTime;
   status: Status;
   meta?: ReservationMeta;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export enum Status {
@@ -62,5 +64,7 @@ const reservation: Reservation = {
   meta: {
     timezone: "Europe/Berlin",
     utcOffset: -60
-  }
+  },
+  createdAt: new Date(),
+  updatedAt: new Date(),
 }

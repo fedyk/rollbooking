@@ -1,14 +1,14 @@
 import * as Redis from "ioredis";
 
-export function client() {
+let $instance: Redis.Redis;
+
+export function redis() {
   return new Redis(process.env.REDIS_URL);
 }
 
-let $instance: Redis.Redis;
-
 export function instance(): Redis.Redis {
   if (!$instance) {
-    $instance = client()
+    $instance = redis()
   }
 
   return $instance

@@ -1,3 +1,5 @@
+import { ObjectID } from "bson";
+
 /**
  * Convert object to dotted-key/value pair
  */
@@ -14,7 +16,7 @@ export function toDottedObject(obj: any, target = {}, path = []) {
       (
         isArrayOrObject(obj[key]) &&
         (
-          (isObject(obj[key]) && !isEmptyObject(obj[key])) ||
+          (isObject(obj[key]) && !isEmptyObject(obj[key]) && !isObjectID(obj[key])) ||
           (Array.isArray(obj[key]) && (!KEEP_ARRAY && (obj[key].length !== 0)))
         )
       )
@@ -26,6 +28,10 @@ export function toDottedObject(obj: any, target = {}, path = []) {
   }
 
   return target
+}
+
+function isObjectID(val) {
+  return val instanceof ObjectID;
 }
 
 function isArrayOrObject (val) {
