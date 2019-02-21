@@ -80,53 +80,52 @@ export async function post(ctx: Context) {
   ctx.assert(requestedTime, 400, "The selected time is already booked")
 
   // Ok, lets save
-  if (ctx.method === "POST") {
-    const clientParams = parseCheckoutRequestBody(ctx.request.body);
-    let client: Client; 
+  const clientParams = parseCheckoutRequestBody(ctx.request.body);
+  let client: Client;
 
-    // Validate data from unAuthenticated client
-    if (!isAuthenticated) {
-      ctx.assert(isEmail(clientParams.email), 400, "Invalid email");
-      ctx.assert(clientParams.name, 400, "Name is required");
-      ctx.assert(clientParams.name.length < 64, 400, "Name is too long");
+  // Validate data from unAuthenticated client
+  if (!isAuthenticated) {
+    ctx.assert(isEmail(clientParams.email), 400, "Invalid email");
+    ctx.assert(clientParams.name, 400, "Name is required");
+    ctx.assert(clientParams.name.length < 64, 400, "Name is too long");
 
-      const clientId = ctx.session.clientId;
+    const clientId = ctx.session.clientId;
 
-      if (ObjectID.isValid(clientId)) {
-        client = await $clients.findOne({ _id: new ObjectID(clientId) });
-      }
-
-      if (!client) {
-        const { ops: [insertedClient] } = await $clients.insertOne({
-          userId: null,
-          email: clientParams.email,
-          name: clientParams.name,
-          created: new Date(),
-          updated: new Date(),
-        });
-
-        if (insertedClient) {
-          client = insertedClient;
-        }
-        else {
-          ctx.throw(500, "Cannot create a clients");
-        }
-      }
+    if (ObjectID.isValid(clientId)) {
+      client = await $clients.findOne({ _id: new ObjectID(clientId) });
     }
-    else {
-      client = await $clients.findOne({ userId: user._id });
 
-      if (!client) {
-        const { ops: [insertedClient] } = await $clients.insertOne({
-          userId: user._id,
-          email: user.email,
-          name: user.name,
-          created: new Date(),
-          updated: new Date(),
-        });
+    if (!client) {
+      const { ops: [insertedClient] } = await $clients.insertOne({
+        userId: null,
+        email: clientParams.email,
+        name: clientParams.name,
+        created: new Date(),
+        updated: new Date(),
+      });
 
+      if (insertedClient) {
         client = insertedClient;
       }
+      else {
+        ctx.throw(500, "Cannot create a clients");
+      }
+    }
+  }
+  else {
+    client = await $clients.findOne({ userId: user._id });
+
+    if (!client) {
+      const { ops: [insertedClient] } = await $clients.insertOne({
+        _id: user._id,
+        userId: user._id,
+        email: user.email,
+        name: user.name,
+        created: new Date(),
+        updated: new Date(),
+      });
+
+      client = insertedClient;
     }
 
     // Save user input for next time
@@ -146,6 +145,7 @@ export async function post(ctx: Context) {
     const reservation = await $reservations.insertOne({
       salonId: salon._id,
       clientId: client._id,
+      userId: isAuthenticated ? user._id : null,
       masterId: salonMaster._id,
       serviceId: salonService.id,
       start: reservationStart,

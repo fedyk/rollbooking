@@ -5,6 +5,7 @@ export interface Reservation {
   _id?: ObjectID;
   salonId: ObjectID;
   clientId: ObjectID;
+  userId?: ObjectID;
   masterId: ObjectID;
   serviceId: number;
   start: DateTime;

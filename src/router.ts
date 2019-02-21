@@ -9,8 +9,10 @@ import { router as onboardingRouter } from './controllers/onboarding/router';
 import { router as settingsRouter } from './controllers/settings/router';
 import { router as salonsRouter } from './controllers/salons/router';
 import { router as calendarRouter } from './controllers/calendar/router';
+import { router as profileRouter } from './controllers/profile/router';
 
 import { salonAliasMiddleware } from './middlewares/salon-alias-middleware';
+import { contentMiddleware } from './middlewares/content-middleware';
 
 export const router = new Router<any, any>();
 
@@ -23,3 +25,4 @@ router.get('/', welcome)
 
 router.use("/:alias/booking", salonAliasMiddleware, bookingRouter.routes(), bookingRouter.allowedMethods());
 router.use("/:alias/calendar", salonAliasMiddleware, calendarRouter.routes(), calendarRouter.allowedMethods());
+router.use("/profile", passport.onlyAuthenticated, contentMiddleware, profileRouter.routes(), profileRouter.allowedMethods());

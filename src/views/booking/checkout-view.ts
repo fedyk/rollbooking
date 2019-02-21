@@ -68,11 +68,11 @@ export const checkoutView = (props: Props) => `
       </div>
     </div>`:
     `<div class="list-group mb-3">
-      <div class="list-group-item lh-condensed">
+      <div class="list-group-item border-bottom-0 lh-condensed">
         <h6 class="mb-0">Account</h6>
       </div>
 
-      <a href="#" class="list-group-item lh-condensed border-left-0 border-right-0">
+      <a href="/profile" target="blank" class="list-group-item border-top-0 lh-condensed">
         <h6 class="mb-0 text-body">${escape(props.userName)}</h6>
         <small class="text-muted">${escape(props.userEmail)}</small>
       </a>

@@ -11,9 +11,7 @@ export const content = ({ body }: Props) => `
   </a>
 </nav>
 
-<div class="container pt-4">
-${body}
-</div>
+<div class="container pt-4">${body}</div>
 
-${footer()}
+<div class="container pt-4 pb-2 text-muted">© 2019 rollbooking</nav>
 `
