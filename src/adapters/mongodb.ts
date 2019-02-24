@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import { Salon } from "../models/salon";
 import { Reservation } from "../models/reservation";
 import { BookingWorkday } from "../models/booking-workday";
+import { BookingSlot } from "../models/booking-slot";
 import { Client } from "../models/client";
 import { Session } from "../models/session";
 
@@ -41,6 +42,10 @@ export async function ReservationsCollection(): Promise<Collection<Reservation>>
 
 export async function BookingWorkdaysCollection(): Promise<Collection<BookingWorkday>> {
   return await getCollection("booking-workdays");
+}
+
+export async function BookingSlotsCollection(): Promise<Collection<BookingSlot>> {
+  return await getCollection("booking-slots");
 }
 
 export async function ClientsCollection(): Promise<Collection<Client>> {
