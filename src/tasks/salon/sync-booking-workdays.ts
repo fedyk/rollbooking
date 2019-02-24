@@ -13,6 +13,9 @@ import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-dat
 
 const debug = Debug("tasks:sync-booking-workdays");
 
+/**
+ * @deprecated Use sync-booking-slots
+ */
 export async function syncBookingWorkdays(salonsIds: ObjectID[] = null) {
   const $bookings = await BookingWorkdaysCollection()
   const $reservations = await ReservationsCollection()
@@ -125,16 +128,8 @@ export async function syncBookingWorkdays(salonsIds: ObjectID[] = null) {
 }
 
 if (!module.parent) {
-  (async function() {
-    try {
-      await syncBookingWorkdays();
-      console.log("syncBookingWorkdays has finished")
-    }
-    catch(err) {
-      console.log(err);
-    }
-    finally {
-      closeClient()
-    }
-  })();
+  syncBookingWorkdays()
+    .then(() => console.log("Done"))
+    .catch((e) => console.error(e))
+    .then(() => closeClient())
 }
