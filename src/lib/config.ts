@@ -10,6 +10,7 @@ if (result.error) {
 interface Config {
   PORT: string | number;
   MONGODB_URI: string;
+  CLOUDAMQP_URL: string;
   REDIS_URL: string;
   APP_KEYLIST: string;
   GOOGLE_OAUTH2_CLIENT_ID: string;
@@ -28,8 +29,12 @@ if (!process.env.MONGODB_URI) {
   console.error('No MONGODB_URI config. Set MONGODB_URI environment variable.');
 }
 
+if (!process.env.CLOUDAMQP_URL) {
+  console.warn('No CLOUDAMQP_URL config. Set MONGODB_URI environment variable.');
+}
+
 if (!process.env.REDIS_URL) {
-  console.error('No redis config. Set REDIS_URL environment variable.');
+  console.warn('No REDIS_URL. Set REDIS_URL environment variable.');
 }
 
 if (!process.env.APP_KEYLIST) {
@@ -63,6 +68,7 @@ if (!process.env.GOOGLE_API_REDIRECT_URIS) {
 export const config: Config = {
   PORT: process.env.PORT || 3000,
   MONGODB_URI: process.env.MONGODB_URI || '',
+  CLOUDAMQP_URL: process.env.CLOUDAMQP_URL || '',
   REDIS_URL: process.env.REDIS_URL || '',
   APP_KEYLIST: process.env.APP_KEYLIST || '',
   GOOGLE_OAUTH2_CLIENT_ID: process.env.GOOGLE_OAUTH2_CLIENT_ID || '',

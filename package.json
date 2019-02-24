@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "@types/koa-session": "5.10.0",
+    "amqplib": "0.5.3",
     "dotenv": "6.2.0",
     "googleapis": "37.2.0",
     "ioredis": "4.6.2",
@@ -20,6 +21,7 @@
     "timezone-support": "1.8.1"
   },
   "devDependencies": {
+    "@types/amqplib": "0.5.10",
     "@types/ioredis": "4.0.6",
     "@types/jest": "24.0.0",
     "@types/koa": "2.0.48",
