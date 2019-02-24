@@ -1,5 +1,3 @@
-import { ObjectID } from "bson";
-import Debug from "debug";
 import { addDay } from "../../utils/date";
 import { DateRange } from "../../lib/date-range";
 import { DateTime } from "../../models/date-time";
@@ -10,9 +8,7 @@ import { BusinessHours, SpecialHours } from "../../models/salon";
 import { nativeDateToDateTime } from "../date/native-date-to-date-time";
 import { dateObjectToNativeDate } from "../date/date-object-to-native-date";
 
-const debug = Debug("app:get-booking-slots")
-
-interface Params {
+export interface Params {
   startPeriod: DateObject;
   endPeriod: DateObject;
   regularHours: BusinessHours;
@@ -30,7 +26,7 @@ interface Params {
   }[];
 }
 
-interface Slot {
+export interface Slot {
   start: DateTime;
   end: DateTime;
   userId: string;
@@ -40,11 +36,8 @@ interface Slot {
 export function getBookingSlots({ regularHours, specialHours, startPeriod, endPeriod, users, reservations, services }: Params): Slot[] {
   const ranges = getPeriods(startPeriod, endPeriod, regularHours, specialHours);
   const slots: Slot[] = [];
-  
-  debug("create a Map for user's reservation's ranges");
   const usersReservedRanges = new Map<string, DateRange[]>();
 
-  debug("fill up Map with user's reservation's ranges");
   reservations.forEach(reservation => {
     if (!usersReservedRanges.has(reservation.userId)) {
       usersReservedRanges.set(reservation.userId, [reservation.range]);
@@ -54,7 +47,6 @@ export function getBookingSlots({ regularHours, specialHours, startPeriod, endPe
     }
   });
 
-
   ranges.forEach(range => {
     users.forEach(user => {
       const reservedRanges = usersReservedRanges.has(user.id) ? usersReservedRanges.get(user.id) : [];
@@ -62,13 +54,14 @@ export function getBookingSlots({ regularHours, specialHours, startPeriod, endPe
       services.forEach(service => {
         const availableRanges = range.exclude(reservedRanges);
         const serviceDurationInMs = service.duration * 60 * 1000;
-        const availableSlots = availableRanges.forEach(function (availableRange) {
+
+        availableRanges.forEach(function (availableRange) {
           const times = availableRange.split(serviceDurationInMs, {
             round: true
           });
 
           // remove last result
-          ranges.pop();
+          times.pop();
 
           times.forEach(time => {
             const start = nativeDateToDateTime(time);
