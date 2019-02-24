@@ -3,8 +3,7 @@ import { Salon } from "../../models/salon";
 import { DayOfWeek } from "../../models/dat-of-week";
 import { UsersCollection, SalonsCollection, closeClient } from "../../adapters/mongodb";
 
-
-export async function createTestSalon() {
+export async function createTestSalon(): Promise<Salon> {
   const $users = await UsersCollection();
   const $salons = await SalonsCollection();
   const randomId = Math.round(Math.random() * 1000000);

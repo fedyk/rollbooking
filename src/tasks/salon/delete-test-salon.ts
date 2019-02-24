@@ -1,6 +1,14 @@
 import { ok } from "assert";
 import { ObjectID } from "bson";
-import { UsersCollection, SalonsCollection, ReservationsCollection, BookingWorkdaysCollection, closeClient, ClientsCollection } from "../../adapters/mongodb";
+import {
+  UsersCollection,
+  SalonsCollection,
+  ReservationsCollection,
+  BookingWorkdaysCollection,
+  BookingSlotsCollection,
+  ClientsCollection,
+  closeClient,
+} from "../../adapters/mongodb";
 
 export async function deleteTestSalon(salonId: string) {
   ok(ObjectID.isValid(salonId), "salonId argument is not valid ObjectID");
@@ -9,6 +17,7 @@ export async function deleteTestSalon(salonId: string) {
   const $salons = await SalonsCollection();
   const $reservations = await ReservationsCollection();
   const $bookingWorkdays = await BookingWorkdaysCollection();
+  const $bookingSlots = await BookingSlotsCollection();
   const $clients = await ClientsCollection();
   const salon = await $salons.findOne({
     _id: new ObjectID(salonId)
@@ -38,6 +47,10 @@ export async function deleteTestSalon(salonId: string) {
   await $bookingWorkdays.deleteMany({
     salonId: salon._id
   });
+
+  await $bookingSlots.deleteMany({
+    salonId: salon._id
+  })
 
   await $clients.deleteMany({
     salonId: salon._id
