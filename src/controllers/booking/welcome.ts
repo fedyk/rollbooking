@@ -10,32 +10,23 @@ import { getSelectedService } from "./helpers/get-selected-service";
 import { getResults } from "./helpers/get-results";
 import { Context } from "koa";
 import { dateToISODate } from "../../helpers/date/date-to-iso-date";
-import { BookingWorkdaysCollection, UsersCollection, SalonsCollection } from "../../adapters/mongodb";
+import { UsersCollection, SalonsCollection, BookingSlotsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 import { getSelectedDate } from "./helpers/get-selected-date";
 import { Salon } from "../../models/salon";
+import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
 
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
   const params = parseRequestParam({...ctx.params, ...ctx.query});
 
   const $users = await UsersCollection();
-  const salonUsers = await $users.find({
-    _id: {
-      $in: salon.employees.users.map(v => v.id)
-    }
-  }).toArray();
-
-  const salonServices = salon.services.items;
-
-  const $bookingWorkdays = await BookingWorkdaysCollection();
-  const bookingWorkdays = await $bookingWorkdays.find({
-    salonId: salon._id
-  }).toArray();
-
+  const usersIds = salon.employees.users.map(v => v.id);
+  const salonUsers = await $users.find({ _id: { $in: usersIds }}).toArray();
+  const services = salon.services.items;
   const salonTimezone = findTimeZone(salon.timezone);
   const salonDateTime = getZonedTime(new Date(), salonTimezone);
   const salonDate: DateObject = {
@@ -44,28 +35,25 @@ export async function welcome(ctx: Context) {
     day: salonDateTime.day,
   }
 
-  const dateOptions = getDateOptions({
-    bookingWorkdays,
-    startDate: salonDate,
-    masterId: params.masterId,
+  const $bookingSlots = await BookingSlotsCollection();
+  const bookingSlots = await $bookingSlots.find(getBookingSlotsFilter({
+    salonId: salon._id,
+    userId: params.masterId,
     serviceId: params.serviceId,
-    nextDays: 60
-  });
+    date: params.date
+  })).toArray();
 
-  const showFilters = bookingWorkdays.length > 0;
-  const selectedDate = getSelectedDate(dateOptions, params.date)
-  const selectedWorkdays = getSelectedWorkdays(bookingWorkdays, selectedDate);
+  const dateOptions = getDateOptions({ startDate: salonDate, nextDays: 60 });
+  const showFilters = bookingSlots.length > 0;
+  const selectedDate = getSelectedDate(dateOptions, bookingSlots, params.date)
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
-  const servicesOptions = getServiceOptions(salonServices);
+  const servicesOptions = getServiceOptions(services);
   const selectedService = getSelectedService(params.serviceId);
   const results = getResults({
     salonAlias: salon.alias,
-    bookingWorkdays: selectedWorkdays,
-    selectedDate: params.date,
-    salonServices,
-    masterId: params.masterId,
-    serviceId: params.serviceId
+    bookingSlots: bookingSlots,
+    services,
   });
 
   ctx.body = bookingLayoutView({
@@ -88,7 +76,7 @@ const DATE_REGEX = /\d{4}-[01]\d-[0-3]\d/;  // YYYY-MM-DD
 
 export function parseRequestParam(param: any): {
   date?: DateObject;
-  masterId?: string;
+  masterId?: ObjectID;
   serviceId?: number;
 } {
   const dateStr = `${param && (param.date || param.d)}`.trim();
@@ -104,7 +92,7 @@ export function parseRequestParam(param: any): {
 
   return {
     date: date instanceof Date && !isNaN(date.getTime()) ? nativeDateToDateObject(date) : null,
-    masterId: ObjectID.isValid(masterId) ? masterId : null,
+    masterId: ObjectID.isValid(masterId) ? new ObjectID(masterId) : null,
     serviceId: parseInt(serviceIdStr) || null
   }
 }
