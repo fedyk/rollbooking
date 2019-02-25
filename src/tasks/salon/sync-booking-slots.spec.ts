@@ -2,7 +2,7 @@ import { syncBookingSlots } from "./sync-booking-slots";
 import { Salon } from "../../models/salon";
 import { createTestSalon } from "./create-test-salon";
 import { deleteTestSalon } from "./delete-test-salon";
-import { BookingSlotsCollection } from "../../adapters/mongodb";
+import { BookingSlotsCollection, closeClient } from "../../adapters/mongodb";
 
 describe("syncBookingSlots", function() {
   let salon: Salon;
@@ -13,6 +13,7 @@ describe("syncBookingSlots", function() {
 
   afterAll(async function() {
     await deleteTestSalon(salon._id.toHexString());
+    await closeClient();
   })
 
   it("should generate booking slots for salon", async function() {
