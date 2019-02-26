@@ -11,7 +11,7 @@ interface Params {
   date?: Date
 }
 
-export async function getBookingSlotsFilter({ salonId, userId, serviceId, date }: Params) {
+export function getBookingSlotsFilter({ salonId, userId, serviceId, date }: Params) {
   const filter: FilterQuery<BookingSlot> = {
     salonId: salonId
   }
@@ -21,7 +21,7 @@ export async function getBookingSlotsFilter({ salonId, userId, serviceId, date }
   }
 
   if (serviceId != null) {
-    filter.serviceId = null;
+    filter.serviceId = serviceId;
   }
 
   if (date != null) {

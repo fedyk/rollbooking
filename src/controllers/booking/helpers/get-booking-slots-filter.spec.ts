@@ -3,8 +3,8 @@ import { ObjectID } from "bson";
 import { Date } from "../../../models/date";
 
 test("getBookingSlotsFilter", () => {
-  const salonId = new ObjectID("1");
-  const userId = new ObjectID("2");
+  const salonId = new ObjectID("aaaaaaaaaaaaaaaaaaaaaaaa");
+  const userId = new ObjectID("bbbbbbbbbbbbbbbbbbbbbbbb");
   const serviceId = 3;
   const date: Date = {
     year: 2018,

@@ -22,30 +22,28 @@ import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
   const params = parseRequestParam({...ctx.params, ...ctx.query});
-
+  
   const $users = await UsersCollection();
   const usersIds = salon.employees.users.map(v => v.id);
   const salonUsers = await $users.find({ _id: { $in: usersIds }}).toArray();
   const services = salon.services.items;
+
   const salonTimezone = findTimeZone(salon.timezone);
-  const salonDateTime = getZonedTime(new Date(), salonTimezone);
-  const salonDate: DateObject = {
-    year: salonDateTime.year,
-    month: salonDateTime.month,
-    day: salonDateTime.day,
-  }
+  const salonZonedNow = getZonedTime(new Date(), salonTimezone);
+  const dateOptions = getDateOptions({ startDate: salonZonedNow, nextDays: 60 });
 
   const $bookingSlots = await BookingSlotsCollection();
+  const selectedDate = params.date || salonZonedNow;
+
   const bookingSlots = await $bookingSlots.find(getBookingSlotsFilter({
     salonId: salon._id,
     userId: params.masterId,
     serviceId: params.serviceId,
-    date: params.date
+    date: selectedDate
   })).toArray();
 
-  const dateOptions = getDateOptions({ startDate: salonDate, nextDays: 60 });
   const showFilters = bookingSlots.length > 0;
-  const selectedDate = getSelectedDate(dateOptions, bookingSlots, params.date)
+  
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
   const servicesOptions = getServiceOptions(services);
