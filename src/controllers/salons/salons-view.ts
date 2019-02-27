@@ -20,7 +20,11 @@ export function salonsView(props: Props) {
       </thead>
       <tbody>
         ${stringMapJoin(props.salons, (salon) => `<tr>
-          <td>${salon.name}</td>
+          <td>
+            ${salon.name}
+            <br/>
+            <small class="text-secondary">id: ${salon._id.toHexString()}</small>
+          </td>
           <td>${salon.timezone}</td>
           <td>${salon.employees.users.length}</td>
           <td>

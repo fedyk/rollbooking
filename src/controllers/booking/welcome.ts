@@ -10,12 +10,11 @@ import { getSelectedService } from "./helpers/get-selected-service";
 import { getResults } from "./helpers/get-results";
 import { Context } from "koa";
 import { dateToISODate } from "../../helpers/date/date-to-iso-date";
-import { UsersCollection, SalonsCollection, BookingSlotsCollection } from "../../adapters/mongodb";
+import { UsersCollection, BookingSlotsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
-import { getSelectedDate } from "./helpers/get-selected-date";
 import { Salon } from "../../models/salon";
 import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
 

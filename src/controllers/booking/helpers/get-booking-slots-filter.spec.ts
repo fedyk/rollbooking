@@ -16,14 +16,31 @@ test("getBookingSlotsFilter", () => {
   expect(getBookingSlotsFilter({ salonId, userId })).toEqual({ salonId, userId })
   expect(getBookingSlotsFilter({ salonId, userId, serviceId })).toEqual({ salonId, userId, serviceId })
   expect(getBookingSlotsFilter({ salonId, userId, serviceId, date })).toEqual({
-    salonId, userId, serviceId, $or: [{
-      "start.year": date.year,
-      "start.month": date.month,
-      "start.day": date.day,
-    }, {
-      "end.year": date.year,
-      "end.month": date.month,
-      "end.day": date.day,
+    salonId,
+    userId,
+    serviceId,
+    $and: [
+      {
+      "start.year": {
+        $lte: date.year,
+      },
+      "start.month": {
+        $lte: date.month
+      },
+      "start.day": {
+        $lte: date.day
+      },
+    },
+    {
+      "end.year": {
+        $gte: date.year
+      },
+      "end.month": {
+        $gte: date.month
+      },
+      "end.day": {
+        $gte: date.day
+      },
     }]
   })
 })

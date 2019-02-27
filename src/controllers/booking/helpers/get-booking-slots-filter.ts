@@ -1,5 +1,5 @@
 import { ObjectID } from "bson";
-import { FilterQuery } from "mongodb";
+import { FilterQuery, Condition } from "mongodb";
 import { Date } from "../../../models/date";
 import { BookingSlot } from "../../../models/booking-slot";
 import { toDottedObject } from "../../../helpers/to-dotted-object";
@@ -25,11 +25,30 @@ export function getBookingSlotsFilter({ salonId, userId, serviceId, date }: Para
   }
 
   if (date != null) {
-    filter["$or"] = [toDottedObject({
-      start: date
-    }), toDottedObject({
-      end: date
-    })]
+    filter["$and"] = [
+      {
+        "start.year": {
+          $lte: date.year
+        },
+        "start.month": {
+          $lte: date.month
+        },
+        "start.day": {
+          $lte: date.day
+        }
+      },
+      {
+        "end.year": {
+          $gte: date.year
+        },
+        "end.month": {
+          $gte: date.month
+        },
+        "end.day": {
+          $gte: date.day
+        }
+      }
+    ]
   }
 
   return filter;
