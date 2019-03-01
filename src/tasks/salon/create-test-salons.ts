@@ -167,19 +167,8 @@ export async function createTestSalons(timeZones = DEFAULT_TIME_ZONES) {
 }
 
 if (!module.parent) {
-  (async function() {
-    try {
-      console.log("Start")
-
-      await createTestSalons()
-
-      console.log("Success");
-    }
-    catch(e) {
-      console.error("Fail", e);
-    }
-    finally {
-      await closeClient()
-    }
-  })()
+  createTestSalons()
+    .then(salon => console.log("Success"))
+    .catch(e => console.error("Fail", e))
+    .then(() => closeClient());
 }

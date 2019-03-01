@@ -11,7 +11,7 @@ const debug = debugFactory('lib:googleapis');
  * @see https://github.com/google/google-api-nodejs-client
  */
 
-const SCOPES = [
+const scopes = [
   'https://www.googleapis.com/auth/calendar',
   'https://www.googleapis.com/auth/calendar.readonly',
 ];
@@ -55,7 +55,7 @@ export async function authorize() {
 export async function getAccessToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: SCOPES,
+    scopes,
   });
 
   console.log('Authorize this app by visiting this url: ', authUrl);

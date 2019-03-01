@@ -1,6 +1,6 @@
-import { BookingWorkday } from "../../../models/booking-workday";
+import { ObjectID } from "bson";
 
-export function getSelectedMaster(masterId?: string): string {
+export function getSelectedMaster(masterId?: ObjectID): string {
   if (masterId) {
     return `${masterId}`;
   }

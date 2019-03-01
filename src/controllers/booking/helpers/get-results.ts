@@ -1,20 +1,14 @@
 import { stringify } from "querystring";
-import { BookingWorkday } from "../../../models/booking-workday";
 import { SalonService } from "../../../models/salon";
 import { CheckoutURLParams } from "../interfaces";
-import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
-import { timeOfDayToISOTime } from "../../../helpers/date/time-of-day-to-iso-time";
-import { Date as DateObject } from "../../../models/date";
-import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
-import { TimeOfDay } from "../../../models/time-of-day";
+import { BookingSlot } from "../../../models/booking-slot";
+import { getUniqSlotsByUserId } from "./get-uniq-slots-by-user-id";
+import { DateTime } from "../../../models/date-time";
 
 interface Params {
   salonAlias: string;
-  bookingWorkdays: BookingWorkday[];
-  salonServices: SalonService[];
-  selectedDate?: DateObject;
-  masterId?: string;
-  serviceId?: number;
+  bookingSlots: BookingSlot[];
+  services: SalonService[];
 }
 
 interface Result {
@@ -27,166 +21,67 @@ interface Result {
   }>
 }
 
-export function getResults(params: Params): Result[] {
-  const serviceId = params.serviceId ? params.serviceId.toString() : "";
-  const salonServices = params.salonServices || [];
+export function getResults({ salonAlias, bookingSlots, services }: Params): Result[] {
+  const slotsByServiceId = new Map<number, Array<BookingSlot>>();
+  const amountSlotsPerUser = new Map<string, number>();
 
-  const availableTimesByServiceId = groupAvailableTimesByServiceId(params.bookingWorkdays, params.masterId, serviceId);
+  bookingSlots.forEach(v => {
+    if (slotsByServiceId.has(v.serviceId)) {
+      slotsByServiceId.get(v.serviceId).push(v);
+    }
+    else {
+      slotsByServiceId.set(v.serviceId, [v])
+    }
 
-  return salonServices.filter(function(v) {
-    return availableTimesByServiceId.has(v.id.toString())
-  }).map(function(salonService) {
-    const availableTimes = availableTimesByServiceId.get(salonService.id.toString());
-    const uniqAvailableTimes = getUniqAvailableTimes(availableTimes);
+    const userId = v.userId.toHexString();
+
+    if (amountSlotsPerUser.has(userId)) {
+      amountSlotsPerUser.set(userId, amountSlotsPerUser.get(userId) + 1);
+    }
+    else {
+      amountSlotsPerUser.set(userId, 1);
+    }
+  });
+
+  return services.filter(v => slotsByServiceId.has(v.id)).map(service => {
+    const slots = slotsByServiceId.get(service.id);
+    const uniqSlots = getUniqSlotsByUserId(slots, amountSlotsPerUser);
+    
+    uniqSlots.sort((a, b) => {
+      const dateTimeProps: Array<keyof DateTime> = ["hours", "minutes", "seconds"];
+
+      for (let i = 0; i < dateTimeProps.length; i++) {
+        const dateTimeProp = dateTimeProps[i];
+
+        if (a.start[dateTimeProp] !== b.start[dateTimeProp]) {
+          return a.start[dateTimeProp] - b.start[dateTimeProp];
+        }
+      }
+
+      return 0;
+    })
 
     return {
-      name: salonService.name,
-      price: prettyPrice(salonService.price),
-      description: salonService.description,
-      times: uniqAvailableTimes.map(function ({
-        availableTime: time,
-        bookingWorkday: workday,
-        masterId
-      }) {
-        const hours = time.hours.toString().padStart(2, "0");
-        const minutes = time.minutes.toString().padStart(2, "0");
-        const date = params.selectedDate || {
-          year: workday.period.start.year,
-          month: workday.period.start.month,
-          day: workday.period.start.day
-        }
-
+      name: service.name,
+      price: prettyPrice(service.price),
+      description: service.description,
+      times: uniqSlots.map(slot => {
+        const hours = slot.start.hours.toString().padStart(2, "0");
+        const minutes = slot.start.minutes.toString().padStart(2, "0");
         const queryString: CheckoutURLParams = {
-          mid: masterId,
-          sid: salonService.id.toString(),
-          wdps: dateTimeToISODate(workday.period.start),
-          wdpe: dateTimeToISODate(workday.period.end),
-          t: timeOfDayToISOTime(time),
-          d: dateToISODate(date),
+          sid: slot._id.toHexString()
         }
 
         return {
           text: `${hours}:${minutes}`,
-          url: `/${params.salonAlias}/booking/checkout?${stringify(queryString)}`
+          url: `/${salonAlias}/booking/checkout?${stringify(queryString)}`
         }
       })
     }
   })
 }
 
-function groupAvailableTimesByServiceId(bookingWorkdays: BookingWorkday[], selectedMasterId?: string, selectedServiceId?: string) {
-  const results = new Map<string, {
-    masterId: string;
-    bookingWorkday: BookingWorkday;
-    availableTimes: TimeOfDay[]
-  }[]>();
-
-  for (let i = 0; i < bookingWorkdays.length; i++) {
-    const bookingWorkday = bookingWorkdays[i];
-
-    for (let masterId in bookingWorkday.masters) {
-
-      // curr master is not selected, skip it
-      if (selectedMasterId && masterId !== selectedMasterId) {
-        continue;
-      }
-
-      const master = bookingWorkday.masters[masterId];
-
-      for (let serviceId in master.services) {
-        if (selectedServiceId && serviceId !== selectedServiceId) {
-          continue;
-        }
-
-        const service = master.services[serviceId];
-        const result = {
-          masterId: masterId,
-          bookingWorkday: bookingWorkday,
-          availableTimes: service.availableTimes
-        }
-
-        results.has(serviceId)
-          ? results.get(serviceId).push(result)
-          : results.set(serviceId, [result])
-      }
-    }
-  }
-
-  return results;
-}
-
-function getUniqAvailableTimes(availableTimes: {
-  masterId: string;
-  bookingWorkday: BookingWorkday;
-  availableTimes: TimeOfDay[]
-}[]): {
-  masterId: string;
-  bookingWorkday: BookingWorkday;
-  availableTime: TimeOfDay
-}[] {
-  const result = new Map<string, {
-    masterId: string;
-    bookingWorkday: BookingWorkday;
-    availableTime: TimeOfDay
-  }>();
-  const mastersSlots = new Map<string, number>();
-
-  for (let i = 0; i < availableTimes.length; i++) {
-    const availableTime = availableTimes[i];
-    const masterId = availableTime.masterId;
-
-    mastersSlots.set(masterId, availableTime.availableTimes.length);
-  }
-
-  for (let i = 0; i < availableTimes.length; i++) {
-    const item = availableTimes[i];
-
-    for (let j = 0; j < item.availableTimes.length; j++) {
-      const availableTime = item.availableTimes[j];
-      const time = timeOfDayToISOTime(availableTime);
-
-      if (!result.has(time)) {
-        result.set(time, {
-          masterId: item.masterId,
-          bookingWorkday: item.bookingWorkday,
-          availableTime: availableTime
-        });
-      }
-      else if (mastersSlots.has(item.masterId) && mastersSlots.has(result.get(time).masterId) && mastersSlots.get(item.masterId) > mastersSlots.get(result.get(time).masterId)) {
-        result.set(time, {
-          masterId: item.masterId,
-          bookingWorkday: item.bookingWorkday,
-          availableTime: availableTime
-        });
-      }
-    }
-  }
-
-  const times = Array.from(result.values());
-
-  times.sort(function(a, b) {
-    const { availableTime: aTime } = a
-    const { availableTime: bTime } = b
-    
-    if (aTime.hours !== bTime.hours) {
-      return aTime.hours - bTime.hours;
-    }
-
-    if (aTime.minutes !== bTime.minutes) {
-      return aTime.minutes - bTime.minutes;
-    }
-
-    if (aTime.seconds !== bTime.seconds) {
-      return aTime.seconds - bTime.seconds;
-    }
-
-    return 0;
-  })
-
-  return times;
-}
-
-// todo: add currency to number
+// TODO: add currency to number
 function prettyPrice(price: number) {
   return price.toString()
 }
