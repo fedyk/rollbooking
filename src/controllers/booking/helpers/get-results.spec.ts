@@ -1,226 +1,85 @@
+import { ObjectID } from "bson";
 import { getResults } from "./get-results";
-import { DateTime } from "../../../models/date-time";
-import { BookingWorkday } from "../../../models/booking-workday";
 import { SalonService } from "../../../models/salon";
+import { BookingSlot } from "../../../models/booking-slot";
+import { nativeDateToDateTime } from "../../../helpers/date/native-date-to-date-time";
 
-const start: DateTime = {
-  year: 2018,
-  month: 1,
-  day: 1,
-  hours: 8,
-  minutes: 0,
-  seconds: 0,
-}
-
-const end: DateTime = {
-  year: 2018,
-  month: 1,
-  day: 1,
-  hours: 13,
-  minutes: 0,
-  seconds: 0,
-}
-
-const bookingWorkday: BookingWorkday = {
-  period: {
-    start,
-    end
+const services: SalonService[] = [
+  {
+    id: 1,
+    name: "Service 1",
+    description: "Desc",
+    duration: 60,
+    currencyCode: "USD",
+    price: 20,
   },
-  masters: {
-    "master-1": {
-      services: {
-        "1": {
-          availableTimes: [
-            {
-              hours: 8,
-              minutes: 0,
-              seconds: 0
-            },
-            {
-              hours: 9,
-              minutes: 0,
-              seconds: 0
-            }
-          ]
-        }
-      }
-    },
-    "master-2": {
-      services: {
-        "1": {
-          availableTimes: [
-            {
-              hours: 9,
-              minutes: 0,
-              seconds: 0
-            }
-          ]
-        }
-      }
-    }
+  {
+    id: 2,
+    name: "Service 2",
+    description: "Desc",
+    duration: 60,
+    currencyCode: "USD",
+    price: 20,
   }
-}
+]
 
-const bookingWorkday2: BookingWorkday = {
-  period: {
-    start,
-    end
+const bookingSlots: BookingSlot[] = [
+  {
+    _version: "v1",
+    _id: new ObjectID("000000000000000000000000"),
+    salonId: new ObjectID("aaaaaaaaaaaaaaaaaaaaaaaa"),
+    start: nativeDateToDateTime(new Date(2018, 0, 1, 8, 0, 0)),
+    end: nativeDateToDateTime(new Date(2018, 0, 1, 9, 0, 0)),
+    userId: new ObjectID("bbbbbbbbbbbbbbbbbbbbbbbb"),
+    serviceId: 1,
   },
-  masters: {
-    "master-1": {
-      services: {
-        "1": {
-          availableTimes: [{
-            hours: 9,
-            minutes: 0,
-            seconds: 0
-          }]
+  {
+    _version: "v1",
+    _id: new ObjectID("111111111111111111111111"),
+    salonId: new ObjectID("aaaaaaaaaaaaaaaaaaaaaaaa"),
+    start: nativeDateToDateTime(new Date(2018, 0, 1, 9, 0, 0)),
+    end: nativeDateToDateTime(new Date(2018, 0, 1, 10, 0, 0)),
+    userId: new ObjectID("bbbbbbbbbbbbbbbbbbbbbbbb"),
+    serviceId: 2,
+  },
+  {
+    _version: "v1",
+    _id: new ObjectID("222222222222222222222222"),
+    salonId: new ObjectID("aaaaaaaaaaaaaaaaaaaaaaaa"),
+    start: nativeDateToDateTime(new Date(2018, 0, 1, 8, 0, 0)),
+    end: nativeDateToDateTime(new Date(2018, 0, 1, 9, 0, 0)),
+    userId: new ObjectID("cccccccccccccccccccccccc"),
+    serviceId: 1,
+  },
+]
+
+test("getResults", function () {
+  expect(getResults({
+    salonAlias: "salon-1",
+    bookingSlots: bookingSlots.reverse(),
+    services: services,
+  })).toEqual([
+    {
+      name: "Service 1",
+      description: "Desc",
+      price: "20",
+      times: [
+        {
+          text: "08:00",
+          url: "/salon-1/booking/checkout?sid=000000000000000000000000",
         }
-      }
+      ],
     },
-    "master-2": {
-      services: {
-        "1": {
-          availableTimes: [{
-            hours: 8,
-            minutes: 0,
-            seconds: 0
-          }, {
-            hours: 9,
-            minutes: 0,
-            seconds: 0
-          }]
+    {
+      name: "Service 2",
+      description: "Desc",
+      price: "20",
+      times: [
+        {
+          text: "09:00",
+          url: "/salon-1/booking/checkout?sid=111111111111111111111111",
         }
-      }
+      ],
     }
-  }
-}
-
-const service: SalonService = {
-  id: 1,
-  name: "Service 1",
-  description: "Desc",
-  duration: 60,
-  currencyCode: "USD",
-  price: 20,
-}
-
-describe("get-results", function () {
-  it ("should work", function() {
-    expect(getResults({
-      salonAlias: "salon-1",
-      bookingWorkdays: [bookingWorkday],
-      selectedDate: null,
-      salonServices: [service],
-      masterId: null,
-      serviceId: null
-    })).toEqual([{
-      description: "Desc",
-      name: "Service 1",
-      price: "20",
-      times: [{
-        text: "08:00",
-        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
-      }, {
-        text: "09:00",
-        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
-      }],
-    }])
-  })
-
-  it ("should work handle selected master", function() {
-    expect(getResults({
-      salonAlias: "salon-1",
-      bookingWorkdays: [bookingWorkday],
-      selectedDate: null,
-      salonServices: [service],
-      masterId: "master-1",
-      serviceId: null
-    })).toEqual([{
-      description: "Desc",
-      name: "Service 1",
-      price: "20",
-      times: [{
-        text: "08:00",
-        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
-      }, {
-        text: "09:00",
-        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
-      }],
-    }])
-  })
-
-  it ("should work handle selected master 2", function() {
-    expect(getResults({
-      salonAlias: "salon-1",
-      bookingWorkdays: [bookingWorkday],
-      selectedDate: null,
-      salonServices: [service],
-      masterId: "master-2",
-      serviceId: null
-    })).toEqual([{
-      description: "Desc",
-      name: "Service 1",
-      price: "20",
-      times: [{
-        text: "09:00",
-        url: "/salon-1/booking/checkout?mid=master-2&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
-      }],
-    }])
-  })
-
-  it ("should work handle selected undefined master", function() {
-    expect(getResults({
-      salonAlias: "salon-1",
-      bookingWorkdays: [bookingWorkday],
-      selectedDate: null,
-      salonServices: [service],
-      masterId: "master-undefined",
-      serviceId: null
-    })).toEqual([])
-  })
-
-  it ("should work handle selected service", function() {
-    expect(getResults({
-      salonAlias: "salon-1",
-      bookingWorkdays: [bookingWorkday],
-      selectedDate: null,
-      salonServices: [service],
-      masterId: null,
-      serviceId: 1
-    })).toEqual([{
-      description: "Desc",
-      name: "Service 1",
-      price: "20",
-      times: [{
-        text: "08:00",
-        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
-      }, {
-        text: "09:00",
-        url: "/salon-1/booking/checkout?mid=master-1&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
-      }],
-    }])
-  })
-  
-  it ("should work handle time in proper order", function() {
-    expect(getResults({
-      salonAlias: "salon-1",
-      bookingWorkdays: [bookingWorkday2],
-      selectedDate: null,
-      salonServices: [service],
-      masterId: null,
-      serviceId: null
-    })).toEqual([{
-      description: "Desc",
-      name: "Service 1",
-      price: "20",
-      times: [{
-        text: "08:00",
-        url: "/salon-1/booking/checkout?mid=master-2&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=08%3A00&d=2018-01-01",
-      }, {
-        text: "09:00",
-        url: "/salon-1/booking/checkout?mid=master-2&sid=1&wdps=2018-01-01T08%3A00%3A00&wdpe=2018-01-01T13%3A00%3A00&t=09%3A00&d=2018-01-01",
-      }],
-    }])
-  })
+  ])
 })

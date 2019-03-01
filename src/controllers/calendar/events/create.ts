@@ -4,6 +4,8 @@ import { Salon, SalonService } from "../../../models/salon";
 import { Reservation, Status as ReservationStatus } from "../../../models/reservation";
 import { isoDateTimeToDateTime } from "../../../helpers/date/iso-date-time-to-date-time";
 import { reservationToEvent } from "../helpers/reservation-to-event";
+import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";
+import { indexBy } from "../helpers/index-by";
 
 export async function create(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -28,11 +30,10 @@ export async function create(ctx: Context) {
   const { insertedId } = await $reservations.insertOne(reservation);
   
   reservation._id = insertedId;
-  
-  const servicesMap = new Map<number, SalonService>(salon.services.items.map(function(service): [number, SalonService] {
-    return [service.id, service];
-  }));
 
+  await syncBookingSlots(salon._id);
+  
+  const servicesMap = indexBy<number, SalonService>(salon.services.items, "id");
   const usersMap = new Map();
 
   ctx.body = reservationToEvent(reservation, servicesMap, usersMap);

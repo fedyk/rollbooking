@@ -3,7 +3,7 @@ export function parseCheckoutRequestBody(body: any) {
   const name: string = (body && typeof body.name === "string") ? body.name : ""
 
   return {
-    email,
-    name
+    email: email.trim().toLowerCase(),
+    name: name.trim()
   }
 }

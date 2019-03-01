@@ -1,4 +1,5 @@
 import { parseRequestParam } from "./welcome";
+import { ObjectID } from "bson";
 
 
 
@@ -19,7 +20,7 @@ test("parseRequestParam", function () {
       month: 1,
       day: 1
     },
-    masterId: "aaaabbbbccccddddeeeeffff",
+    masterId: new ObjectID("aaaabbbbccccddddeeeeffff"),
     serviceId: 1
   })
   
