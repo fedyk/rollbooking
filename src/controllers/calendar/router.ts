@@ -6,10 +6,12 @@ import { update } from './events/update';
 import { deleteEvent } from './events/delete-event';
 import { quickCreate } from './clients/quick-create';
 import { suggest } from './clients/suggest';
+import { templateMiddleware } from '../../middlewares/template-middleware';
+import { contentMiddleware } from '../../middlewares/content-middleware';
 
 export const router = new Router<any, any>();
 
-router.get('/', calendar);
+router.get('/', templateMiddleware, contentMiddleware, calendar);
 router.post('/events/list', list);
 router.post('/events/create', create);
 router.post('/events/update', update);

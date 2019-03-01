@@ -1,28 +1,11 @@
 import { stringMapJoin } from "../helpers/string-map-join";
-import { stylesheet, script } from "../helpers/html";
+import { stylesheet, script, escape } from "../helpers/html";
 
 interface Props {
   title: string;
   body: String;
-  scripts?: string[];
-  styles?: string[];
-}
-
-// Template as a class
-export class Template {
-  props: Props;
-
-  constructor(props: Props) {
-    this.props = props;
-  }
-
-  render() {
-    return template(this.props)
-  }
-
-  toString() {
-    return this.render();
-  }
+  scripts: string[];
+  styles: string[];
 }
 
 // Template as a function
@@ -32,20 +15,12 @@ export const template = (props: Props): string => `
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  ${stringMapJoin([
-    "https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.css"
-  ].concat(props.styles), (href => stylesheet(href)))}
+  ${stringMapJoin(props.styles, (href => stylesheet(href)))}
   <title>${escape(props.title)}</title>
 </head>
 <body>
-
 ${props.body}
-
-${stringMapJoin([
-  "https://code.jquery.com/jquery-3.3.1.slim.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.js",
-  "https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.js"
-].concat(props.scripts), (src => script(src)))}
+${stringMapJoin(props.scripts, (src => script(src)))}
 </body>
 </html>
 `

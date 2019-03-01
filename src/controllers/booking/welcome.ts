@@ -1,8 +1,6 @@
 import * as parseInt from "parse-int";
 import { welcomeView } from "../../views/booking/welcome-view";
-import { bookingLayoutView } from "../../views/booking/booking-layout-view";
 import { getDateOptions } from "./helpers/get-date-options";
-import { getSelectedWorkdays } from "./helpers/get-selected-workdays";
 import { getMastersOptions } from "./helpers/get-masters-options";
 import { getSelectedMaster } from "./helpers/get-selected-master";
 import { getServiceOptions } from "./helpers/get-services-options";
@@ -20,11 +18,11 @@ import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
 
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
-  const params = parseRequestParam({...ctx.params, ...ctx.query});
-  
+  const params = parseRequestParam({ ...ctx.params, ...ctx.query });
+
   const $users = await UsersCollection();
   const usersIds = salon.employees.users.map(v => v.id);
-  const salonUsers = await $users.find({ _id: { $in: usersIds }}).toArray();
+  const salonUsers = await $users.find({ _id: { $in: usersIds } }).toArray();
   const services = salon.services.items;
 
   const salonTimezone = findTimeZone(salon.timezone);
@@ -42,7 +40,7 @@ export async function welcome(ctx: Context) {
   })).toArray();
 
   const showFilters = bookingSlots.length > 0;
-  
+
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
   const servicesOptions = getServiceOptions(services);
@@ -53,19 +51,15 @@ export async function welcome(ctx: Context) {
     services,
   });
 
-  ctx.body = bookingLayoutView({
-    salonName: salon.name,
-    salonAlias: salon.alias,
-    body: welcomeView({
-      showFilters: showFilters,
-      dateOptions: dateOptions,
-      selectedDate: selectedDate ? dateToISODate(selectedDate) : null,
-      mastersOptions: mastersOptions,
-      selectedMaster: selectedMaster,
-      servicesOptions: servicesOptions,
-      selectedService: selectedService,
-      results: results
-    })
+  ctx.body = welcomeView({
+    showFilters: showFilters,
+    dateOptions: dateOptions,
+    selectedDate: selectedDate ? dateToISODate(selectedDate) : null,
+    mastersOptions: mastersOptions,
+    selectedMaster: selectedMaster,
+    servicesOptions: servicesOptions,
+    selectedService: selectedService,
+    results: results
   })
 }
 

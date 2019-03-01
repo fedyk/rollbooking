@@ -13,5 +13,10 @@ export const content = ({ body }: Props) => `
 ${body}
 </div>
 
-<div class="container pt-4 pb-4">© 2019 rollbooking</nav>
+<div class="container pt-4 pb-4">
+  © 2019 Rollbooking
+  <div class="float-right">
+    <a href="/salons" class="text-secondary">Salons</a>
+  </div>
+</nav>
 `

@@ -1,8 +1,7 @@
 import { ObjectID } from "bson";
-import { FilterQuery, Condition } from "mongodb";
+import { FilterQuery } from "mongodb";
 import { Date } from "../../../models/date";
 import { BookingSlot } from "../../../models/booking-slot";
-import { toDottedObject } from "../../../helpers/to-dotted-object";
 
 interface Params {
   salonId: ObjectID;

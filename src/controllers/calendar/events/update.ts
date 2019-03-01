@@ -6,6 +6,9 @@ import { reservationToEvent } from "../helpers/reservation-to-event";
 import { isoDateTimeToDateTime } from "../../../helpers/date/iso-date-time-to-date-time";
 import { Reservation, Status } from "../../../models/reservation";
 import { toDottedObject } from "../../../helpers/to-dotted-object";
+import { indexBy } from "../helpers/index-by";
+import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";
+import { dateTimeToNativeDate } from "../../../helpers/date/date-time-to-native-date";
 
 export async function update(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -48,6 +51,7 @@ export async function update(ctx: Context) {
   }
 
   const $reservations = await ReservationsCollection();
+
   const updatedReservation = await $reservations.findOneAndUpdate({
     _id: new ObjectID(body.id),
     salonId: salon._id
@@ -58,12 +62,12 @@ export async function update(ctx: Context) {
   });
 
   // no update item, looks like it doesn't exist
-  ctx.assert(updatedReservation.ok, 400, updatedReservation.lastErrorObject);
+  ctx.assert(updatedReservation.ok, 500, updatedReservation.lastErrorObject);
 
-  const servicesMap = new Map<number, SalonService>(salon.services.items.map(function(service): [number, SalonService] {
-    return [service.id, service];
-  }));
+  // update slots for current day
+  await syncBookingSlots(salon._id);
 
+  const servicesMap = indexBy<number, SalonService>(salon.services.items, "id");
   const usersMap = new Map();
 
   if (ObjectID.isValid(updatedReservation.value.clientId)) {

@@ -1,4 +1,5 @@
 import Debug from "debug";
+import { ok } from "assert";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { addDay } from "../../utils/date";
@@ -11,74 +12,84 @@ import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-dat
 import { getBookingSlots } from "../../helpers/booking/get-booking-slots";
 import { dateTimeToISODate } from "../../helpers/date/date-time-to-iso-date";
 import { BookingSlot } from "../../models/booking-slot";
+import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native-date";
 
 const debug = Debug("tasks:sync-booking-slots");
 
-export async function syncBookingSlots(salonId: ObjectID, startDate = new Date, endDate = addDay(new Date, 30)) {
+export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject = null, endDate: DateObject = null) {
   const $salons = await SalonsCollection();
   const $bookingsSlots = await BookingSlotsCollection();
   const $reservations = await ReservationsCollection();
   const salon = await $salons.findOne({ _id: salonId });
 
+  ok(salon, `Cannot find salon by id=${salonId.toHexString()}`);
+
   debug("get salon timezone")
   const salonTimezone = findTimeZone(salon.timezone);
 
-  debug("convert local time to time in salon timezone")
-  const salonNow = getZonedTime(startDate, salonTimezone);
+  debug("if startDate is empty, use Date.now as start time")
+  if (startDate == null) {
+    const { year, month, day } = getZonedTime(new Date, salonTimezone);
 
-  const startPeriod: DateObject = {
-    year: salonNow.year,
-    month: salonNow.month,
-    day: salonNow.day
+    startDate = { year, month, day };
   }
 
-  const salonEndPeriod = getZonedTime(endDate, salonTimezone)
+  debug("if endDate is empty, use now + 30 days")
+  if (endDate == null) {
+    const { year, month, day } = getZonedTime(addDay(dateObjectToNativeDate(startDate), 30), salonTimezone);
 
-  const endPeriod: DateObject = {
-    year: salonEndPeriod.year,
-    month: salonEndPeriod.month,
-    day: salonEndPeriod.day
+    endDate = { year, month, day };
   }
 
+  debug("get work hours from salon");
   const regularHours: BusinessHours = salon.regularHours || {
     periods: []
   };
 
+  debug("get special hours from salon");
   const specialHours: SpecialHours = salon.specialHours || {
     periods: []
   };
 
+  debug("extract service ID and duration values");
   const services = salon.services.items.map(v => ({
     id: v.id,
     duration: v.duration
   }))
 
-  /**
-   *     reserv1    reserv2
-   * ---|-------|--|-------|---
-   *      | <- start   | <- end
-   * -----|------------|-------
-   * 
-   */
-  debug("get all reservatins fron current time period")
+  debug("get all reservations from current time period");
   const reservations: Reservation[] = await $reservations.find({
     salonId: salon._id,
-    start: {
-      $lt: endPeriod
-    },
-    end: {
-      $gt: startPeriod
-    },
-  }).project({
-    masterId: 1,
-    start: 1,
-    end: 1
-  }).toArray();
+    $and: [
+      {
+        "start.year": {
+          $lte: endDate.year
+        },
+        "start.month": {
+          $lte: endDate.month
+        },
+        "start.day": {
+          $lte: endDate.day
+        }
+      },
+      {
+        "end.year": {
+          $gte: startDate.year
+        },
+        "end.month": {
+          $gte: startDate.month
+        },
+        "end.day": {
+          $gte: startDate.day
+        }
+      }
+    ],
+  }).project({ masterId: 1, start: 1, end: 1 }).toArray();
 
-  debug("get bookin slots for current period");
+  debug("get booking slots for current period");
   const slots = getBookingSlots({
-    startPeriod,
-    endPeriod,
+    startPeriod: startDate,
+    endPeriod: endDate,
     regularHours,
     specialHours,
     users: salon.employees.users.map(v => ({
@@ -129,12 +140,12 @@ export async function syncBookingSlots(salonId: ObjectID, startDate = new Date, 
   const removeBookingSlots = Array.from(bookingsSlotsMap.values());
 
   debug("insert a new slots")
-  if(enterBookingSlots.length > 0) {
+  if (enterBookingSlots.length > 0) {
     await $bookingsSlots.insertMany(enterBookingSlots);
   }
 
   debug("delete not needed slots")
-  if(removeBookingSlots.length > 0) {
+  if (removeBookingSlots.length > 0) {
     await $bookingsSlots.deleteMany({
       _id: {
         $in: removeBookingSlots

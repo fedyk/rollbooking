@@ -3,6 +3,7 @@ import { SalonService } from "../../../models/salon";
 import { CheckoutURLParams } from "../interfaces";
 import { BookingSlot } from "../../../models/booking-slot";
 import { getUniqSlotsByUserId } from "./get-uniq-slots-by-user-id";
+import { DateTime } from "../../../models/date-time";
 
 interface Params {
   salonAlias: string;
@@ -45,6 +46,20 @@ export function getResults({ salonAlias, bookingSlots, services }: Params): Resu
   return services.filter(v => slotsByServiceId.has(v.id)).map(service => {
     const slots = slotsByServiceId.get(service.id);
     const uniqSlots = getUniqSlotsByUserId(slots, amountSlotsPerUser);
+    
+    uniqSlots.sort((a, b) => {
+      const dateTimeProps: Array<keyof DateTime> = ["hours", "minutes", "seconds"];
+
+      for (let i = 0; i < dateTimeProps.length; i++) {
+        const dateTimeProp = dateTimeProps[i];
+
+        if (a.start[dateTimeProp] !== b.start[dateTimeProp]) {
+          return a.start[dateTimeProp] - b.start[dateTimeProp];
+        }
+      }
+
+      return 0;
+    })
 
     return {
       name: service.name,

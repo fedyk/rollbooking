@@ -2,6 +2,7 @@ import { Context } from "koa";
 import { ObjectID } from "bson";
 import { Salon } from "../../../models/salon";
 import { ReservationsCollection } from "../../../adapters/mongodb";
+import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";
 
 export async function deleteEvent(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -18,6 +19,8 @@ export async function deleteEvent(ctx: Context) {
   });
 
   ctx.assert(result.deletedCount > 0, 404, "Item doesn't exist");
+
+  await syncBookingSlots(salon._id);
 
   ctx.body = "ok";
 }

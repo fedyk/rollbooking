@@ -3,6 +3,7 @@ import { Salon } from "../../models/salon";
 import { createTestSalon } from "./create-test-salon";
 import { deleteTestSalon } from "./delete-test-salon";
 import { BookingSlotsCollection, closeClient } from "../../adapters/mongodb";
+import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 
 describe("syncBookingSlots", function() {
   let salon: Salon;
@@ -19,7 +20,7 @@ describe("syncBookingSlots", function() {
   it("should generate booking slots for salon", async function() {
     const $bookingSlots = await BookingSlotsCollection();
 
-    await syncBookingSlots(salon._id, new Date(2018, 11, 31), new Date(2018, 11, 31));
+    await syncBookingSlots(salon._id, nativeDateToDateObject(new Date(2018, 11, 31)), nativeDateToDateObject(new Date(2018, 11, 31)));
 
     const bookingSlots = await $bookingSlots.find({ salonId: salon._id }).project({
       start: 1,

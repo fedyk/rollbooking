@@ -6,63 +6,52 @@ import { Salon } from "../../../models/salon";
 import { User } from "../../../models/user";
 import { Client } from "../../../models/client";
 import { SessionPayload } from "../../../models/session";
-import { parseCheckoutRequestQuery } from "../helpers/parse-checkout-request-query";
 import { parseCheckoutRequestBody } from "../helpers/parse-checkout-request-body";
 import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";
 import { ReservationsCollection, UsersCollection, ClientsCollection, BookingSlotsCollection } from "../../../adapters/mongodb";
 import { ReservationURLParams } from "../interfaces";
+import { CheckoutContext } from "../middlewares/checkout-middleware";
 
-export interface CreateReservationResponse {
-  error?: string;
-  redirectUrl?: string;
-}
-
-export async function createReservation(ctx: Context) {
+export async function createReservation(ctx: CheckoutContext, next) {
+  const session = ctx.session as SessionPayload;
   const salon = ctx.state.salon as Salon;
   const user = ctx.state.user as User;
   const isAuthenticated = ctx.isAuthenticated();
-  const params = parseCheckoutRequestQuery(ctx.query);
-  const $users = await UsersCollection();
-  const $clients = await ClientsCollection();
-  const $reservations = await ReservationsCollection();
-  const session = ctx.session as SessionPayload;
-  const $bookingSlots = await BookingSlotsCollection();
-
-  ctx.assert(params.slotId, 404, "Page does not exist");
-
-  const bookingSlot = await $bookingSlots.findOne({ _id: params.slotId });
+  const bookingSlot = ctx.state.bookingSlot;
+  const salonMaster = ctx.state.salonMaster;
+  const salonService = ctx.state.salonService;
 
   ctx.assert(bookingSlot, 404, "Time is already booked");
-
-  const salonMaster = await $users.findOne({ _id: bookingSlot.userId });
-
   ctx.assert(salonMaster, 404, "Oops, something went wrong");
-
-  const salonService = salon.services.items.find(v => v.id === bookingSlot.serviceId);
-
   ctx.assert(salonService, 400, "Invalid params");
 
-  // Ok, lets save
-  const clientParams = parseCheckoutRequestBody(ctx.request.body);
+  const $clients = await ClientsCollection();
+  
+
   let client: Client;
 
-  // Validate data from unAuthenticated client
   if (!isAuthenticated) {
-    ctx.assert(isEmail(clientParams.email), 400, "Invalid email");
-    ctx.assert(clientParams.name, 400, "Name is required");
-    ctx.assert(clientParams.name.length < 64, 400, "Name is too long");
-
     const clientId = ctx.session.clientId;
 
     if (ObjectID.isValid(clientId)) {
-      client = await $clients.findOne({ _id: new ObjectID(clientId) });
+      client = await $clients.findOne({
+        _id: new ObjectID(clientId)
+      });
     }
 
     if (!client) {
-      const { ops: [insertedClient] } = await $clients.insertOne({
+      const { email, name } = parseCheckoutRequestBody(ctx.request.body);
+
+      ctx.assert(isEmail(email), 400, "Invalid email");
+      ctx.assert(name, 400, "Name is required");
+      ctx.assert(name.length < 64, 400, "Name is too long");
+
+      const { ops: [
+        insertedClient
+      ] } = await $clients.insertOne({
         userId: null,
-        email: clientParams.email,
-        name: clientParams.name,
+        email: email,
+        name: name,
         created: new Date(),
         updated: new Date(),
       });
@@ -83,8 +72,7 @@ export async function createReservation(ctx: Context) {
         userId: user._id,
         email: user.email,
         name: user.name,
-        created: new Date(),
-        updated: new Date(),
+        created: new Date()
       });
 
       client = insertedClient;
@@ -96,6 +84,7 @@ export async function createReservation(ctx: Context) {
   session.clientEmail = client.email;
   session.clientId = client._id.toHexString();
 
+  const $reservations = await ReservationsCollection();
   const reservation = await $reservations.insertOne({
     salonId: salon._id,
     clientId: client._id,
@@ -108,13 +97,17 @@ export async function createReservation(ctx: Context) {
     updatedAt: new Date()
   })
 
-  ctx.assert(reservation.insertedCount === 1, 500, "Internal error")
+  ctx.assert(reservation.insertedCount === 1, 500, "Internal error: Cannot create reservation");
 
-  await syncBookingSlots(salon._id);
+  const $bookingSlots = await BookingSlotsCollection();
 
-  const redirectUrl = `/${salon.alias}/booking/reservation?${stringify({ rid: reservation.insertedId.toHexString() } as ReservationURLParams)}`
+  await $bookingSlots.deleteOne({
+    _id: bookingSlot._id
+  })
 
-  ctx.redirect(redirectUrl);
+  ctx.redirect(`/${salon.alias}/booking/reservation?${stringify({
+    rid: reservation.insertedId.toHexString()
+  } as ReservationURLParams)}`);
 }
 
 
