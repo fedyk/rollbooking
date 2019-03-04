@@ -7,6 +7,7 @@ import { BookingWorkday } from "../models/booking-workday";
 import { BookingSlot } from "../models/booking-slot";
 import { Client } from "../models/client";
 import { Session } from "../models/session";
+import { BookingSlotSubscription } from "../models/booking-slot-subscription";
 
 const client = new MongoClient(config.MONGODB_URI, {
   useNewUrlParser: true
@@ -46,6 +47,10 @@ export async function BookingWorkdaysCollection(): Promise<Collection<BookingWor
 
 export async function BookingSlotsCollection(): Promise<Collection<BookingSlot>> {
   return await getCollection("booking-slots");
+}
+
+export async function BookingSlotsSubscriptionCollection(): Promise<Collection<BookingSlotSubscription>> {
+  return await getCollection("booking-slots-subscriptions");
 }
 
 export async function ClientsCollection(): Promise<Collection<Client>> {

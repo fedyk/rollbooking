@@ -1,5 +1,6 @@
 import { Context } from "koa";
 import { content } from "../views/shared/content";
+import { User } from "../models/user";
 
 /**
  * 
@@ -20,7 +21,12 @@ import { content } from "../views/shared/content";
 export async function contentMiddleware(ctx: Context, next) {
   await next()
 
+  const isAuthenticated = ctx.isAuthenticated();
+  const userName = isAuthenticated ? (ctx.state.user as User).name : null;
+
   ctx.body = content({
+    isAuthenticated,
+    userName,
     body: ctx.body
   });
 }

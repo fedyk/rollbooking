@@ -21,6 +21,8 @@ export async function welcome(ctx: Context) {
   const params = parseRequestParam({ ...ctx.params, ...ctx.query });
 
   const $users = await UsersCollection();
+  const $bookingSlots = await BookingSlotsCollection();
+
   const usersIds = salon.employees.users.map(v => v.id);
   const salonUsers = await $users.find({ _id: { $in: usersIds } }).toArray();
   const services = salon.services.items;
@@ -29,17 +31,14 @@ export async function welcome(ctx: Context) {
   const salonZonedNow = getZonedTime(new Date(), salonTimezone);
   const dateOptions = getDateOptions({ startDate: salonZonedNow, nextDays: 60 });
 
-  const $bookingSlots = await BookingSlotsCollection();
   const selectedDate = params.date || salonZonedNow;
-
+  
   const bookingSlots = await $bookingSlots.find(getBookingSlotsFilter({
     salonId: salon._id,
     userId: params.masterId,
     serviceId: params.serviceId,
     date: selectedDate
   })).toArray();
-
-  const showFilters = bookingSlots.length > 0;
 
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
@@ -51,8 +50,10 @@ export async function welcome(ctx: Context) {
     services,
   });
 
+  ctx.state.title = `${salon.name}`;
+  ctx.state.scripts.push("/js/booking.js");
+  ctx.state.styles.unshift("https://fonts.googleapis.com/icon?family=Material+Icons");
   ctx.body = welcomeView({
-    showFilters: showFilters,
     dateOptions: dateOptions,
     selectedDate: selectedDate ? dateToISODate(selectedDate) : null,
     mastersOptions: mastersOptions,
@@ -71,8 +72,8 @@ export function parseRequestParam(param: any): {
   serviceId?: number;
 } {
   const dateStr = `${param && (param.date || param.d)}`.trim();
-  const masterId = param && (param.master_id || param.m);
-  const serviceIdStr = param && (param.service_id || param.s);
+  const masterId = param && (param.master_id || param.m || param.mid);
+  const serviceIdStr = param && (param.service_id || param.s || param.sid);
   let date;
 
   if (DATE_REGEX.test(dateStr)) {

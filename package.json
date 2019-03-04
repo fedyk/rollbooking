@@ -42,6 +42,8 @@
     "watch": "tsc --watch",
     "rimraf:dist": "rimraf dist",
     "start": "node dist/server",
-    "dev": "nodemon --inspect ./dist/server.js  --watch ./dist"
-  }
+    "dev": "nodemon --inspect ./dist/server.js  --watch ./dist",
+    "heroku-postbuild": "echo Skip build on Heroku"
+  },
+  "heroku-run-build-script": true
 }

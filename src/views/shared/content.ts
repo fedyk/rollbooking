@@ -1,12 +1,23 @@
+import { escape } from "../../helpers/html";
+
 interface Props {
   body: string;
+  userName: string;
+  isAuthenticated: boolean;
+    
 }
 
-export const content = ({ body }: Props) => `
+export const content = ({ body, isAuthenticated, userName }: Props) => `
 <nav class="navbar navbar-dark bg-dark">
   <a class="navbar-brand" href="/">
     <img src="/images/logo-white.svg" height="24" class="d-inline-block align-middle" alt="rollbooking">
   </a>
+
+  ${isAuthenticated ? `<ul class="navbar-nav">
+    <li class="nav-item active">
+      <a class="nav-link" href="/profile">${escape(userName)}</a>
+    </li>
+  </ul>` : ""}
 </nav>
 
 <div class="container pt-4">
