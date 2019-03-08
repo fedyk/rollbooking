@@ -15,9 +15,11 @@ import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 import { Salon } from "../../models/salon";
 import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
+import { toDottedObject } from "../../helpers/to-dotted-object";
 
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
+  const isAuthenticated = ctx.isAuthenticated();
   const params = parseRequestParam({ ...ctx.params, ...ctx.query });
 
   const $users = await UsersCollection();
@@ -49,18 +51,38 @@ export async function welcome(ctx: Context) {
     bookingSlots: bookingSlots,
     services,
   });
+  let isSubscribed: boolean | null = null;
+
+  if (results.length === 0) {
+    const $bookingSlots = await BookingSlotsCollection()
+    const filter = getBookingSlotsFilter({
+      date: params.date,
+      salonId: salon._id,
+      userId: params.masterId,
+      serviceId: params.serviceId
+    })
+
+    const bookingSlot = $bookingSlots.findOne(toDottedObject(filter));
+    
+    isSubscribed = Boolean(bookingSlot)
+  }
 
   ctx.state.title = `${salon.name}`;
-  ctx.state.scripts.push("/js/booking.js");
+  ctx.state.styles.push("/css/booking.css");
   ctx.state.styles.unshift("https://fonts.googleapis.com/icon?family=Material+Icons");
+  ctx.state.scripts.push("/js/booking.js");
   ctx.body = welcomeView({
+    results: results,
     dateOptions: dateOptions,
     selectedDate: selectedDate ? dateToISODate(selectedDate) : null,
     mastersOptions: mastersOptions,
     selectedMaster: selectedMaster,
     servicesOptions: servicesOptions,
     selectedService: selectedService,
-    results: results
+    isAuthenticated: isAuthenticated,
+    isSubscribed: isSubscribed,
+    subscribeUrl: `/${salon.alias}/booking/slot-subscriptions`,
+    unsubscribeUrl: `/${salon.alias}/booking/slot-subscriptions`,
   })
 }
 

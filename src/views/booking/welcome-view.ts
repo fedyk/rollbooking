@@ -1,8 +1,11 @@
-import { select, SelectOption } from "../../helpers/form";
+import { select, SelectOption, input } from "../../helpers/form";
 import { stringMapJoin } from "../../helpers/string-map-join";
-import { attrs } from "../../helpers/html";
+import { attrs, classes } from "../../helpers/html";
 
 interface Props {
+  isAuthenticated: boolean;
+  isSubscribed: boolean | null;
+
   dateOptions: SelectOption[];
   selectedDate: string;
 
@@ -21,6 +24,9 @@ interface Props {
       text: string;
     }>
   }>
+
+  subscribeUrl: string;
+  unsubscribeUrl: string;
 }
 
 export const welcomeView = (props: Props) => `
@@ -66,14 +72,34 @@ ${props.results.length === 0 ? `
     <h6 class="mb-1">No results found</h6>
     <p class="mb-3 small">You can try another date or change master.</p>
     
-    <div class="mb-3 mx-auto w-25 border-bottom"></div>
+    ${props.isAuthenticated ? `
+      <div class="mb-3 mx-auto w-25 border-bottom"></div>
 
-    <p class="mb-3 small">Subscribe to receive notification about new available terms.</p>
+      <p class="mb-3 small">Subscribe to receive notification about new available slots.</p>
 
-    <a ${attrs({ href: "" })} class="btn btn-outline-primary d-inline-flex align-items-center pl-3 pr-3">
-      <i class="material-icons mr-2" style="font-size: 18px;">remove_red_eye</i>
-      <span>Watch</span>
-    </a>
+      <div class="${classes({ "subscription-container": true, "is-subscribed": props.isSubscribed })}">
+        <form ${attrs({ action: props.subscribeUrl, method: "POST", "class": "subscribe-form", "onsubmit": "return submitSubscribeForm(event);" })}>
+          ${input("action", "subscribe", { type: "hidden" })}
+          ${input("date", props.selectedDate, { type: "hidden" })}
+          ${input("serviceId", props.selectedService, { type: "hidden" })}
+          ${input("userId", props.selectedMaster, { type: "hidden" })}
+          <button class="btn btn-outline-primary d-inline-flex align-items-center pl-3 pr-3" type="subscribe">
+            <i class="material-icons mr-2">remove_red_eye</i>
+            <span>Subscribe</span>
+          </button>
+        </form>
+        <form ${attrs({ action: props.unsubscribeUrl, method: "POST", "class": "unsubscribe-form", "onsubmit": "return submitSubscribeForm(event);" })}>
+          ${input("action", "unsubscribe", { type: "hidden" })}
+          ${input("date", props.selectedDate, { type: "hidden" })}
+          ${input("serviceId", props.selectedService, { type: "hidden" })}
+          ${input("userId", props.selectedMaster, { type: "hidden" })}
+          <button class="btn btn-outline-primary d-inline-flex align-items-center pl-3 pr-3" type="subscribe">
+            <i class="material-icons mr-2">remove_red_eye</i>
+            <span>Unsubscribe</span>
+          </button>
+        </form>
+      </div>
+    ` : ``}
   </div>
 ` : ``}
 

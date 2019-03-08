@@ -2,18 +2,22 @@ body {
   background: #FAFAFA;
 }
 
-.site-header {
-  background-color: rgba(0, 0, 0, .85);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
+.subscribe-form {
+  display: none;
 }
 
-.site-header a {
-  color: #fff;
-  transition: ease-in-out color .15s;
+.unsubscribe-form {
+  display: block;
 }
 
-.site-header a:hover {
-  color: #ccc;
-  text-decoration: none;
+.subscription-container .material-icons {
+  font-size: 18px;
+}
+
+.subscription-container.is-subscribed .subscribe-form {
+  display: block;
+}
+
+.subscription-container.is-subscribed .unsubscribe-form {
+  display: none;
 }

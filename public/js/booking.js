@@ -1,7 +1,3 @@
-function createSlotSubscription(salon, date) {
-
-}
-
-function deleteSlotSubscription(salon, date) {
-
+function submitSubscribeForm(event) {
+  event.preventDefault();
 }

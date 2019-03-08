@@ -26,9 +26,9 @@ export function parseSlotSubscriptionBody(body: any) {
   action = action + "";
 
   return {
-    userId: userId as ObjectID,
-    serviceId: serviceId as number,
-    date: date as Date,
-    action: action as string,
+    userId: userId as ObjectID | null,
+    serviceId: serviceId as number | null,
+    date: date as Date | null,
+    action: action as string | null,
   };
 }

@@ -1,20 +1,17 @@
 import { Context } from "koa";
-import { Salon } from "../../../models/salon";
-import { BookingSlotsSubscriptionCollection, ClientsCollection } from "../../../adapters/mongodb";
-import { SessionPayload } from "../../../models/session";
 import { User } from "../../../models/user";
-import { isoDateToDateObject } from "../../../helpers/date/iso-date-to-date-object";
+import { Salon } from "../../../models/salon";
 import { toDottedObject } from "../../../helpers/to-dotted-object";
 import { BookingSlotSubscription } from "../../../models/booking-slot-subscription";
-import { ObjectID } from "bson";
 import { parseSlotSubscriptionBody } from "../helpers/parse-slot-subscription-body";
+import { BookingSlotsSubscriptionCollection } from "../../../adapters/mongodb";
 
 enum Actions {
   SUBSCRIBE = "subscribe",
   UNSUBSCRIBE = "unsubscribe",
 }
 
-export async function subscribe(ctx: Context) {
+export async function slotSubscriptions(ctx: Context) {
   const salon = ctx.state.salon as Salon;
   const user = ctx.state.user as User;
   const params = parseSlotSubscriptionBody(ctx.request.body);
@@ -33,22 +30,19 @@ export async function subscribe(ctx: Context) {
   };
 
   if (params.action === Actions.SUBSCRIBE) {
-    const bookingSlot: BookingSlotSubscription = Object.assign({
-      updat
-    }, filter)
+    const bookingSlot: BookingSlotSubscription = {
+      ...filter,
+      updatedAt: new Date()
+    }
 
-    await $bookingSlotsSubscription.findOneAndReplace(toDottedObject(filter), , {
+    await $bookingSlotsSubscription.findOneAndReplace(toDottedObject(filter), bookingSlot, {
       upsert: true
     })
   }
-
-  const bookingSlotsSubscription = 
-
-  if (!bookingSlotsSubscription) {
-    await $bookingSlotsSubscription.insert(toDottedObject({
-      salonId: salon._id,
-      userId: user._id,
-      date: date
-    }))
+  
+  if (params.action === Actions.UNSUBSCRIBE) {
+    await $bookingSlotsSubscription.deleteOne(toDottedObject(filter));
   }
+
+  ctx.body = "ok";
 }

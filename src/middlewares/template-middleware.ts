@@ -13,7 +13,7 @@ import { template } from "../views/template";
  */
 export async function templateMiddleware(ctx: Context, next) {
   ctx.state.scripts = [
-    "https://code.jquery.com/jquery-3.3.1.slim.js",
+    "https://code.jquery.com/jquery-3.3.1.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.js",
     "https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.js"
   ];

@@ -4,10 +4,10 @@ import { Date } from "../../../models/date";
 import { BookingSlot } from "../../../models/booking-slot";
 
 interface Params {
-  salonId: ObjectID;
+  date?: Date;
   userId?: ObjectID;
+  salonId: ObjectID;
   serviceId?: number;
-  date?: Date
 }
 
 export function getBookingSlotsFilter({ salonId, userId, serviceId, date }: Params) {
