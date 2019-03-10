@@ -3,11 +3,11 @@ body {
 }
 
 .subscribe-form {
-  display: none;
+  display: block;
 }
 
 .unsubscribe-form {
-  display: block;
+  display: none;
 }
 
 .subscription-container .material-icons {
@@ -15,9 +15,9 @@ body {
 }
 
 .subscription-container.is-subscribed .subscribe-form {
-  display: block;
+  display: none;
 }
 
 .subscription-container.is-subscribed .unsubscribe-form {
-  display: none;
+  display: block;
 }

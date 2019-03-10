@@ -78,7 +78,11 @@ ${props.results.length === 0 ? `
       <p class="mb-3 small">Subscribe to receive notification about new available slots.</p>
 
       <div class="${classes({ "subscription-container": true, "is-subscribed": props.isSubscribed })}">
-        <form ${attrs({ action: props.subscribeUrl, method: "POST", "class": "subscribe-form", "onsubmit": "return submitSubscribeForm(event);" })}>
+        <form ${attrs({
+          action: props.subscribeUrl,
+          method: "POST",
+          "class": "subscribe-form"
+        })}>
           ${input("action", "subscribe", { type: "hidden" })}
           ${input("date", props.selectedDate, { type: "hidden" })}
           ${input("serviceId", props.selectedService, { type: "hidden" })}
@@ -88,7 +92,12 @@ ${props.results.length === 0 ? `
             <span>Subscribe</span>
           </button>
         </form>
-        <form ${attrs({ action: props.unsubscribeUrl, method: "POST", "class": "unsubscribe-form", "onsubmit": "return submitSubscribeForm(event);" })}>
+
+        <form ${attrs({
+          action: props.unsubscribeUrl,
+          method: "POST",
+          "class": "unsubscribe-form"
+        })}>
           ${input("action", "unsubscribe", { type: "hidden" })}
           ${input("date", props.selectedDate, { type: "hidden" })}
           ${input("serviceId", props.selectedService, { type: "hidden" })}

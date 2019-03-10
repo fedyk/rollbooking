@@ -17,6 +17,7 @@ test('html/attrs', () => {
     "class": "open",
     "data-param": "val"
   })).toBe("class=\"open\" data-param=\"val\"")
+  expect(attrs({ onclick: 'click("1")' })).toBe(`onclick="click(&quot;1&quot;)"`)
 });
 
 test('html/classes', () => {

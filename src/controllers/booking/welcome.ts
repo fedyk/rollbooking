@@ -8,7 +8,7 @@ import { getSelectedService } from "./helpers/get-selected-service";
 import { getResults } from "./helpers/get-results";
 import { Context } from "koa";
 import { dateToISODate } from "../../helpers/date/date-to-iso-date";
-import { UsersCollection, BookingSlotsCollection } from "../../adapters/mongodb";
+import { UsersCollection, BookingSlotsCollection, BookingSlotsSubscriptionCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { Date as DateObject } from "../../models/date";
@@ -16,6 +16,8 @@ import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-o
 import { Salon } from "../../models/salon";
 import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
 import { toDottedObject } from "../../helpers/to-dotted-object";
+import { getBookingSlotsSubscriptionFilter } from "./helpers/get-booking-slots-subscription-filter";
+import { User } from "../../models/user";
 
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -53,18 +55,13 @@ export async function welcome(ctx: Context) {
   });
   let isSubscribed: boolean | null = null;
 
-  if (results.length === 0) {
-    const $bookingSlots = await BookingSlotsCollection()
-    const filter = getBookingSlotsFilter({
-      date: params.date,
-      salonId: salon._id,
-      userId: params.masterId,
-      serviceId: params.serviceId
-    })
+  if (results.length === 0 && isAuthenticated) {
+    const user = ctx.state.user as User;
+    const $bookingSlotsSubscription = await BookingSlotsSubscriptionCollection()
+    const filter = getBookingSlotsSubscriptionFilter({ salonId: salon._id, subscriberId: user._id, date: selectedDate, userId: params.masterId, serviceId: params.serviceId });
+    const bookingSlotsSubscription = await $bookingSlotsSubscription.findOne(filter);
 
-    const bookingSlot = $bookingSlots.findOne(toDottedObject(filter));
-    
-    isSubscribed = Boolean(bookingSlot)
+    isSubscribed = Boolean(bookingSlotsSubscription)
   }
 
   ctx.state.title = `${salon.name}`;

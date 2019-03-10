@@ -13,6 +13,7 @@ import { getBookingSlots } from "../../helpers/booking/get-booking-slots";
 import { dateTimeToISODate } from "../../helpers/date/date-time-to-iso-date";
 import { BookingSlot } from "../../models/booking-slot";
 import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native-date";
+import { dateToISODate } from "../../helpers/date/date-to-iso-date";
 
 const debug = Debug("tasks:sync-booking-slots");
 
@@ -24,10 +25,10 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
 
   ok(salon, `Cannot find salon by id=${salonId.toHexString()}`);
 
-  debug("get salon timezone")
+  debug("parse salon timezone, %s", salon.timezone)
   const salonTimezone = findTimeZone(salon.timezone);
 
-  debug("if startDate is empty, use Date.now as start time")
+  debug("if startDate is empty, use local Date.now as start time")
   if (startDate == null) {
     const { year, month, day } = getZonedTime(new Date, salonTimezone);
 
@@ -86,7 +87,7 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
     ],
   }).project({ masterId: 1, start: 1, end: 1 }).toArray();
 
-  debug("get booking slots for current period");
+  debug("get booking slots for current period: %s - %s", dateToISODate(startDate), dateToISODate(endDate));
   const slots = getBookingSlots({
     startPeriod: startDate,
     endPeriod: endDate,
@@ -122,7 +123,9 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
   slots.forEach(v => {
     const key = `${v.userId}-${v.serviceId}-${dateTimeToISODate(v.start)}-${dateTimeToISODate(v.end)}`;
 
-    if (!bookingsSlotsMap.has(key)) {
+    if (bookingsSlotsMap.has(key)) {
+      bookingsSlotsMap.delete(key);
+    } else {
       enterBookingSlots.push({
         _version: "v1",
         salonId: salonId,
@@ -132,8 +135,6 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
         end: v.end,
         createdAt: new Date(),
       })
-    } else {
-      bookingsSlotsMap.delete(key);
     }
   })
 

@@ -5,6 +5,7 @@ import { toDottedObject } from "../../../helpers/to-dotted-object";
 import { BookingSlotSubscription } from "../../../models/booking-slot-subscription";
 import { parseSlotSubscriptionBody } from "../helpers/parse-slot-subscription-body";
 import { BookingSlotsSubscriptionCollection } from "../../../adapters/mongodb";
+import { getBookingSlotsSubscriptionFilter } from "../helpers/get-booking-slots-subscription-filter";
 
 enum Actions {
   SUBSCRIBE = "subscribe",
@@ -21,27 +22,35 @@ export async function slotSubscriptions(ctx: Context) {
 
   const $bookingSlotsSubscription = await BookingSlotsSubscriptionCollection();
 
-  const filter = {
+  const filter = getBookingSlotsSubscriptionFilter({
     subscriberId: user._id,
     salonId: salon._id,
     date: params.date,
     serviceId: params.serviceId,
     userId: params.userId,
-  };
+  });
 
   if (params.action === Actions.SUBSCRIBE) {
     const bookingSlot: BookingSlotSubscription = {
-      ...filter,
+      subscriberId: user._id,
+      salonId: salon._id,
+      date: params.date,
+      serviceId: params.serviceId,
+      userId: params.userId,
       updatedAt: new Date()
     }
 
-    await $bookingSlotsSubscription.findOneAndReplace(toDottedObject(filter), bookingSlot, {
+    await $bookingSlotsSubscription.findOneAndReplace(filter, bookingSlot, {
       upsert: true
     })
   }
   
   if (params.action === Actions.UNSUBSCRIBE) {
-    await $bookingSlotsSubscription.deleteOne(toDottedObject(filter));
+    await $bookingSlotsSubscription.deleteOne(filter);
+  }
+
+  if (ctx.request.is("application/x-www-form-urlencoded")) {
+    ctx.redirect("back");
   }
 
   ctx.body = "ok";

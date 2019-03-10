@@ -133,19 +133,23 @@ function attr(key, val, escaped = false, terse = false) {
   if (val === false || val == null || !val && (key === 'class' || key === 'style')) {
     return '';
   }
+
   if (val === true) {
     return ' ' + (terse ? key : key + '="' + key + '"');
   }
+
   var type = typeof val;
   if ((type === 'object' || type === 'function') && typeof val.toJSON === 'function') {
     val = val.toJSON();
   }
+
   if (typeof val !== 'string') {
     val = JSON.stringify(val);
     if (!escaped && val.indexOf('"') !== -1) {
       return ' ' + key + '=\'' + val.replace(/'/g, '&#39;') + '\'';
     }
   }
+
   if (escaped) val = escape(val);
   return ' ' + key + '="' + val + '"';
 };
@@ -158,7 +162,7 @@ function attr(key, val, escaped = false, terse = false) {
  * @return {String}
  */
 
-export function attrs(obj: object, terse = false) {
+export function attrs(obj: object, escaped = true, terse = false) {
   var attrs = '';
 
   for (var key in obj) {
@@ -167,13 +171,13 @@ export function attrs(obj: object, terse = false) {
 
       if ('class' === key) {
         val = classes(val);
-        attrs = attr(key, val, false, terse) + attrs;
+        attrs = attr(key, val, escaped, terse) + attrs;
         continue;
       }
       if ('style' === key) {
         val = style(val);
       }
-      attrs += attr(key, val, false, terse);
+      attrs += attr(key, val, escaped, terse);
     }
   }
 
