@@ -21,7 +21,7 @@ import { User } from "../models/user";
 export async function contentMiddleware(ctx: Context, next) {
   await next()
 
-  const isAuthenticated = ctx.isAuthenticated();
+  const isAuthenticated = ctx.isAuthenticated ? ctx.isAuthenticated() : false;
   const userName = isAuthenticated ? (ctx.state.user as User).name : null;
 
   ctx.body = content({
