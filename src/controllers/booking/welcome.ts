@@ -15,7 +15,6 @@ import { Date as DateObject } from "../../models/date";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 import { Salon } from "../../models/salon";
 import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
-import { toDottedObject } from "../../helpers/to-dotted-object";
 import { getBookingSlotsSubscriptionFilter } from "./helpers/get-booking-slots-subscription-filter";
 import { User } from "../../models/user";
 
@@ -65,9 +64,6 @@ export async function welcome(ctx: Context) {
   }
 
   ctx.state.title = `${salon.name}`;
-  ctx.state.styles.push("/css/booking.css");
-  ctx.state.styles.unshift("https://fonts.googleapis.com/icon?family=Material+Icons");
-  ctx.state.scripts.push("/js/booking.js");
   ctx.body = welcomeView({
     results: results,
     dateOptions: dateOptions,

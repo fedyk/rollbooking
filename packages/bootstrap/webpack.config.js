@@ -4,11 +4,16 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   mode: "development",
   devtool: "none",
-  entry: "./src/index.js",
+  context: path.resolve(__dirname, "src"),
+  entry: {
+    booking: "./booking.js",
+    bootstrap: "./bootstrap.js",
+  },
   output: {
-    filename: "index.js",
-    path: path.resolve(__dirname, "dist"),
-    libraryTarget: "window"
+    filename: "[name].js",
+    path: path.resolve(__dirname, "./../../public/packages/bootstrap"),
+    library: "[name]",
+   libraryTarget: "var",
   },
   module: {
     rules: [
