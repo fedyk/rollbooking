@@ -38,13 +38,14 @@
   },
   "scripts": {
     "build": "tsc",
+    "postinstall": "node scripts/packages/run.js install",
     "test": "jest --coverage --verbose --detectOpenHandles",
     "test:watch": "jest --watch",
     "watch": "tsc --watch",
     "rimraf:dist": "rimraf dist",
     "start": "node dist/server",
     "dev": "nodemon --inspect ./dist/server.js  --watch ./dist",
-    "heroku-postbuild": "echo Skip build on Heroku"
+    "heroku-postbuild": "node scripts/packages/run.js run build"
   },
   "heroku-run-build-script": true
 }
