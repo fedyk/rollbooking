@@ -48,7 +48,11 @@
     "rimraf:dist": "rimraf dist",
     "start": "node dist/server",
     "dev": "nodemon --inspect ./dist/server.js  --watch ./dist",
-    "heroku-postbuild": "node scripts/packages/run.js run build"
+    "heroku-postbuild": "npm run build && node scripts/packages/run.js run build"
   },
-  "heroku-run-build-script": true
+  "cacheDirectories": [
+    "node_modules",
+    "packages/bootstrap/node_modules",
+    "packages/calendar/node_modules"
+  ]
 }
