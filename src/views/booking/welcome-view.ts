@@ -30,40 +30,40 @@ interface Props {
 }
 
 export const welcomeView = (props: Props) => `
-<div class="card mb-3">
-  <div class="card-body">
-    <form method="get" action="">
+<div class="pl-3 pr-3 pb-2 bg-dark text-white text-center">Salon Name</div>
 
-      <div class="form-row">
-        <div class="form-group col-sm-4 mb-sm-0">
-          ${select("d", props.dateOptions, props.selectedDate, {
-            "id": "date",
-            "class": "custom-select",
-            "onchange": "this.form.submit()"
-          })}
-        </div>
+<div class="p-3 bg-white border-bottom mb-3">
+  <form method="get" action="">
 
-        ${props.mastersOptions.length > 0 ? 
-        `<div class="form-group col-sm-4 mb-sm-0">
-          ${select("mid", props.mastersOptions, props.selectedMaster, {
-            "id": "master_id",
-            "class": "custom-select",
-            "onchange": "this.form.submit()"
-          })}
-        </div>` : ``}
-
-        ${props.servicesOptions.length > 0 ? 
-        `<div class="form-group col-sm-4 mb-sm-0">
-          ${select("sid", props.servicesOptions, props.selectedService, {
-            "id": "service_id",
-            "class": "custom-select",
-            "onchange": "this.form.submit()"
-          })}
-        </div>` : ``}
+    <div class="form-row">
+      <div class="form-group col-sm-4 mb-sm-0">
+        ${select("d", props.dateOptions, props.selectedDate, {
+          "id": "date",
+          "class": "custom-select",
+          "onchange": "this.form.submit()"
+        })}
       </div>
 
-    </form>
-  </div>
+      ${props.mastersOptions.length > 0 ? 
+      `<div class="form-group col-sm-4 mb-sm-0">
+        ${select("mid", props.mastersOptions, props.selectedMaster, {
+          "id": "master_id",
+          "class": "custom-select",
+          "onchange": "this.form.submit()"
+        })}
+      </div>` : ``}
+
+      ${props.servicesOptions.length > 0 ? 
+      `<div class="form-group col-sm-4 mb-sm-0">
+        ${select("sid", props.servicesOptions, props.selectedService, {
+          "id": "service_id",
+          "class": "custom-select",
+          "onchange": "this.form.submit()"
+        })}
+      </div>` : ``}
+    </div>
+
+  </form>
 </div>
 
 ${props.results.length === 0 ? `
@@ -121,9 +121,9 @@ ${props.results.length > 0 ? `
         <small>${item.price}</small>
       </div>
       ${item.description && `<p class="mb-1">${item.description}</p>` || ''}
-      ${stringMapJoin(item.times, (time) =>
-        ` <a ${attrs({ href: time.url })} class="btn btn-outline-primary btn-sm">${time.text}</a> `
-      )}
+      <div class="booking-hours">
+      ${stringMapJoin(item.times, (time) => `<a ${attrs({ href: time.url })} class="btn btn-outline-primary btn-sm">${time.text}</a>`)}
+      </div>
     </div>
   `)}
 </div>

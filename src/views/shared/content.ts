@@ -22,9 +22,7 @@ export const content = ({ body, isAuthenticated, userName }: Props) => `
   </div>
 </nav>
 
-<div class="container pt-4">
-${body}
-</div>
+<div class="container">${body}</div>
 
 <div class="container pt-4 pb-4">
   © 2019 Rollbooking
