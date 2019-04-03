@@ -1,5 +1,5 @@
 import * as Router from "koa-router";
-import { welcome } from "./welcome";
+import { welcome } from "./welcome/welcome";
 import { form } from "./checkout/form";
 import { onlyAuthenticated } from "../../lib/passport";
 import { reservation } from "./reservation/reservation";

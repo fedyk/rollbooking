@@ -119,7 +119,7 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
 
   const enterBookingSlots: BookingSlot[] = [];
 
-  debug("each and a enter slots")
+  debug("each and add a enter slots")
   slots.forEach(v => {
     const key = `${v.userId}-${v.serviceId}-${dateTimeToISODate(v.start)}-${dateTimeToISODate(v.end)}`;
 
@@ -140,12 +140,12 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
 
   const removeBookingSlots = Array.from(bookingsSlotsMap.values());
 
-  debug("insert a new slots")
+  debug(`insert a new slots(+${enterBookingSlots.length})`)
   if (enterBookingSlots.length > 0) {
     await $bookingsSlots.insertMany(enterBookingSlots);
   }
 
-  debug("delete not needed slots")
+  debug(`delete not needed slots(-${removeBookingSlots.length})`)
   if (removeBookingSlots.length > 0) {
     await $bookingsSlots.deleteMany({
       _id: {

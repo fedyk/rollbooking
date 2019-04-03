@@ -3,7 +3,7 @@ import * as passport from './lib/passport'
 
 
 import { welcome } from './controllers/welcome';
-import { router as bookingRouter } from './controllers/booking/router';
+import { router as bookingRouter } from './controllers/booking';
 import { router as authRouter } from './controllers/auth/router';
 import { router as onboardingRouter } from './controllers/onboarding/router';
 import { router as settingsRouter } from './controllers/settings/router';
