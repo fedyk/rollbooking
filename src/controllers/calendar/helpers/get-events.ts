@@ -1,8 +1,8 @@
-import { Date } from "../../../models/date";
-import { Salon, SalonService } from "../../../models/salon";
+import { Date } from "../../../types/date";
+import { Salon, SalonService } from "../../../types/salon";
 import { ReservationsCollection, ClientsCollection } from "../../../adapters/mongodb";
 import { reservationToEvent } from "./reservation-to-event";
-import { Client } from "../../../models/client";
+import { Client } from "../../../types/client";
 import { ObjectID } from "bson";
 
 export async function getEvents(salon: Salon, date: Date) {

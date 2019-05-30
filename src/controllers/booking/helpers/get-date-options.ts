@@ -1,7 +1,7 @@
 import { format } from "date-fns"
 import { SelectOption } from "../../../helpers/form";
 import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
-import { Date as DateObject } from "../../../models/date";
+import { Date as DateObject } from "../../../types/date";
 import { dateObjectToNativeDate } from "../../../helpers/date/date-object-to-native-date";
 
 interface Options {

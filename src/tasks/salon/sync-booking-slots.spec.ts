@@ -1,5 +1,5 @@
 import { syncBookingSlots } from "./sync-booking-slots";
-import { Salon } from "../../models/salon";
+import { Salon } from "../../types/salon";
 import { createTestSalon } from "./create-test-salon";
 import { deleteTestSalon } from "./delete-test-salon";
 import { BookingSlotsCollection, closeClient } from "../../adapters/mongodb";

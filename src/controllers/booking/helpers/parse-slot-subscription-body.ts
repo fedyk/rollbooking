@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
 import { isoDateToDateObject } from "../../../helpers/date/iso-date-to-date-object";
-import { Date } from "../../../models/date";
+import { Date } from "../../../types/date";
 
 export function parseSlotSubscriptionBody(body: any) {
   let userId = body ? body.userId : "";

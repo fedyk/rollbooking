@@ -1,5 +1,5 @@
 import { ObjectID } from "bson";
-import { Client } from "../../models/client";
+import { Client } from "../../types/client";
 import { closeClient, ClientsCollection } from "../../adapters/mongodb";
 
 interface Options {

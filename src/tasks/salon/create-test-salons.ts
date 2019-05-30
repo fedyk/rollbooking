@@ -1,7 +1,7 @@
 import { UsersCollection, SalonsCollection, closeClient } from "../../adapters/mongodb";
-import { User } from "../../models/user";
-import { Salon } from "../../models/salon";
-import { DayOfWeek } from "../../models/dat-of-week";
+import { User } from "../../types/user";
+import { Salon } from "../../types/salon";
+import { DayOfWeek } from "../../types/dat-of-week";
 
 
 const DEFAULT_TIME_ZONES = [

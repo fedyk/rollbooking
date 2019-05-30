@@ -1,7 +1,7 @@
 import { Context } from "koa";
 import Debug from "debug";
 import { SalonsCollection } from "../adapters/mongodb";
-import { Salon } from "../models/salon";
+import { Salon } from "../types/salon";
 
 const debug = Debug("app:salon-alias-middleware")
 

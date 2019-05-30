@@ -13,7 +13,4 @@ export function stringMapJoin<T>(items: T[], render: (item: T, i?: number) => st
   return result;
 }
 
-
-stringMapJoin([1], function(param) {
-  return "param" + param;
-})
+export const $$ = stringMapJoin;

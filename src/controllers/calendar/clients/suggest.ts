@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { ClientsCollection } from "../../../adapters/mongodb";
 import { ObjectID } from "bson";
 

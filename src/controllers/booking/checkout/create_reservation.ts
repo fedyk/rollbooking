@@ -1,11 +1,11 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
-import { stringify } from "querystring";
+import { stringify, ParsedUrlQueryInput } from "querystring";
 import { isEmail } from "../../../utils/is-email";
-import { Salon } from "../../../models/salon";
-import { User } from "../../../models/user";
-import { Client } from "../../../models/client";
-import { SessionPayload } from "../../../models/session";
+import { Salon } from "../../../types/salon";
+import { User } from "../../../types/user";
+import { Client } from "../../../types/client";
+import { SessionPayload } from "../../../types/session";
 import { parseCheckoutRequestBody } from "../helpers/parse-checkout-request-body";
 import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";
 import { ReservationsCollection, UsersCollection, ClientsCollection, BookingSlotsCollection } from "../../../adapters/mongodb";
@@ -105,9 +105,11 @@ export async function createReservation(ctx: CheckoutContext, next) {
     _id: bookingSlot._id
   })
 
-  ctx.redirect(`/${salon.alias}/booking/reservation?${stringify({
+  const query: ReservationURLParams & ParsedUrlQueryInput = {
     rid: reservation.insertedId.toHexString()
-  } as ReservationURLParams)}`);
+  }
+
+  ctx.redirect(`/${salon.alias}/booking/reservation?${stringify(query)}`);
 }
 
 

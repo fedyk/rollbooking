@@ -1,4 +1,4 @@
-import { DateTime } from "../../models/date-time";
+import { DateTime } from "../../types/date-time";
 import { isoDateTimeToDateTime } from "./iso-date-time-to-date-time";
 
 test("isoDateTimeToDateTime", function() {

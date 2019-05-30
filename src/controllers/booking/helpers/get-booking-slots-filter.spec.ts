@@ -1,6 +1,6 @@
 import { getBookingSlotsFilter } from "./get-booking-slots-filter";
 import { ObjectID } from "bson";
-import { Date } from "../../../models/date";
+import { Date } from "../../../types/date";
 
 test("getBookingSlotsFilter", () => {
   const salonId = new ObjectID("aaaaaaaaaaaaaaaaaaaaaaaa");

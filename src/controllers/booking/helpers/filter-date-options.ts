@@ -1,5 +1,5 @@
 import { SelectOption } from "../../../helpers/form";
-import { BookingSlot } from "../../../models/booking-slot";
+import { BookingSlot } from "../../../types/booking-slot";
 import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
 
 interface Options {

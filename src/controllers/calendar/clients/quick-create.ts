@@ -1,6 +1,6 @@
 import { Context } from "koa";
-import { Salon } from "../../../models/salon";
-import { Client } from "../../../models/client";
+import { Salon } from "../../../types/salon";
+import { Client } from "../../../types/client";
 import { ClientsCollection } from "../../../adapters/mongodb";
 import { isEmail } from "../../../utils/is-email";
 
