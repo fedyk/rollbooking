@@ -1,13 +1,13 @@
 import { MongoClient, Db, Collection } from "mongodb";
 import { config } from "../lib/config";
-import { User } from "../models/user";
-import { Salon } from "../models/salon";
-import { Reservation } from "../models/reservation";
-import { BookingWorkday } from "../models/booking-workday";
-import { BookingSlot } from "../models/booking-slot";
-import { Client } from "../models/client";
-import { Session } from "../models/session";
-import { BookingSlotSubscription } from "../models/booking-slot-subscription";
+import { User } from "../types/user";
+import { Salon } from "../types/salon";
+import { Reservation } from "../types/reservation";
+import { BookingWorkday } from "../types/booking-workday";
+import { BookingSlot } from "../types/booking-slot";
+import { Client } from "../types/client";
+import { Session } from "../types/session";
+import { BookingSlotSubscription } from "../types/booking-slot-subscription";
 
 const client = new MongoClient(config.MONGODB_URI, {
   useNewUrlParser: true

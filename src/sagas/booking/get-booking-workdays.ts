@@ -1,10 +1,10 @@
-import { BusinessHours, SpecialHours } from "../../models/salon";
-import { BookingWorkday, Masters, Services } from "../../models/booking-workday";
-import { TimePeriod } from "../../models/time-period";
+import { BusinessHours, SpecialHours } from "../../types/salon";
+import { BookingWorkday, Masters, Services } from "../../types/booking-workday";
+import { TimePeriod } from "../../types/time-period";
 import { DateRange } from "../../lib/date-range";
-import { DayOfWeek } from "../../models/dat-of-week";
+import { DayOfWeek } from "../../types/dat-of-week";
 import { addDay } from "../../utils/date";
-import { Date as DateObject } from "../../models/date";
+import { Date as DateObject } from "../../types/date";
 import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native-date";
 import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
 import { nativeDateToTimeOfDay } from "../../helpers/date/native-date-to-time-of-day";

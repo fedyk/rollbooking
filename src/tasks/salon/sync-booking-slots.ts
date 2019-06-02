@@ -3,15 +3,15 @@ import { ok } from "assert";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { addDay } from "../../utils/date";
-import { BusinessHours, SpecialHours } from "../../models/salon";
-import { Reservation } from "../../models/reservation";
+import { BusinessHours, SpecialHours } from "../../types/salon";
+import { Reservation } from "../../types/reservation";
 import { DateRange } from "../../lib/date-range";
 import { closeClient, ReservationsCollection, SalonsCollection, BookingSlotsCollection } from "../../adapters/mongodb";
-import { Date as DateObject } from "../../models/date";
+import { Date as DateObject } from "../../types/date";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
 import { getBookingSlots } from "../../helpers/booking/get-booking-slots";
 import { dateTimeToISODate } from "../../helpers/date/date-time-to-iso-date";
-import { BookingSlot } from "../../models/booking-slot";
+import { BookingSlot } from "../../types/booking-slot";
 import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native-date";
 import { dateToISODate } from "../../helpers/date/date-to-iso-date";
 
@@ -119,7 +119,7 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
 
   const enterBookingSlots: BookingSlot[] = [];
 
-  debug("each and a enter slots")
+  debug("each and add a enter slots")
   slots.forEach(v => {
     const key = `${v.userId}-${v.serviceId}-${dateTimeToISODate(v.start)}-${dateTimeToISODate(v.end)}`;
 
@@ -140,12 +140,12 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
 
   const removeBookingSlots = Array.from(bookingsSlotsMap.values());
 
-  debug("insert a new slots")
+  debug(`insert a new slots(+${enterBookingSlots.length})`)
   if (enterBookingSlots.length > 0) {
     await $bookingsSlots.insertMany(enterBookingSlots);
   }
 
-  debug("delete not needed slots")
+  debug(`delete not needed slots(-${removeBookingSlots.length})`)
   if (removeBookingSlots.length > 0) {
     await $bookingsSlots.deleteMany({
       _id: {

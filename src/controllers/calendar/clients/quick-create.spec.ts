@@ -4,7 +4,7 @@ import * as Koa from "koa";
 import * as Router from "koa-router";
 import * as bodyParser from "koa-bodyparser"
 import * as request from "supertest";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { createTestSalon } from "../../../tasks/salon/create-test-salon";
 import { deleteTestSalon } from "../../../tasks/salon/delete-test-salon";
 import { closeClient } from "../../../adapters/mongodb";

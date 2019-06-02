@@ -1,10 +1,10 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
-import { Salon, SalonService } from "../../../models/salon";
+import { Salon, SalonService } from "../../../types/salon";
 import { ReservationsCollection, ClientsCollection } from "../../../adapters/mongodb";
 import { reservationToEvent } from "../helpers/reservation-to-event";
 import { isoDateTimeToDateTime } from "../../../helpers/date/iso-date-time-to-date-time";
-import { Reservation, Status } from "../../../models/reservation";
+import { Reservation, Status } from "../../../types/reservation";
 import { toDottedObject } from "../../../helpers/to-dotted-object";
 import { indexBy } from "../helpers/index-by";
 import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";

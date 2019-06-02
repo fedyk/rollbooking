@@ -1,7 +1,7 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
 import { ReservationURLParams } from "../interfaces";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { ReservationsCollection } from "../../../adapters/mongodb";
 import { reservationView } from "./reservation-view";
 

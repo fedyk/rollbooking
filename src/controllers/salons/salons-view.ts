@@ -1,4 +1,4 @@
-import { Salon } from "../../models/salon";
+import { Salon } from "../../types/salon";
 import { stringMapJoin } from "../../helpers/string-map-join";
 import { attrs } from "../../helpers/html";
 

@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { parseUrlParams } from "../helpers/parse-url-params";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { getEvents } from "../helpers/get-events";

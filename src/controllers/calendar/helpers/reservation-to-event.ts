@@ -1,8 +1,8 @@
 import { ObjectID } from "bson";
-import { Reservation } from "../../../models/reservation";
-import { SalonService } from "../../../models/salon";
+import { Reservation } from "../../../types/reservation";
+import { SalonService } from "../../../types/salon";
 import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
-import { Client } from "../../../models/client";
+import { Client } from "../../../types/client";
 
 export function reservationToEvent(
   reservation: Reservation,

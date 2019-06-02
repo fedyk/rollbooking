@@ -3,7 +3,6 @@ import { Event, Service, Client } from "../../types";
 import { CalendarContext } from "../CalendarContext/CalendarContext";
 import { CalendarEventForm } from "../CalendarEventForm/CalendarEventForm";
 
-declare const jQuery: any;
 declare const bootstrap: any;
 
 interface Props {
@@ -53,7 +52,7 @@ export class CalendarModal extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this.modal = new bootstrap.Modal(this.modalEl.current);
-    jQuery(this.modalEl.current).on("hidden.bs.modal", this.onModalHidden);
+    bootstrap.jQuery(this.modalEl.current).on("hidden.bs.modal", this.onModalHidden);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -69,7 +68,7 @@ export class CalendarModal extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    jQuery(this.modalEl.current).off("hidden.bs.modal", this.onModalHidden);
+    bootstrap.jQuery(this.modalEl.current).off("hidden.bs.modal", this.onModalHidden);
     this.modal.hide();
     this.modal.dispose();
   }

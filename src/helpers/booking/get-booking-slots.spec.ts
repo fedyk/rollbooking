@@ -1,4 +1,4 @@
-import { DayOfWeek } from "../../models/dat-of-week";
+import { DayOfWeek } from "../../types/dat-of-week";
 import { DateRange } from "../../lib/date-range";
 import { getBookingSlots, Slot } from "./get-booking-slots";
 

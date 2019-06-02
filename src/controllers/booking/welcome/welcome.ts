@@ -1,22 +1,23 @@
 import * as parseInt from "parse-int";
-import { welcomeView } from "../../views/booking/welcome-view";
-import { getDateOptions } from "./helpers/get-date-options";
-import { getMastersOptions } from "./helpers/get-masters-options";
-import { getSelectedMaster } from "./helpers/get-selected-master";
-import { getServiceOptions } from "./helpers/get-services-options";
-import { getSelectedService } from "./helpers/get-selected-service";
-import { getResults } from "./helpers/get-results";
+import { welcomeView } from "../../../views/booking/welcome-view";
+import { getDateOptions } from "../helpers/get-date-options";
+import { getMastersOptions } from "../helpers/get-masters-options";
+import { getSelectedMaster } from "../helpers/get-selected-master";
+import { getServiceOptions } from "../helpers/get-services-options";
+import { getSelectedService } from "../helpers/get-selected-service";
+import { getResults } from "../helpers/get-results";
 import { Context } from "koa";
-import { dateToISODate } from "../../helpers/date/date-to-iso-date";
-import { UsersCollection, BookingSlotsCollection, BookingSlotsSubscriptionCollection } from "../../adapters/mongodb";
+import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
+import { UsersCollection, BookingSlotsCollection, BookingSlotsSubscriptionCollection } from "../../../adapters/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
-import { Date as DateObject } from "../../models/date";
-import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
-import { Salon } from "../../models/salon";
-import { getBookingSlotsFilter } from "./helpers/get-booking-slots-filter";
-import { getBookingSlotsSubscriptionFilter } from "./helpers/get-booking-slots-subscription-filter";
-import { User } from "../../models/user";
+import { Date as DateObject } from "../../../types/date";
+import { nativeDateToDateObject } from "../../../helpers/date/native-date-to-date-object";
+import { Salon } from "../../../types/salon";
+import { getBookingSlotsFilter } from "../helpers/get-booking-slots-filter";
+import { getBookingSlotsSubscriptionFilter } from "../helpers/get-booking-slots-subscription-filter";
+import { User } from "../../../types/user";
+import { filterDateOptions } from "../helpers/filter-date-options";
 
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -35,13 +36,14 @@ export async function welcome(ctx: Context) {
   const dateOptions = getDateOptions({ startDate: salonZonedNow, nextDays: 60 });
 
   const selectedDate = params.date || salonZonedNow;
-  
+
   const bookingSlots = await $bookingSlots.find(getBookingSlotsFilter({
     salonId: salon._id,
     userId: params.masterId,
     serviceId: params.serviceId,
-    date: selectedDate
   })).toArray();
+
+  const filteredDateOptions = filterDateOptions(dateOptions, { bookingSlots })
 
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
@@ -66,7 +68,7 @@ export async function welcome(ctx: Context) {
   ctx.state.title = `${salon.name}`;
   ctx.body = welcomeView({
     results: results,
-    dateOptions: dateOptions,
+    dateOptions: filteredDateOptions,
     selectedDate: selectedDate ? dateToISODate(selectedDate) : null,
     mastersOptions: mastersOptions,
     selectedMaster: selectedMaster,

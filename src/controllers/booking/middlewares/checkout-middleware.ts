@@ -1,10 +1,10 @@
 import { Context } from "koa";
-import { Salon, SalonService } from "../../../models/salon";
+import { Salon, SalonService } from "../../../types/salon";
 import { parseCheckoutRequestQuery } from "../helpers/parse-checkout-request-query";
 import { BookingSlotsCollection, UsersCollection } from "../../../adapters/mongodb";
-import { User } from "../../../models/user";
-import { SessionPayload } from "../../../models/session";
-import { BookingSlot } from "../../../models/booking-slot";
+import { User } from "../../../types/user";
+import { SessionPayload } from "../../../types/session";
+import { BookingSlot } from "../../../types/booking-slot";
 
 export interface CheckoutState {
   salon?: Salon;

@@ -1,8 +1,8 @@
 import { ObjectID } from "bson";
 import { ReservationURLParams } from "../interfaces";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { ReservationsCollection } from "../../../adapters/mongodb";
-import { Reservation } from "../../../models/reservation";
+import { Reservation } from "../../../types/reservation";
 import { escape } from "../../../helpers/html";
 
 interface Props {

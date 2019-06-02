@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { content } from "../views/shared/content";
-import { User } from "../models/user";
+import { User } from "../types/user";
 
 /**
  * 
@@ -18,7 +18,7 @@ import { User } from "../models/user";
  * ctx.body === '<header>...</header><container>Hello</container>
  * ```
  */
-export async function contentMiddleware(ctx: Context, next) {
+export async function DEPRECATED_contentMiddleware(ctx: Context, next) {
   await next()
 
   const isAuthenticated = ctx.isAuthenticated ? ctx.isAuthenticated() : false;

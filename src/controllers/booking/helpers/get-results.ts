@@ -1,9 +1,9 @@
-import { stringify } from "querystring";
-import { SalonService } from "../../../models/salon";
+import { stringify, ParsedUrlQueryInput } from "querystring";
+import { SalonService } from "../../../types/salon";
 import { CheckoutURLParams } from "../interfaces";
-import { BookingSlot } from "../../../models/booking-slot";
+import { BookingSlot } from "../../../types/booking-slot";
 import { getUniqSlotsByUserId } from "./get-uniq-slots-by-user-id";
-import { DateTime } from "../../../models/date-time";
+import { DateTime } from "../../../types/date-time";
 
 interface Params {
   salonAlias: string;
@@ -68,7 +68,7 @@ export function getResults({ salonAlias, bookingSlots, services }: Params): Resu
       times: uniqSlots.map(slot => {
         const hours = slot.start.hours.toString().padStart(2, "0");
         const minutes = slot.start.minutes.toString().padStart(2, "0");
-        const queryString: CheckoutURLParams = {
+        const queryString: CheckoutURLParams & ParsedUrlQueryInput = {
           sid: slot._id.toHexString()
         }
 

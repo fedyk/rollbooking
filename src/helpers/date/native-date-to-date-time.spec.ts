@@ -1,5 +1,5 @@
 import { nativeDateToDateTime } from "./native-date-to-date-time";
-import { DateTime } from "../../models/date-time";
+import { DateTime } from "../../types/date-time";
 
 test("nativeDateToDateTime", function() {
   expect(nativeDateToDateTime(new Date("2018-12-31T23:59:59"))).toEqual({

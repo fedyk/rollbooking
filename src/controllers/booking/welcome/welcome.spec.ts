@@ -1,7 +1,5 @@
-import { parseRequestParam } from "./welcome";
 import { ObjectID } from "bson";
-
-
+import { parseRequestParam } from "./welcome";
 
 test("parseRequestParam", function () {
   expect(parseRequestParam(null)).toEqual({

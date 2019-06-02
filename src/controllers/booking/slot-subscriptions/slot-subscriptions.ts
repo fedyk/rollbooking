@@ -1,8 +1,8 @@
 import { Context } from "koa";
-import { User } from "../../../models/user";
-import { Salon } from "../../../models/salon";
+import { User } from "../../../types/user";
+import { Salon } from "../../../types/salon";
 import { toDottedObject } from "../../../helpers/to-dotted-object";
-import { BookingSlotSubscription } from "../../../models/booking-slot-subscription";
+import { BookingSlotSubscription } from "../../../types/booking-slot-subscription";
 import { parseSlotSubscriptionBody } from "../helpers/parse-slot-subscription-body";
 import { BookingSlotsSubscriptionCollection } from "../../../adapters/mongodb";
 import { getBookingSlotsSubscriptionFilter } from "../helpers/get-booking-slots-subscription-filter";

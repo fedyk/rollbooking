@@ -1,7 +1,5 @@
 stages:
   - build
-  - test
-  - deploy
 
 build:
   stage: build
@@ -18,28 +16,8 @@ build:
   script:
    - node -v
    - npm -v
-   - node scripts/packages/install.js
-   - node scripts/packages/test.js
+   - node scripts/packages/run.js install
+   - node scripts/packages/run.js test
    - npm install
    - npm run build
    - npm run test
-
-deploy:
-  stage: deploy
-  image: node:lts
-  stage: deploy
-  script:
-    - node -v
-    - npm -v
-    - node scripts/packages/install.js
-    - NODE_ENV=production node scripts/packages/build.js
-    - npm install
-    - NODE_ENV=production npm run build
-    - echo "Install ryby-dev & gem#dpl"
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
-    - gem install dpl
-    - echo "Deploy to heroku"
-    - dpl --provider=heroku --app=rollbooking --skip-cleanup --api-key=$HEROKU_ROLLBOOKING_API_KEY
-  only:
-    - master

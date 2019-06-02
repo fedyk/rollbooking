@@ -30,8 +30,6 @@ interface Props {
 }
 
 export const welcomeView = (props: Props) => `
-<div class="pl-3 pr-3 pb-2 bg-dark text-white text-center">Salon Name</div>
-
 <div class="p-3 bg-white border-bottom mb-3">
   <form method="get" action="">
 

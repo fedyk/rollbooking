@@ -1,15 +1,18 @@
+import { format } from "date-fns"
 import { SelectOption } from "../../../helpers/form";
 import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
-import { Date as DateObject } from "../../../models/date";
+import { Date as DateObject } from "../../../types/date";
 import { dateObjectToNativeDate } from "../../../helpers/date/date-object-to-native-date";
-import { BookingSlot } from "../../../models/booking-slot";
 
 interface Options {
   startDate: DateObject;
   nextDays: number
 }
 
-export function getDateOptions({ startDate, nextDays }: Options): SelectOption[] {
+export function getDateOptions({
+  startDate,
+  nextDays
+}: Options): SelectOption[] {
   const date = dateObjectToNativeDate(startDate);
   const options: SelectOption[] = [];
 
@@ -18,7 +21,7 @@ export function getDateOptions({ startDate, nextDays }: Options): SelectOption[]
 
     options.push({
       value: optionValue,
-      text: optionValue,
+      text: format(date, "ddd, MMM D"),
     });
 
     date.setDate(date.getDate() + 1);
