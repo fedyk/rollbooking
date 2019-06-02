@@ -18,6 +18,7 @@ import { getBookingSlotsFilter } from "../helpers/get-booking-slots-filter";
 import { getBookingSlotsSubscriptionFilter } from "../helpers/get-booking-slots-subscription-filter";
 import { User } from "../../../types/user";
 import { filterDateOptions } from "../helpers/filter-date-options";
+import { indexBookingSlotsByDate } from "../helpers/index-booking-slots-by-date";
 
 export async function welcome(ctx: Context) {
   const salon = ctx.state.salon as Salon;
@@ -43,7 +44,9 @@ export async function welcome(ctx: Context) {
     serviceId: params.serviceId,
   })).toArray();
 
-  const filteredDateOptions = filterDateOptions(dateOptions, { bookingSlots })
+  const bookingSlotsMap = indexBookingSlotsByDate(bookingSlots);
+
+  const filteredDateOptions = filterDateOptions(dateOptions, { bookingSlots: bookingSlotsMap })
 
   const mastersOptions = getMastersOptions(salonUsers);
   const selectedMaster = getSelectedMaster(params.masterId);
@@ -51,7 +54,7 @@ export async function welcome(ctx: Context) {
   const selectedService = getSelectedService(params.serviceId);
   const results = getResults({
     salonAlias: salon.alias,
-    bookingSlots: bookingSlots,
+    bookingSlots: bookingSlotsMap.get(dateToISODate(selectedDate)),
     services,
   });
   let isSubscribed: boolean | null = null;
