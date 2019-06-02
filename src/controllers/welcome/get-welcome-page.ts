@@ -20,8 +20,6 @@ export const getWelcomePage: Middleware<State> = async (ctx): Promise<void> => {
   //   debug('user has no salons. redirect to onboarding')
   // }
 
-  ctx.state.title = "Welcome to rollbooking";
-  ctx.state.styles.push("css/welcome.css?3")
-  ctx.state.scripts.push("js/welcome.js?2")
+  ctx.state.title = "Rollbooking · Welcome";
   ctx.body = getWelcomeView();
 }
