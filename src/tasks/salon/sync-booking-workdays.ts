@@ -3,12 +3,12 @@ import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { addDay } from "../../utils/date";
 import { getBookingWorkdays } from "../../sagas/booking/get-booking-workdays";
-import { BusinessHours, SpecialHours, Salon } from "../../models/salon";
-import { Reservation } from "../../models/reservation";
+import { BusinessHours, SpecialHours, Salon } from "../../types/salon";
+import { Reservation } from "../../types/reservation";
 import { DateRange } from "../../lib/date-range";
 import { BookingWorkdaysCollection, closeClient, ReservationsCollection, SalonsCollection } from "../../adapters/mongodb";
-import { BookingWorkday } from "../../models/booking-workday";
-import { Date as DateObject } from "../../models/date";
+import { BookingWorkday } from "../../types/booking-workday";
+import { Date as DateObject } from "../../types/date";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
 
 const debug = Debug("tasks:sync-booking-workdays");

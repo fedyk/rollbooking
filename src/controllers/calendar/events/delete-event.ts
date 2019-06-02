@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { ReservationsCollection } from "../../../adapters/mongodb";
 import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";
 

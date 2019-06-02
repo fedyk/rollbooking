@@ -1,5 +1,5 @@
 
-import { Date } from "../../../models/date";
+import { Date } from "../../../types/date";
 
 interface Props {
   date: Date;

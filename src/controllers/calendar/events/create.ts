@@ -1,7 +1,7 @@
 import { Context } from "koa";
 import { ReservationsCollection } from "../../../adapters/mongodb";
-import { Salon, SalonService } from "../../../models/salon";
-import { Reservation, Status as ReservationStatus } from "../../../models/reservation";
+import { Salon, SalonService } from "../../../types/salon";
+import { Reservation, Status as ReservationStatus } from "../../../types/reservation";
 import { isoDateTimeToDateTime } from "../../../helpers/date/iso-date-time-to-date-time";
 import { reservationToEvent } from "../helpers/reservation-to-event";
 import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";

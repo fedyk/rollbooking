@@ -1,4 +1,4 @@
-import { TimeOfDay } from "../../models/time-of-day";
+import { TimeOfDay } from "../../types/time-of-day";
 
 export function nativeDateToTimeOfDay(date: Date): TimeOfDay {
   const hours = date.getHours();

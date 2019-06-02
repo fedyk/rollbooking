@@ -1,4 +1,4 @@
-import { Date } from "../../../models/date";
+import { Date } from "../../../types/date";
 import { isoDateToDateObject } from "../../../helpers/date/iso-date-to-date-object";
 
 export interface UrlParams {

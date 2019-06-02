@@ -11,12 +11,12 @@ import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
 import { UsersCollection, BookingSlotsCollection, BookingSlotsSubscriptionCollection } from "../../../adapters/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
-import { Date as DateObject } from "../../../models/date";
+import { Date as DateObject } from "../../../types/date";
 import { nativeDateToDateObject } from "../../../helpers/date/native-date-to-date-object";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { getBookingSlotsFilter } from "../helpers/get-booking-slots-filter";
 import { getBookingSlotsSubscriptionFilter } from "../helpers/get-booking-slots-subscription-filter";
-import { User } from "../../../models/user";
+import { User } from "../../../types/user";
 import { filterDateOptions } from "../helpers/filter-date-options";
 import { indexBookingSlotsByDate } from "../helpers/index-booking-slots-by-date";
 

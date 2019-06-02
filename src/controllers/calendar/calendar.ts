@@ -2,7 +2,7 @@ import { Context } from "koa";
 import { UsersCollection } from "../../adapters/mongodb";
 import { template } from "../../views/template";
 import { calendar as calendarView } from "./views/calendar";
-import { Salon } from "../../models/salon";
+import { Salon } from "../../types/salon";
 import { parseUrlParams } from "./helpers/parse-url-params";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { content } from "../../views/shared/content";

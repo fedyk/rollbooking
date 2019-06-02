@@ -1,4 +1,4 @@
-import { Date as DateObject } from "../../models/date";
+import { Date as DateObject } from "../../types/date";
 import { nativeDateToDateObject } from "./native-date-to-date-object";
 
 export function isoDateToDateObject(date: any): DateObject {

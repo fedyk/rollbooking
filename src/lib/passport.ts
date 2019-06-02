@@ -4,7 +4,7 @@ import * as Router from "koa-router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { mapGoogleProfileToUser } from "../mappers/users";
 import { UsersCollection } from "../adapters/mongodb";
-import { User } from "../models/user";
+import { User } from "../types/user";
 
 export const router = new Router()
 

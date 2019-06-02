@@ -4,12 +4,12 @@ import * as Koa from "koa";
 import * as Router from "koa-router";
 import * as bodyParser from "koa-bodyparser"
 import * as request from "supertest";
-import { Salon } from "../../../models/salon";
+import { Salon } from "../../../types/salon";
 import { createTestSalon } from "../../../tasks/salon/create-test-salon";
 import { deleteTestSalon } from "../../../tasks/salon/delete-test-salon";
 import { closeClient } from "../../../adapters/mongodb";
 import { suggest } from "./suggest";
-import { Client } from "../../../models/client";
+import { Client } from "../../../types/client";
 import { createTestClient } from "../../../tasks/salon/create-test-client";
 import { deleteTestClient } from "../../../tasks/salon/delete-test-client";
 

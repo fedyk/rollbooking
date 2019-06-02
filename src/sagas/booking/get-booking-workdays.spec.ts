@@ -1,9 +1,9 @@
 import { getBookingWorkdays, getPeriods, getDateRangeFromPeriod, getGroupedPeriodsByDayOfWeek } from "./get-booking-workdays";
-import { DayOfWeek } from "../../models/dat-of-week";
-import { TimePeriod } from "../../models/time-period";
+import { DayOfWeek } from "../../types/dat-of-week";
+import { TimePeriod } from "../../types/time-period";
 import { DateRange } from "../../lib/date-range";
-import { BookingWorkday } from "../../models/booking-workday";
-import { Date as DateObject } from "../../models/date";
+import { BookingWorkday } from "../../types/booking-workday";
+import { Date as DateObject } from "../../types/date";
 
 describe("getBookingWorkday", function () {
   it("should return booking workday", function () {

@@ -1,9 +1,9 @@
 import debugFactory from 'debug'
 import { Context } from "koa";
-import { User } from "../../models/user";
+import { User } from "../../types/user";
 import { renderer } from "../../lib/render";
-import { Salon } from "../../models/salon";
-import { DayOfWeek } from "../../models/dat-of-week";
+import { Salon } from "../../types/salon";
+import { DayOfWeek } from "../../types/dat-of-week";
 import { SalonsCollection } from "../../adapters/mongodb";
 import { ObjectID } from "bson";
 
