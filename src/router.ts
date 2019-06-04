@@ -2,7 +2,7 @@ import * as Router from 'koa-router';
 import * as passport from './lib/passport'
 
 
-import { getWelcomePage } from './controllers/welcome/get-welcome-page';
+import { getWelcomePage } from './controllers/get-welcome-page';
 import { router as bookingRouter } from './controllers/booking';
 import { router as authRouter } from './controllers/auth/router';
 import { router as onboardingRouter } from './controllers/onboarding/router';
