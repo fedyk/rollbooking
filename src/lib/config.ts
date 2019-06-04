@@ -37,27 +37,27 @@ if (!process.env.APP_KEYLIST) {
 }
 
 if (!process.env.GOOGLE_OAUTH2_CLIENT_ID) {
-  console.log('No google auth config. Set GOOGLE_OAUTH2_CLIENT_ID environment variable.');
+  console.warn('No google auth config. Set GOOGLE_OAUTH2_CLIENT_ID environment variable.');
 }
 
 if (!process.env.GOOGLE_OAUTH2_SECRET) {
-  console.log('No google auth config. Set GOOGLE_OAUTH2_SECRET environment variable.');
+  console.warn('No google auth config. Set GOOGLE_OAUTH2_SECRET environment variable.');
 }
 
 if (!process.env.GOOGLE_OAUTH2_REDIRECT_URL) {
-  console.log('No google auth config. Set GOOGLE_OAUTH2_REDIRECT_URL environment variable.');
+  console.warn('No google auth config. Set GOOGLE_OAUTH2_REDIRECT_URL environment variable.');
 }
 
 if (!process.env.GOOGLE_API_CLIENT_ID) {
-  console.log('No google auth config. Set GOOGLE_API_CLIENT_ID environment variable.');
+  console.warn('No google auth config. Set GOOGLE_API_CLIENT_ID environment variable.');
 }
 
 if (!process.env.GOOGLE_API_CLIENT_SECRET) {
-  console.log('No google auth config. Set GOOGLE_API_CLIENT_SECRET environment variable.');
+  console.warn('No google auth config. Set GOOGLE_API_CLIENT_SECRET environment variable.');
 }
 
 if (!process.env.GOOGLE_API_REDIRECT_URIS) {
-  console.log('No google auth config. Set GOOGLE_API_REDIRECT_URIS environment variable.');
+  console.warn('No google auth config. Set GOOGLE_API_REDIRECT_URIS environment variable.');
 }
 
 export const config: Config = {
