@@ -4,7 +4,7 @@ import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 import filesize from "rollup-plugin-filesize";
 import progress from "rollup-plugin-progress";
-import visualizer from "rollup-plugin-visualizer";
+// import visualizer from "rollup-plugin-visualizer";
 import postcss from "rollup-plugin-postcss";
 import replace from "rollup-plugin-replace";
 import pkg from "./package.json";
@@ -30,8 +30,19 @@ export default {
 
     commonjs({
       namedExports: {
-        "node_modules/react-dom/index.js": ["render"],
-        "node_modules/react/index.js": ["createElement", "PureComponent", "Fragment", "createRef", "createContext"],
+        "node_modules/react-dom/index.js": [
+          "render",
+          "findDOMNode"
+        ],
+        "node_modules/react/index.js": [
+          "createRef",
+          "createContext",
+          "createElement",
+          "Element",
+          "Fragment",
+          "Component",
+          "PureComponent",
+        ],
       }
     }),
 
@@ -47,10 +58,10 @@ export default {
     minimize && terser(),
 
     // Logs the filesize in cli when done
-    // filesize(),
+    filesize(),
 
     // Progress while building
-    // progress({ clearLine: false }),
+    progress({ clearLine: false }),
 
     // Generates a statistics page
     // visualizer({
