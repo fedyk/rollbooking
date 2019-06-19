@@ -55,8 +55,10 @@ export async function createTestSalons(timeZones = DEFAULT_TIME_ZONES) {
     const salonHash = Math.round(Math.random() * 1000);
 
     const salon: Salon = {
+      _version: "v2",
       alias: `salon-${salonHash}`,
       name: `Salon ${salonHash} ${timezone}`,
+      description: "",
       timezone: timezone,
       employees: {
         users: [{

@@ -12,6 +12,7 @@ interface Props {
 //     < /div>
 export const content = ({ body, isAuthenticated, userName }: Props) => `
 <div class="mb-3 bg-white border-bottom shadow-sm">
+
   <div class="container d-flex flex-column flex-md-row align-items-center p-2">
     <a class="my-0 mr-md-auto" href="/" title="Home">
       <svg width="120" height="23" viewBox="0 0 120 23" fill="none" xmlns="http://www.w3.org/2000/svg">

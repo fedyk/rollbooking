@@ -6,7 +6,7 @@ import { reservation } from "./reservation/reservation";
 import { createReservation } from "./checkout/create_reservation";
 import { slotSubscriptions } from "./slot-subscriptions/slot-subscriptions";
 
-import { templateMiddleware } from "../../middlewares/template-middleware";
+import { templateMiddleware } from "../../middleware/template-middleware";
 import { checkoutMiddleware } from "./middlewares/checkout-middleware";
 import { bookingContentMiddleware } from "./middlewares/booking-template-middleware";
 

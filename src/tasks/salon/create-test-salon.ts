@@ -32,8 +32,10 @@ export async function createTestSalon(): Promise<Salon> {
   const { insertedId: userId2 } = await $users.insertOne(user2);
 
   const salon: Salon = {
+    _version: "v2",
     alias: `test-salon-${randomId}`,
     name: `Test Salon`,
+    description: "",
     timezone: "Europe/Berlin",
     employees: {
       users: [{

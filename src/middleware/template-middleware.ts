@@ -16,11 +16,13 @@ import { ParameterizedContext } from "koa";
  */
 export async function templateMiddleware(ctx: ParameterizedContext<State>, next) {
   ctx.state.scripts = [
-    "/packages/bootstrap/bootstrap.js"
+    "/js/jquery-3.3.1.slim.js?1",
+    "/js/popper.js?1",
+    "/js/bootstrap.js?1",
   ];
 
   ctx.state.styles = [
-    "/packages/bootstrap/bootstrap.css"
+    "/css/bootstrap.css?1"
   ];
 
   ctx.state.title = "Rollbooking";
@@ -37,6 +39,8 @@ export async function templateMiddleware(ctx: ParameterizedContext<State>, next)
     userName: userName,
     body: ctx.body
   })
+
+  ctx.response.type = "html";
 
   ctx.body = template({
     title: ctx.state.title,

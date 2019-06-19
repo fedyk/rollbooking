@@ -2,15 +2,15 @@
  * - in [1, 2], v => `${v} `
  * - out "1 2 "
  */
-export function stringMapJoin<T>(items: T[], render: (item: T, i?: number) => string): string {
+export function stringMapJoin<T>(items: T[] | IterableIterator<T>, render: (item: T, i?: number) => string): string {
   let result = "";
-  const len = items.length;
-
-  for (let i = 0; i < len; i++) {
-    result += render(items[i], i);
+  let index = 0;
+  
+  
+  for(let item of items) {
+    result += render(item, index);
+    index = index + 1;
   }
 
   return result;
 }
-
-export const $$ = stringMapJoin;

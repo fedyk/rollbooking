@@ -26,6 +26,8 @@ export async function createSalon(ctx: Context): Promise<any> {
 
   try {
     const salonData: Salon = {
+      _version: "v2",
+      description: "",
       alias: "..",
       regularHours: {
         periods: [{

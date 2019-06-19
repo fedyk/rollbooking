@@ -9,7 +9,7 @@ export interface SalonState {
   salon: Salon
 }
 
-export async function salonAliasMiddleware(ctx: Context, next) {
+export async function DEPRECATED_salonAliasMiddleware(ctx: Context, next) {
   const alias: string = `${ctx.params.alias || ""}`.trim();
 
   ctx.assert(alias, 404, "Page doesn't exist");

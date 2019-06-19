@@ -3,9 +3,11 @@ import { SpecialHourPeriod } from "./special-hour-period";
 import { ObjectID } from "bson";
 
 export interface Salon {
-  _id?: ObjectID
+  _version: "v2";
+  _id?: ObjectID;
   alias: string;
   name: string;
+  description: string;
   timezone: string;
   employees: SalonEmployees;
   services: SalonServices;

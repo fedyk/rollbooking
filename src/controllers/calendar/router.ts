@@ -6,7 +6,7 @@ import { update } from './events/update';
 import { deleteEvent } from './events/delete-event';
 import { quickCreate } from './clients/quick-create';
 import { suggest } from './clients/suggest';
-import { templateMiddleware } from '../../middlewares/template-middleware';
+import { templateMiddleware } from '../../middleware/template-middleware';
 
 export const router = new Router<any, any>();
 
