@@ -12,16 +12,21 @@ interface Props {
 export function getSalonProfileView(props: Props) {
   return /*html*/`<div class="card border-0 shadow-sm mb-3">
     <div class="card-body">
-      <h6 class="mb-0">${escape(props.salon.name)}</h6>
-      <div class="text-muted">Barbershop</div>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h6 class="mb-0">${escape(props.salon.name)}</h6>
+          <div class="text-muted">Barbershop</div>
+        </div>
+        <a class="btn btn-primary" href="/s/${props.salon.alias}/book">Book a Visit</a>
+      </div>
     </div>
   </div>
 
   <div class="card border-0 shadow-sm mb-3">
     <div class="card-header bg-transparent">Information</div>
     <div class="card-body">
-      ${props.salon.description ? `<p class="card-text">${escape(props.salon.description)}</p>` : ``}
-      <p class="card-text">${getSalonOpenHours(props.salon.regularHours)}</p>
+      ${props.salon.description ? /*html*/`<p class="card-text">${escape(props.salon.description)}</p>` : ``}
+      <div class="card-text">${getSalonOpenHours(props.salon.regularHours)}</div>
     </div>
   </div>
 
@@ -34,7 +39,7 @@ export function getSalonProfileView(props: Props) {
             <h6 class="mb-1">List group item heading</h6>
             <h6>${service.price}</h6>
           </div>
-          <div>${escape(service.description)}</div>
+          ${service.description && /*html*/`<div>${escape(service.description)}</div>`}
         </div>
       `)}
     </div>
@@ -45,7 +50,7 @@ export function getSalonProfileView(props: Props) {
 function getSalonOpenHours(regularHours: BusinessHours): string {
   const periodsByOpenDay = indexPeriodsByOpenDay(regularHours.periods).entries();
 
-  return `<table class="table table-borderless">
+  return `<table class="table table-borderless mb-0">
     <tbody>
       ${stringMapJoin(periodsByOpenDay, ([dayOfWeek, periods]) => `
         <tr>
