@@ -1,6 +1,6 @@
 import { Middleware } from 'koa';
-import { SalonState } from './salon-middleware';
-import { getSalonProfileView } from './get-salon-profile-view';
+import { SalonState } from '../middleware/salon-middleware';
+import { getSalonProfileView } from '../views/get-salon-profile';
 
 export const getSalonProfile: Middleware<SalonState> = async (ctx): Promise<void> => {
   // if (ctx.isAuthenticated()) {

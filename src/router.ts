@@ -12,7 +12,8 @@ import { router as calendarRouter } from './controllers/calendar/router';
 import { DEPRECATED_salonAliasMiddleware } from './middleware/salon-alias-middleware';
 import { State } from './types/app/state';
 import { templateMiddleware } from './middleware/template-middleware';
-import { salonRouter } from './controllers/salon/salon-router';
+import { salonAliasMiddleware } from './middleware/salon-middleware';
+import { getSalonProfile } from './controllers/get-salon-profile';
 
 export const router = new Router<State, any>();
 
@@ -23,6 +24,6 @@ router.get('/', templateMiddleware, getWelcomePage)
   .use('/salons', salonsRouter.routes(), salonsRouter.allowedMethods())
   .use('/auth', passport.router.routes());
 
-router.use("/s", salonRouter.routes(), salonRouter.allowedMethods());
+router.get("/s/:alias", templateMiddleware, salonAliasMiddleware, getSalonProfile);
 router.use("/:alias/booking", DEPRECATED_salonAliasMiddleware, bookingRouter.routes(), bookingRouter.allowedMethods());
 router.use("/:alias/calendar", DEPRECATED_salonAliasMiddleware, calendarRouter.routes(), calendarRouter.allowedMethods());
