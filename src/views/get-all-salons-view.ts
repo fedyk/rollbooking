@@ -1,13 +1,12 @@
-import { Salon } from "../../types/salon";
-import { stringMapJoin } from "../../helpers/string-map-join";
-import { attrs, escape } from "../../helpers/html";
+import { Salon } from "../types/salon";
+import { attrs, escape } from "../helpers/html";
+import { stringMapJoin } from "../helpers/string-map-join";
 
 interface Props {
   salons: Salon[]
 }
 
-export const salonsView = (props: Props) => `
-
+export const getAllSalonView = (props: Props) => `
   <div class="card">
     <div class="card-header bg-transparent">Salons</div>
     <ul class="list-group list-group-flush">
