@@ -17,6 +17,7 @@ export async function createTestClient(options: Options) {
   const randomId = Math.round(Math.random() * 1000)
 
   const client: Client = {
+    _version: "v1",
     salonId,
     userId,
     name: options.name || `Test Client ${randomId}`,

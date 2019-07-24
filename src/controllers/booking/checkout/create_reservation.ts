@@ -49,6 +49,8 @@ export async function createReservation(ctx: CheckoutContext, next) {
       const { ops: [
         insertedClient
       ] } = await $clients.insertOne({
+        _version: "v1",
+        salonId: salon._id,
         userId: null,
         email: email,
         name: name,
@@ -69,6 +71,8 @@ export async function createReservation(ctx: CheckoutContext, next) {
 
     if (!client) {
       const { ops: [insertedClient] } = await $clients.insertOne({
+        _version: "v1",
+        salonId: salon._id,
         userId: user._id,
         email: user.email,
         name: user.name,
