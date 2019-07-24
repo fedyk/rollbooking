@@ -24,7 +24,6 @@ app.use(bodyParser())
 app.use(middleware())
 app.use(session(sessionConfig, app))
 app.use(serve(join(__dirname, "../public")))
-app.use(serve(join(__dirname, "../dist/packages")))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(router.routes());
