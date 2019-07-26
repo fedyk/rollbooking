@@ -6,8 +6,8 @@ module.exports = {
 		"**/*.(test|spec).(js|ts)"
 	],
 	"transform": {
-    "^.+\\.ts?$": "ts-jest"
-  },
+		"^.+\\.ts?$": "ts-jest"
+	},
 	"testEnvironment": "node",
 	"moduleFileExtensions": [
 		"ts",
@@ -16,5 +16,5 @@ module.exports = {
 		"jsx",
 		"json",
 		"node"
-	],
+	]
 };

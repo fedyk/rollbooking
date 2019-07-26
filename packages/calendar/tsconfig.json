@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "jsx": "react",
-    "sourceMap": true,
-    "target": "es2015"
-  }
-}

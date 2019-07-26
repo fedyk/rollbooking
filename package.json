@@ -1,11 +1,10 @@
 {
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "node": "10.x"
   },
   "dependencies": {
-    "@types/koa-session": "5.10.1",
     "date-fns": "^1.30.1",
     "dotenv": "8.0.0",
     "googleapis": "41.0.1",
@@ -30,7 +29,8 @@
     "@types/koa-bodyparser": "5.0.2",
     "@types/koa-passport": "4.0.2",
     "@types/koa-router": "7.0.42",
-    "@types/mongodb": "3.1.28",
+    "@types/koa-session": "5.10.1",
+    "@types/mongodb": "3.1.30",
     "@types/node": "12.6.8",
     "@types/nunjucks": "3.1.1",
     "@types/supertest": "2.0.8",
@@ -41,18 +41,13 @@
   },
   "scripts": {
     "build": "tsc",
-    "postinstall": "node scripts/packages/run.js install",
-    "test": "jest --coverage --verbose --detectOpenHandles",
+    "test": "jest",
     "test:watch": "jest --watch",
     "watch": "tsc --watch",
-    "rimraf:dist": "rimraf dist",
-    "start": "node dist/server",
-    "dev": "nodemon --inspect ./dist/server.js  --watch ./dist",
-    "heroku-postbuild": "npm run build && node scripts/packages/run.js run build"
+    "start": "node ./dist/server",
+    "dev": "nodemon --inspect ./dist/server  --watch ./dist"
   },
   "cacheDirectories": [
-    "node_modules",
-    "packages/bootstrap/node_modules",
-    "packages/calendar/node_modules"
+    "node_modules"
   ]
 }

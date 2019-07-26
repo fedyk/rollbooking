@@ -1,14 +1,1 @@
-# rollbooking
-
-```
-npm run watch
-
-npm run build
-
-npm run test
-
-npm run dev
-
-npm run start
-
-```
+# Rollbooking - fast, modern, powerful booking system for barbershops

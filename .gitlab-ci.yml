@@ -12,12 +12,9 @@ build:
   cache:
     paths:
       - node_modules/
-      - packages/calendar/node_modules/
   script:
    - node -v
    - npm -v
-   - node scripts/packages/run.js install
-   - node scripts/packages/run.js test
    - npm install
    - npm run build
    - npm run test

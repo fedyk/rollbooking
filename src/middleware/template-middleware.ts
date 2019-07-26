@@ -1,4 +1,3 @@
-import { Context } from "../types/app/context";
 import { template } from "../views/template";
 import { content } from "../views/shared/content";
 import { State } from "../types/app/state";
