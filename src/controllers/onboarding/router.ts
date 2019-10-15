@@ -1,4 +1,4 @@
-const Router = require('koa-router');
+const Router = require('@koa/router');
 const { onboarding } = require('./index')
 const { createSalon } = require('./create-salon')
 

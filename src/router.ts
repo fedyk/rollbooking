@@ -1,10 +1,11 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import * as passport from './lib/passport'
 
 import { router as bookingRouter } from './controllers/booking';
 import { router as authRouter } from './controllers/auth/router';
 import { router as onboardingRouter } from './controllers/onboarding/router';
 import { router as settingsRouter } from './controllers/settings/router';
+import { router as webRouter } from './web/router';
 
 import { DEPRECATED_salonAliasMiddleware } from './middleware/salon-alias-middleware';
 import { State } from './types/app/state';
@@ -25,6 +26,7 @@ router.get('/', templateMiddleware, getWelcomePage)
   .get("/s/:alias/settings", templateMiddleware, salonAliasMiddleware, getSalonGeneralSettings)
 
   .use('/', authRouter.routes(), authRouter.allowedMethods())
+  .use('/', webRouter.routes(), webRouter.allowedMethods())
   .use('/onboarding', passport.onlyAuthenticated, onboardingRouter.routes(), onboardingRouter.allowedMethods())
   .use('/settings', passport.onlyAuthenticated, settingsRouter.routes(), settingsRouter.allowedMethods())
   .use("/:alias/booking", DEPRECATED_salonAliasMiddleware, bookingRouter.routes(), bookingRouter.allowedMethods())

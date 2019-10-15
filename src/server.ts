@@ -2,10 +2,10 @@ import * as Koa from "koa";
 import { join } from "path";
 import * as serve from "koa-static";
 import * as session from "koa-session";
+import * as passport from "koa-passport";
 import { config } from "./lib/config";
 import { addFilter, middleware } from "./lib/render"
 import { config as sessionConfig } from "./lib/session"
-import * as passport from "./lib/passport"
 import * as bodyParser from "koa-bodyparser"
 import { renderFilters } from "./lib/render-filters"
 import { router } from "./router";

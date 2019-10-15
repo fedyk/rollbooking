@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
 import * as passport from "koa-passport";
-import * as Router from "koa-router";
+import * as Router from "@koa/router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { mapGoogleProfileToUser } from "../mappers/users";
 import { UsersCollection } from "../adapters/mongodb";
@@ -32,6 +32,17 @@ router.get('/logout', ctx => {
 export const initialize = () => passport.initialize();
 export const session = () => passport.session();
 export const onlyAuthenticated = async (ctx, next) => !ctx.isAuthenticated() ? ctx.redirect('/login') : next()
+
+interface SelectParam<Context> {
+  guest: (ctx: Context) => void
+  loggedIn: (ctx: Context) => void
+}
+
+export function select<Context = any>(params: SelectParam<Context>) {
+  return function(ctx: Context) {
+    return (ctx as any).isAuthenticated() ? params.loggedIn(ctx) : params.guest(ctx)
+  }
+}
 
 async function serializeUser(user: User, done) {
   done(null, user._id.toHexString());
