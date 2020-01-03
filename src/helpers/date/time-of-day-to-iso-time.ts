@@ -1,4 +1,4 @@
-import { TimeOfDay } from "../../types/time-of-day";
+import { TimeOfDay } from "../../base/types/time-of-day";
 
 export function timeOfDayToISOTime(time: TimeOfDay): string {
   const hours = time.hours.toString().padStart(2, "0");

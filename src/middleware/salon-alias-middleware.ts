@@ -1,7 +1,7 @@
 import { Context } from "koa";
 import Debug from "debug";
-import { SalonsCollection } from "../adapters/mongodb";
-import { Salon } from "../types/salon";
+import { SalonsCollection_DEPRECATED } from "../base/db/mongodb";
+import { Salon } from "../base/types/salon";
 
 const debug = Debug("app:salon-alias-middleware")
 
@@ -18,7 +18,7 @@ export async function DEPRECATED_salonAliasMiddleware(ctx: Context, next) {
 
   debug("find a salon by alias");
 
-  const $salons = await SalonsCollection();
+  const $salons = await SalonsCollection_DEPRECATED();
   const salon = await $salons.findOne({ alias });
 
   debug("check if salon exist");

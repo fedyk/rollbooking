@@ -1,5 +1,5 @@
-import { TimePeriod } from "../../types/time-period";
-import { DayOfWeek } from "../../types/dat-of-week";
+import { TimePeriod } from "../../base/types/time-period";
+import { DayOfWeek } from "../../base/types/dat-of-week";
 
 export function indexPeriodsByOpenDay(periods: TimePeriod[]): Map<DayOfWeek, TimePeriod[]> {
   const map = new Map<DayOfWeek, TimePeriod[]>();

@@ -2,9 +2,9 @@ import { ObjectID } from "bson";
 import * as passport from "koa-passport";
 import * as Router from "@koa/router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { mapGoogleProfileToUser } from "../mappers/users";
-import { UsersCollection } from "../adapters/mongodb";
-import { User } from "../types/user";
+import { mapGoogleProfileToUser } from "../mappers_DEPRECATED/users";
+import { UsersCollection_DEPRECATED } from "../base/db/mongodb";
+import { User } from "../base/types/user";
 
 export const router = new Router()
 
@@ -49,7 +49,7 @@ async function serializeUser(user: User, done) {
 }
 
 async function deserializeUser(id: number, done) {
-  const $users = await UsersCollection();
+  const $users = await UsersCollection_DEPRECATED();
 
   if (!ObjectID.isValid(id)) {
     return done(new Error("User id is not valid ObjectID"))
@@ -69,7 +69,7 @@ async function deserializeUser(id: number, done) {
 
 async function passportGoogleStrategy(accessToken, refreshToken, profile, done: (err: Error, user: User) => void) {
   try {
-    const $user = await UsersCollection();
+    const $user = await UsersCollection_DEPRECATED();
 
     let user = await $user.findOne({
       googleId: profile.id

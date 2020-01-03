@@ -1,8 +1,8 @@
 import Debug from "debug";
 import { Middleware } from "koa";
-import { SalonsCollection } from "../adapters/mongodb";
-import { Salon } from "../types/salon";
-import { State } from "../types/app/state";
+import { SalonsCollection_DEPRECATED } from "../base/db/mongodb";
+import { Salon } from "../base/types/salon";
+import { State } from "../base/types/app/state";
 
 const debug = Debug("app:salon")
 
@@ -23,7 +23,7 @@ export const salonAliasMiddleware: Middleware<SalonState> = async (ctx, next): P
 
   debug("find a salon by alias");
 
-  const $salons = await SalonsCollection();
+  const $salons = await SalonsCollection_DEPRECATED();
   const salon = await $salons.findOne({ alias });
 
   debug("check if salon exist");

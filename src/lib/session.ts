@@ -1,18 +1,18 @@
-import { SessionCollection } from "../adapters/mongodb";
+import { SessionCollection_DEPRECATED } from "../base/db/mongodb";
 
 /**
  * Functions for external storage
  * https://github.com/koajs/session#external-session-stores
  */
 export async function get(key, maxAge, { rolling }) {
-  const $sessions = await SessionCollection();
+  const $sessions = await SessionCollection_DEPRECATED();
   const session = await $sessions.findOne({ _id: key });
 
   return session ? session.payload : {};
 }
 
 export async function set(key: string, payload, maxAge, { rolling, changed }) {
-  const $sessions = await SessionCollection();
+  const $sessions = await SessionCollection_DEPRECATED();
   const filter = { _id: key };
   const update = {
     $set: {
@@ -29,7 +29,7 @@ export async function set(key: string, payload, maxAge, { rolling, changed }) {
 }
 
 export async function destroy(key) {
-  const $sessions = await SessionCollection();
+  const $sessions = await SessionCollection_DEPRECATED();
 
   await $sessions.deleteOne({
     _id: key

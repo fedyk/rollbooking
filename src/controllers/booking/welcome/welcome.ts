@@ -8,15 +8,15 @@ import { getSelectedService } from "../helpers/get-selected-service";
 import { getResults } from "../helpers/get-results";
 import { Context } from "koa";
 import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
-import { UsersCollection, BookingSlotsCollection, BookingSlotsSubscriptionCollection } from "../../../adapters/mongodb";
+import { UsersCollection_DEPRECATED, BookingSlotsCollection_DEPRECATED, BookingSlotsSubscriptionCollection_DEPRECATED } from "../../../base/db/mongodb";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
-import { Date as DateObject } from "../../../types/date";
+import { Date as DateObject } from "../../../base/types/date";
 import { nativeDateToDateObject } from "../../../helpers/date/native-date-to-date-object";
-import { Salon } from "../../../types/salon";
+import { Salon } from "../../../base/types/salon";
 import { getBookingSlotsFilter } from "../helpers/get-booking-slots-filter";
 import { getBookingSlotsSubscriptionFilter } from "../helpers/get-booking-slots-subscription-filter";
-import { User } from "../../../types/user";
+import { User } from "../../../base/types/user";
 import { filterDateOptions } from "../helpers/filter-date-options";
 import { indexBookingSlotsByDate } from "../helpers/index-booking-slots-by-date";
 
@@ -25,8 +25,8 @@ export async function welcome(ctx: Context) {
   const isAuthenticated = ctx.isAuthenticated();
   const params = parseRequestParam({ ...ctx.params, ...ctx.query });
 
-  const $users = await UsersCollection();
-  const $bookingSlots = await BookingSlotsCollection();
+  const $users = await UsersCollection_DEPRECATED();
+  const $bookingSlots = await BookingSlotsCollection_DEPRECATED();
 
   const usersIds = salon.employees.users.map(v => v.id);
   const salonUsers = await $users.find({ _id: { $in: usersIds } }).toArray();
@@ -61,7 +61,7 @@ export async function welcome(ctx: Context) {
 
   if (results.length === 0 && isAuthenticated) {
     const user = ctx.state.user as User;
-    const $bookingSlotsSubscription = await BookingSlotsSubscriptionCollection()
+    const $bookingSlotsSubscription = await BookingSlotsSubscriptionCollection_DEPRECATED()
     const filter = getBookingSlotsSubscriptionFilter({ salonId: salon._id, subscriberId: user._id, date: selectedDate, userId: params.masterId, serviceId: params.serviceId });
     const bookingSlotsSubscription = await $bookingSlotsSubscription.findOne(filter);
 

@@ -8,7 +8,7 @@ import { router as settingsRouter } from './controllers/settings/router';
 import { router as webRouter } from './web/router';
 
 import { DEPRECATED_salonAliasMiddleware } from './middleware/salon-alias-middleware';
-import { State } from './types/app/state';
+import { State } from './base/types/app/state';
 import { templateMiddleware } from './middleware/template-middleware';
 import { salonAliasMiddleware } from './middleware/salon-middleware';
 import { getAllSalon } from './controllers/get-all-salons';

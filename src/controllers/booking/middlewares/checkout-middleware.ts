@@ -1,10 +1,10 @@
 import { Context } from "koa";
-import { Salon, SalonService } from "../../../types/salon";
+import { Salon, SalonService } from "../../../base/types/salon";
 import { parseCheckoutRequestQuery } from "../helpers/parse-checkout-request-query";
-import { BookingSlotsCollection, UsersCollection } from "../../../adapters/mongodb";
-import { User } from "../../../types/user";
-import { SessionPayload } from "../../../types/session";
-import { BookingSlot } from "../../../types/booking-slot";
+import { BookingSlotsCollection_DEPRECATED, UsersCollection_DEPRECATED } from "../../../base/db/mongodb";
+import { User } from "../../../base/types/user";
+import { SessionPayload } from "../../../base/types/session";
+import { BookingSlot } from "../../../base/types/booking-slot";
 
 export interface CheckoutState {
   salon?: Salon;
@@ -35,7 +35,7 @@ export async function checkoutMiddleware(ctx: CheckoutContext, next) {
   
   ctx.assert(params.slotId, 404, "Page does not exist");
 
-  const $bookingSlots = await BookingSlotsCollection();
+  const $bookingSlots = await BookingSlotsCollection_DEPRECATED();
   const bookingSlot = await $bookingSlots.findOne({
     _id: params.slotId,
     salonId: salon._id
@@ -43,7 +43,7 @@ export async function checkoutMiddleware(ctx: CheckoutContext, next) {
 
   ctx.assert(bookingSlot, 404, "Time is already booked");
 
-  const $users = await UsersCollection();
+  const $users = await UsersCollection_DEPRECATED();
   const salonMaster = await $users.findOne({
     _id: bookingSlot.userId
   });

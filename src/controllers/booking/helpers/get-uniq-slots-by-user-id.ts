@@ -1,7 +1,7 @@
 import { ObjectID } from "bson";
-import { DateTime } from "../../../types/date-time";
+import { DateTime } from "../../../base/types/date-time";
 import { dateTimeToISODate } from "../../../helpers/date/date-time-to-iso-date";
-import { BookingSlot } from "../../../types/booking-slot";
+import { BookingSlot } from "../../../base/types/booking-slot";
 
 interface Slot extends Partial<BookingSlot> {
   start: DateTime;

@@ -1,5 +1,5 @@
-import { DayOfWeek } from "../../types/dat-of-week";
-import { TimePeriod } from "../../types/time-period";
+import { DayOfWeek } from "../../base/types/dat-of-week";
+import { TimePeriod } from "../../base/types/time-period";
 import { getDateRangeFromPeriod } from "./get-date-range-from-period";
 
 describe("getDateRangeFromPeriod", function () {

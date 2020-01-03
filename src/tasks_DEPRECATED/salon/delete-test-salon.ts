@@ -1,24 +1,24 @@
 import { ok } from "assert";
 import { ObjectID } from "bson";
 import {
-  UsersCollection,
-  SalonsCollection,
-  ReservationsCollection,
-  BookingWorkdaysCollection,
-  BookingSlotsCollection,
-  ClientsCollection,
+  UsersCollection_DEPRECATED,
+  SalonsCollection_DEPRECATED,
+  ReservationsCollection_DEPRECATED,
+  BookingWorkdaysCollection_DEPRECATED,
+  BookingSlotsCollection_DEPRECATED,
+  ClientsCollection_DEPRECATED,
   closeClient,
-} from "../../adapters/mongodb";
+} from "../../base/db/mongodb";
 
 export async function deleteTestSalon(salonId: string) {
   ok(ObjectID.isValid(salonId), "salonId argument is not valid ObjectID");
 
-  const $users = await UsersCollection();
-  const $salons = await SalonsCollection();
-  const $reservations = await ReservationsCollection();
-  const $bookingWorkdays = await BookingWorkdaysCollection();
-  const $bookingSlots = await BookingSlotsCollection();
-  const $clients = await ClientsCollection();
+  const $users = await UsersCollection_DEPRECATED();
+  const $salons = await SalonsCollection_DEPRECATED();
+  const $reservations = await ReservationsCollection_DEPRECATED();
+  const $bookingWorkdays = await BookingWorkdaysCollection_DEPRECATED();
+  const $bookingSlots = await BookingSlotsCollection_DEPRECATED();
+  const $clients = await ClientsCollection_DEPRECATED();
   const salon = await $salons.findOne({
     _id: new ObjectID(salonId)
   });

@@ -1,8 +1,8 @@
-import { Salon, BusinessHours } from '../types/salon';
+import { Salon, BusinessHours } from '../base/types/salon';
 import { escape } from '../helpers/html';
 import { stringMapJoin } from '../helpers/string-map-join';
 import { indexPeriodsByOpenDay } from '../helpers/booking/index-periods-by-open-day';
-import { DayOfWeek } from '../types/dat-of-week';
+import { DayOfWeek } from '../base/types/dat-of-week';
 import { timeOfDayToISOTime } from '../helpers/date/time-of-day-to-iso-time';
 
 interface Props {

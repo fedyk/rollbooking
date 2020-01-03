@@ -1,4 +1,4 @@
-import { DateTime } from "../../types/date-time";
+import { DateTime } from "../../base/types/date-time";
 
 export function nativeDateToDateTime(date: Date): DateTime {
   return {

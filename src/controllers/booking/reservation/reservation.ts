@@ -1,8 +1,8 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
 import { ReservationURLParams } from "../interfaces";
-import { Salon } from "../../../types/salon";
-import { ReservationsCollection } from "../../../adapters/mongodb";
+import { Salon } from "../../../base/types/salon";
+import { ReservationsCollection_DEPRECATED } from "../../../base/db/mongodb";
 import { reservationView } from "./reservation-view";
 
 export async function reservation(ctx: Context) {
@@ -11,7 +11,7 @@ export async function reservation(ctx: Context) {
 
   ctx.assert(params.reservationId, 404, "Reservation does not exist");
 
-  const $reservations = await ReservationsCollection();
+  const $reservations = await ReservationsCollection_DEPRECATED();
 
   const reservation = await $reservations.findOne({
     salonId: salon._id,
