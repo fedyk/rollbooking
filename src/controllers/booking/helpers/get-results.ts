@@ -1,9 +1,9 @@
 import { stringify, ParsedUrlQueryInput } from "querystring";
-import { SalonService } from "../../../types/salon";
+import { SalonService } from "../../../base/types/salon";
 import { CheckoutURLParams } from "../interfaces";
-import { BookingSlot } from "../../../types/booking-slot";
+import { BookingSlot } from "../../../base/types/booking-slot";
 import { getUniqSlotsByUserId } from "./get-uniq-slots-by-user-id";
-import { DateTime } from "../../../types/date-time";
+import { DateTime } from "../../../base/types/date-time";
 
 interface Params {
   salonAlias: string;

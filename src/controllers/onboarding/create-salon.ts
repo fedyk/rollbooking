@@ -1,10 +1,10 @@
 import debugFactory from 'debug'
 import { Context } from "koa";
-import { User } from "../../types/user";
+import { User } from "../../base/types/user";
 import { renderer } from "../../lib/render";
-import { Salon } from "../../types/salon";
-import { DayOfWeek } from "../../types/dat-of-week";
-import { SalonsCollection } from "../../adapters/mongodb";
+import { Salon } from "../../base/types/salon";
+import { DayOfWeek } from "../../base/types/dat-of-week";
+import { SalonsCollection_DEPRECATED } from "../../base/db/mongodb";
 import { ObjectID } from "bson";
 
 const debug = debugFactory('controller:onboarding')
@@ -64,7 +64,7 @@ export async function createSalon(ctx: Context): Promise<any> {
       updated: new Date(),
     };
 
-    const $salons = await SalonsCollection()
+    const $salons = await SalonsCollection_DEPRECATED()
 
     const insertResult = await $salons.insertOne(salonData);
 

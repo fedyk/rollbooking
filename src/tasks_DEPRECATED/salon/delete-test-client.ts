@@ -1,8 +1,8 @@
 import { ObjectID } from "bson";
-import { closeClient, ClientsCollection } from "../../adapters/mongodb";
+import { closeClient, ClientsCollection_DEPRECATED } from "../../base/db/mongodb";
 
 export async function deleteTestClient(clientId: ObjectID) {
-  const $clients = await ClientsCollection();
+  const $clients = await ClientsCollection_DEPRECATED();
   await $clients.deleteOne({
     _id: clientId
   });

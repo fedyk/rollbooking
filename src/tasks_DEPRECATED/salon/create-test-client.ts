@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
-import { Client } from "../../types/client";
-import { closeClient, ClientsCollection } from "../../adapters/mongodb";
+import { Client } from "../../base/types/client";
+import { closeClient, ClientsCollection_DEPRECATED } from "../../base/db/mongodb";
 
 interface Options {
   salonId: ObjectID,
@@ -11,7 +11,7 @@ interface Options {
 }
 
 export async function createTestClient(options: Options) {
-  const $clients = await ClientsCollection();
+  const $clients = await ClientsCollection_DEPRECATED();
   const salonId = options.salonId || null;
   const userId = options.userId || null;
   const randomId = Math.round(Math.random() * 1000)

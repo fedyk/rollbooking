@@ -1,5 +1,5 @@
 import { isoTimeToTimeOfDay } from "./iso-time-to-time-of-day";
-import { TimeOfDay } from "../../types/time-of-day";
+import { TimeOfDay } from "../../base/types/time-of-day";
 
 test("isoTimeToTimeOfDay", function() {
   expect(isoTimeToTimeOfDay("23:00")).toEqual({

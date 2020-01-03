@@ -1,8 +1,8 @@
 import { syncBookingSlots } from "./sync-booking-slots";
-import { Salon } from "../../types/salon";
+import { Salon } from "../../base/types/salon";
 import { createTestSalon } from "./create-test-salon";
 import { deleteTestSalon } from "./delete-test-salon";
-import { BookingSlotsCollection, closeClient } from "../../adapters/mongodb";
+import { BookingSlotsCollection_DEPRECATED, closeClient } from "../../base/db/mongodb";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 
 describe("syncBookingSlots", function() {
@@ -18,7 +18,7 @@ describe("syncBookingSlots", function() {
   })
 
   it("should generate booking slots for salon", async function() {
-    const $bookingSlots = await BookingSlotsCollection();
+    const $bookingSlots = await BookingSlotsCollection_DEPRECATED();
 
     await syncBookingSlots(salon._id, nativeDateToDateObject(new Date(2018, 11, 31)), nativeDateToDateObject(new Date(2018, 11, 31)));
 

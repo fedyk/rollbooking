@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
-import { closeClient, ReservationsCollection } from "../../adapters/mongodb";
-import { Reservation, Status } from "../../types/reservation";
+import { closeClient, ReservationsCollection_DEPRECATED } from "../../base/db/mongodb";
+import { Reservation, Status } from "../../base/types/reservation";
 import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
 
 interface Options {
@@ -10,7 +10,7 @@ interface Options {
 }
 
 export async function createTestReservation(options: Options) {
-  const $reservations = await ReservationsCollection();
+  const $reservations = await ReservationsCollection_DEPRECATED();
   const date = options.date || new Date();
   const start = nativeDateToDateTime(date);
   const end = nativeDateToDateTime(date);

@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { User } from '../../types/user';
+import { User } from '../../base/types/user';
 import { renderer } from '../../lib/render';
 
 export async function onboarding(ctx: Context): Promise<any> {

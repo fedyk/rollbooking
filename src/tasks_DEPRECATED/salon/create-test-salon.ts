@@ -1,11 +1,11 @@
-import { User } from "../../types/user";
-import { Salon } from "../../types/salon";
-import { DayOfWeek } from "../../types/dat-of-week";
-import { UsersCollection, SalonsCollection, closeClient } from "../../adapters/mongodb";
+import { User } from "../../base/types/user";
+import { Salon } from "../../base/types/salon";
+import { DayOfWeek } from "../../base/types/dat-of-week";
+import { UsersCollection_DEPRECATED, SalonsCollection_DEPRECATED, closeClient } from "../../base/db/mongodb";
 
 export async function createTestSalon(): Promise<Salon> {
-  const $users = await UsersCollection();
-  const $salons = await SalonsCollection();
+  const $users = await UsersCollection_DEPRECATED();
+  const $salons = await SalonsCollection_DEPRECATED();
   const randomId = Math.round(Math.random() * 1000000);
 
   const user1: User = {

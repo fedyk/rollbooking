@@ -2,13 +2,13 @@ import { Context } from "koa";
 import { ObjectID } from "bson";
 import { stringify, ParsedUrlQueryInput } from "querystring";
 import { isEmail } from "../../../utils/is-email";
-import { Salon } from "../../../types/salon";
-import { User } from "../../../types/user";
-import { Client } from "../../../types/client";
-import { SessionPayload } from "../../../types/session";
+import { Salon } from "../../../base/types/salon";
+import { User } from "../../../base/types/user";
+import { Client } from "../../../base/types/client";
+import { SessionPayload } from "../../../base/types/session";
 import { parseCheckoutRequestBody } from "../helpers/parse-checkout-request-body";
-import { syncBookingSlots } from "../../../tasks/salon/sync-booking-slots";
-import { ReservationsCollection, UsersCollection, ClientsCollection, BookingSlotsCollection } from "../../../adapters/mongodb";
+import { syncBookingSlots } from "../../../tasks_DEPRECATED/salon/sync-booking-slots";
+import { ReservationsCollection_DEPRECATED, UsersCollection_DEPRECATED, ClientsCollection_DEPRECATED, BookingSlotsCollection_DEPRECATED } from "../../../base/db/mongodb";
 import { ReservationURLParams } from "../interfaces";
 import { CheckoutContext } from "../middlewares/checkout-middleware";
 
@@ -25,7 +25,7 @@ export async function createReservation(ctx: CheckoutContext, next) {
   ctx.assert(salonMaster, 404, "Oops, something went wrong");
   ctx.assert(salonService, 400, "Invalid params");
 
-  const $clients = await ClientsCollection();
+  const $clients = await ClientsCollection_DEPRECATED();
   
 
   let client: Client;
@@ -88,7 +88,7 @@ export async function createReservation(ctx: CheckoutContext, next) {
   session.clientEmail = client.email;
   session.clientId = client._id.toHexString();
 
-  const $reservations = await ReservationsCollection();
+  const $reservations = await ReservationsCollection_DEPRECATED();
   const reservation = await $reservations.insertOne({
     salonId: salon._id,
     clientId: client._id,
@@ -103,7 +103,7 @@ export async function createReservation(ctx: CheckoutContext, next) {
 
   ctx.assert(reservation.insertedCount === 1, 500, "Internal error: Cannot create reservation");
 
-  const $bookingSlots = await BookingSlotsCollection();
+  const $bookingSlots = await BookingSlotsCollection_DEPRECATED();
 
   await $bookingSlots.deleteOne({
     _id: bookingSlot._id

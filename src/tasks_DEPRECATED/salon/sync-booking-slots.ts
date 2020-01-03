@@ -3,24 +3,24 @@ import { ok } from "assert";
 import { ObjectID } from "bson";
 import { findTimeZone, getZonedTime } from "timezone-support";
 import { addDay } from "../../utils/date";
-import { BusinessHours, SpecialHours } from "../../types/salon";
-import { Reservation } from "../../types/reservation";
+import { BusinessHours, SpecialHours } from "../../base/types/salon";
+import { Reservation } from "../../base/types/reservation";
 import { DateRange } from "../../lib/date-range";
-import { closeClient, ReservationsCollection, SalonsCollection, BookingSlotsCollection } from "../../adapters/mongodb";
-import { Date as DateObject } from "../../types/date";
+import { closeClient, ReservationsCollection_DEPRECATED, SalonsCollection_DEPRECATED, BookingSlotsCollection_DEPRECATED } from "../../base/db/mongodb";
+import { Date as DateObject } from "../../base/types/date";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
 import { getBookingSlots } from "../../helpers/booking/get-booking-slots";
 import { dateTimeToISODate } from "../../helpers/date/date-time-to-iso-date";
-import { BookingSlot } from "../../types/booking-slot";
+import { BookingSlot } from "../../base/types/booking-slot";
 import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native-date";
 import { dateToISODate } from "../../helpers/date/date-to-iso-date";
 
 const debug = Debug("tasks:sync-booking-slots");
 
 export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject = null, endDate: DateObject = null) {
-  const $salons = await SalonsCollection();
-  const $bookingsSlots = await BookingSlotsCollection();
-  const $reservations = await ReservationsCollection();
+  const $salons = await SalonsCollection_DEPRECATED();
+  const $bookingsSlots = await BookingSlotsCollection_DEPRECATED();
+  const $reservations = await ReservationsCollection_DEPRECATED();
   const salon = await $salons.findOne({ _id: salonId });
 
   ok(salon, `Cannot find salon by id=${salonId.toHexString()}`);

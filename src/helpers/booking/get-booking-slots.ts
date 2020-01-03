@@ -1,10 +1,10 @@
 import { addDay } from "../../utils/date";
 import { DateRange } from "../../lib/date-range";
-import { DateTime } from "../../types/date-time";
-import { DayOfWeek } from "../../types/dat-of-week";
-import { TimePeriod } from "../../types/time-period";
-import { Date as DateObject } from "../../types/date";
-import { BusinessHours, SpecialHours } from "../../types/salon";
+import { DateTime } from "../../base/types/date-time";
+import { DayOfWeek } from "../../base/types/dat-of-week";
+import { TimePeriod } from "../../base/types/time-period";
+import { Date as DateObject } from "../../base/types/date";
+import { BusinessHours, SpecialHours } from "../../base/types/salon";
 import { nativeDateToDateTime } from "../date/native-date-to-date-time";
 import { dateObjectToNativeDate } from "../date/date-object-to-native-date";
 

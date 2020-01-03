@@ -1,7 +1,7 @@
-import { Context } from '../types/app/context';
+import { Context } from '../base/types/app/context';
 import { getWelcomeView } from '../views/get-welcome-view';
 import { Middleware } from 'koa';
-import { State } from '../types/app/state';
+import { State } from '../base/types/app/state';
 
 export const getWelcomePage: Middleware<State> = async (ctx): Promise<void> => {
   // if (ctx.isAuthenticated()) {
