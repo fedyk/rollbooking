@@ -1,9 +1,10 @@
 import { Context } from '../core/types/app/context';
-import { getWelcomeView } from '../views/get-welcome-view';
+import { getWelcomeView } from './get-welcome-view';
 import { Middleware } from 'koa';
 import { State } from '../core/types/app/state';
 
 export const getWelcomePage: Middleware<State> = async (ctx): Promise<void> => {
+
   // if (ctx.isAuthenticated()) {
   //   const user = ctx.state.user as User
   //   const salons = user.employers.salons;

@@ -29,7 +29,7 @@ interface Props {
   unsubscribeUrl: string;
 }
 
-export const welcomeView = (props: Props) => `
+export const welcomeView_DEPRECATED = (props: Props) => `
 <div class="p-3 bg-white border-bottom mb-3">
   <form method="get" action="">
 

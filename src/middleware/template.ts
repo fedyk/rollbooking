@@ -14,7 +14,7 @@ import { stylesheet, script, escape } from "../helpers/html";
  * })
  * ```
  */
-export async function templateMiddleware(ctx: ParameterizedContext<State, App$Context>, next) {
+export async function template(ctx: ParameterizedContext<State, App$Context>, next) {
   ctx.state.scripts = [
     "/js/jquery.js",
     "/js/popper.js",

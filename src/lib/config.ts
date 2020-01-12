@@ -7,7 +7,7 @@ if (result.error) {
   console.warn(error.message);
 }
 
-interface Config {
+interface Config_DEPRECATED {
   PORT: string | number;
   MONGODB_URI: string;
   REDIS_URL: string;
@@ -60,7 +60,7 @@ if (!process.env.GOOGLE_API_REDIRECT_URIS) {
   console.warn('No google auth config. Set GOOGLE_API_REDIRECT_URIS environment variable.');
 }
 
-export const config: Config = {
+export const config_DEPRECATED: Config_DEPRECATED = {
   PORT: process.env.PORT || 3000,
   MONGODB_URI: process.env.MONGODB_URI || '',
   REDIS_URL: process.env.REDIS_URL || '',

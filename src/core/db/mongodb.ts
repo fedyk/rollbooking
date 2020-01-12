@@ -1,5 +1,5 @@
 import { MongoClient, Db, Collection } from "mongodb";
-import { config } from "../../lib/config";
+import { config_DEPRECATED } from "../../lib/config";
 import { User } from "../types/user";
 import { Salon } from "../types/salon";
 import { Reservation } from "../types/reservation";
@@ -9,7 +9,7 @@ import { Client } from "../types/client";
 import { Session } from "../types/session";
 import { BookingSlotSubscription } from "../types/booking-slot-subscription";
 
-const client = new MongoClient(config.MONGODB_URI, {
+const client = new MongoClient(config_DEPRECATED.MONGODB_URI, {
   useNewUrlParser: true
 });
 

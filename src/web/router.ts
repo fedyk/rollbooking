@@ -4,11 +4,11 @@ import { getLoginPage } from "./middlewares/get-login-page";
 import { select } from './../lib/passport'
 import { getLandingPage } from "./middlewares/get-landing-page";
 import { getDashboardPage } from "./middlewares/get-dashboard-page";
-import { templateMiddleware } from "../middleware/template-middleware";
+import { template } from "../middleware/template";
 
 export const router = new Router<App$Context, App$State>();
 
-router.all("welcome", templateMiddleware, select<App$Context>({
+router.all("welcome", template, select<App$Context>({
   guest: getLandingPage,
   loggedIn: getDashboardPage
 }))
