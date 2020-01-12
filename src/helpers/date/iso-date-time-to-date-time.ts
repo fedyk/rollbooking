@@ -1,4 +1,4 @@
-import { DateTime } from "../../core/types/date-time";
+import { DateTime } from "../../types/date-time";
 import { nativeDateToDateTime } from "./native-date-to-date-time";
 
 /**

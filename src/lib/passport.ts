@@ -2,9 +2,9 @@ import { ObjectID } from "bson";
 import * as passport from "koa-passport";
 import * as Router from "@koa/router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { mapGoogleProfileToUser } from "../mappers_DEPRECATED/users";
-import { UsersCollection_DEPRECATED } from "../core/db/mongodb";
-import { User } from "../core/types/user";
+import { mapGoogleProfileToUser } from "../.mappers_DEPRECATED/users";
+import { UsersCollection_DEPRECATED } from "../mongo/mongodb";
+import { User } from "../types/user";
 
 export const router = new Router()
 

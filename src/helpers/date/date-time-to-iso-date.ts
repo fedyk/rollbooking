@@ -1,4 +1,4 @@
-import { DateTime } from "../../core/types/date-time";
+import { DateTime } from "../../types/date-time";
 
 export function dateTimeToISODate(date: DateTime): string {
   const year = date.year;

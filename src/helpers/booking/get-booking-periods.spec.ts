@@ -1,6 +1,6 @@
 import { getBookingPeriods } from "./get-booking-periods";
-import { Date as DateObject } from "../../core/types/date";
-import { DayOfWeek } from "../../core/types/dat-of-week";
+import { Date as DateObject } from "../../types/date";
+import { DayOfWeek } from "../../types/dat-of-week";
 import { DateRange } from "../../lib/date-range";
 
 describe("getBookingPeriods", function () {

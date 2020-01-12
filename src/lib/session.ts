@@ -1,4 +1,4 @@
-import { SessionCollection_DEPRECATED } from "../core/db/mongodb";
+import { SessionCollection_DEPRECATED } from "../mongo/mongodb";
 
 /**
  * Functions for external storage

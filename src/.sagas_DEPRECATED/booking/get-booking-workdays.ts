@@ -1,86 +1,89 @@
-import { addDay } from "../../utils/date";
-import { DateRange } from "../../lib/date-range";
-import { DateTime } from "../../types/date-time";
-import { DayOfWeek } from "../../types/dat-of-week";
-import { TimePeriod } from "../../types/time-period";
-import { Date as DateObject } from "../../types/date";
 import { BusinessHours, SpecialHours } from "../../types/salon";
-import { nativeDateToDateTime } from "../date/native-date-to-date-time";
-import { dateObjectToNativeDate } from "../date/date-object-to-native-date";
+import { BookingWorkday, Masters, Services } from "../../types/booking-workday";
+import { TimePeriod } from "../../types/time-period";
+import { DateRange } from "../../lib/date-range";
+import { DayOfWeek } from "../../types/dat-of-week";
+import { addDay } from "../../utils/date";
+import { Date as DateObject } from "../../types/date";
+import { dateObjectToNativeDate } from "../../helpers/date/date-object-to-native-date";
+import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
+import { nativeDateToTimeOfDay } from "../../helpers/date/native-date-to-time-of-day";
 
-export interface Params {
+interface Params {
   startPeriod: DateObject;
   endPeriod: DateObject;
   regularHours: BusinessHours;
   specialHours: SpecialHours;
-  users: Array<{
+  masters: Array<{
     id: string;
   }>;
   services: Array<{
     id: number;
     duration: number;
   }>;
-  reservations: {
+  reservations: Array<{
     range: DateRange;
-    userId: string;
-  }[];
+    masterId: string;
+  }>;
+  timezone?: string;
 }
 
-export interface Slot {
-  start: DateTime;
-  end: DateTime;
-  userId: string;
-  serviceId: number;
-}
+export function getBookingWorkdays(params: Params): BookingWorkday[] {
+  const { regularHours, specialHours, startPeriod, endPeriod } = params;
 
-export function getBookingSlots({ regularHours, specialHours, startPeriod, endPeriod, users, reservations, services }: Params): Slot[] {
   const ranges = getPeriods(startPeriod, endPeriod, regularHours, specialHours);
-  const slots: Slot[] = [];
-  const usersReservedRanges = new Map<string, DateRange[]>();
 
-  reservations.forEach(reservation => {
-    if (!usersReservedRanges.has(reservation.userId)) {
-      usersReservedRanges.set(reservation.userId, [reservation.range]);
-    }
-    else {
-      usersReservedRanges.get(reservation.userId).push(reservation.range);
-    }
-  });
+  const bookingWorkdays: BookingWorkday[] = [];
 
-  ranges.forEach(range => {
-    users.forEach(user => {
-      const reservedRanges = usersReservedRanges.has(user.id) ? usersReservedRanges.get(user.id) : [];
+  for (let i = 0; i < ranges.length; i++) {
+    const range = ranges[i];
+    const masters: Masters = {};
 
-      services.forEach(service => {
-        const availableRanges = range.exclude(reservedRanges);
-        const serviceDurationInMs = service.duration * 60 * 1000;
+    for (let j = 0; j < params.masters.length; j++) {
+      const master = params.masters[j];
+      const masterReservations = params.reservations.filter(v => v.masterId === master.id);
+      const masterReservationsRanges = masterReservations.map(v => v.range);
 
-        availableRanges.forEach(function (availableRange) {
-          const times = availableRange.split(serviceDurationInMs, {
+      const masterServices: Services = {}
+
+      for (let z = 0; z < params.services.length; z++) {
+        const salonService = params.services[z];
+
+        const availableRanges = range.exclude(masterReservationsRanges);
+        const serviceRanges = availableRanges.reduce(function(result, current) {
+          const serviceDurationInMs = salonService.duration * 60 * 1000;
+          const ranges = current.split(serviceDurationInMs, {
             round: true
           });
 
           // remove last result
-          times.pop();
+          ranges.pop();
 
-          times.forEach(time => {
-            const start = nativeDateToDateTime(time);
-            time.setTime(time.getTime() + serviceDurationInMs);
-            const end = nativeDateToDateTime(time);
+          return result.concat(ranges);
+        }, ([] as Date[]));
 
-            slots.push({
-              start,
-              end,
-              userId: user.id,
-              serviceId: service.id
-            })
-          })
-        });
-      })
+        const availableTimes = serviceRanges.map(v => nativeDateToTimeOfDay(v))
+
+        masterServices[salonService.id] = {
+          availableTimes: availableTimes
+        };
+      }
+
+      masters[master.id] = {
+        services: masterServices
+      }
+    }
+
+    bookingWorkdays.push({
+      masters: masters,
+      period: {
+        start: nativeDateToDateTime(range.start),
+        end: nativeDateToDateTime(range.end)
+      }
     })
-  })
+  }
 
-  return slots;
+  return bookingWorkdays;
 }
 
 export function getPeriods(

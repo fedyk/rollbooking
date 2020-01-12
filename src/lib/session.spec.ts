@@ -3,7 +3,7 @@ import * as Koa from "koa";
 import * as session from "koa-session";
 import * as request from "supertest";
 import { config } from "./session";
-import { closeClient } from "../core/db/mongodb";
+import { closeClient } from "../mongo/mongodb";
 
 describe("session", function () {
   let cookie;

@@ -1,8 +1,8 @@
 import { addDay } from "../../utils/date";
 import { DateRange } from "../../lib/date-range";
-import { DayOfWeek } from "../../core/types/dat-of-week";
-import { Date as DateObject } from "../../core/types/date";
-import { BusinessHours, SpecialHours } from "../../core/types/salon";
+import { DayOfWeek } from "../../types/dat-of-week";
+import { Date as DateObject } from "../../types/date";
+import { BusinessHours, SpecialHours } from "../../types/salon";
 import { dateObjectToNativeDate } from "../date/date-object-to-native-date";
 import { indexPeriodsByOpenDay } from "./index-periods-by-open-day";
 import { getDateRangeFromPeriod } from "./get-date-range-from-period";
