@@ -1,4 +1,4 @@
-import { User, UserProperties } from "../base/types/user";
+import { User, UserProperties } from "../core/types/user";
 import { plus_v1 } from "googleapis";
 
 export function mapGoogleProfileToUser(

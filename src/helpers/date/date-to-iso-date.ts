@@ -1,4 +1,4 @@
-import { Date as DateObject } from "../../base/types/date";
+import { Date as DateObject } from "../../core/types/date";
 import { nativeDateToDateObject } from "./native-date-to-date-object";
 
 /**

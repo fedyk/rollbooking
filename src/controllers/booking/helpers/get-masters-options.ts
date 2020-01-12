@@ -1,5 +1,5 @@
 import { SelectOption } from "../../../helpers/form";
-import { User } from "../../../base/types/user";
+import { User } from "../../../core/types/user";
 
 export function getMastersOptions(users: User[]): SelectOption[] {
   const options: SelectOption[] = [{

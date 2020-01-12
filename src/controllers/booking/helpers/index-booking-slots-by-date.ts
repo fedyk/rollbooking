@@ -1,4 +1,4 @@
-import { BookingSlot } from "../../../base/types/booking-slot";
+import { BookingSlot } from "../../../core/types/booking-slot";
 import { dateToISODate } from "../../../helpers/date/date-to-iso-date";
 
 export function indexBookingSlotsByDate(bookingSlots: BookingSlot[]): Map<string, BookingSlot[]> {

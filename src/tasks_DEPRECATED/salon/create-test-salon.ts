@@ -1,7 +1,7 @@
-import { User } from "../../base/types/user";
-import { Salon } from "../../base/types/salon";
-import { DayOfWeek } from "../../base/types/dat-of-week";
-import { UsersCollection_DEPRECATED, SalonsCollection_DEPRECATED, closeClient } from "../../base/db/mongodb";
+import { User } from "../../core/types/user";
+import { Salon } from "../../core/types/salon";
+import { DayOfWeek } from "../../core/types/dat-of-week";
+import { UsersCollection_DEPRECATED, SalonsCollection_DEPRECATED, closeClient } from "../../core/db/mongodb";
 
 export async function createTestSalon(): Promise<Salon> {
   const $users = await UsersCollection_DEPRECATED();

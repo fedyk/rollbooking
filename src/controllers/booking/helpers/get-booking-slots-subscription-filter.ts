@@ -1,7 +1,7 @@
 import { ObjectID } from "bson";
 import { FilterQuery } from "mongodb";
-import { Date } from "../../../base/types/date";
-import { BookingSlotSubscription } from "../../../base/types/booking-slot-subscription";
+import { Date } from "../../../core/types/date";
+import { BookingSlotSubscription } from "../../../core/types/booking-slot-subscription";
 
 interface Params {
   salonId: ObjectID;

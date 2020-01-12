@@ -1,8 +1,8 @@
 import { Context } from "koa";
 import { ObjectID } from "bson";
 import { ReservationURLParams } from "../interfaces";
-import { Salon } from "../../../base/types/salon";
-import { ReservationsCollection_DEPRECATED } from "../../../base/db/mongodb";
+import { Salon } from "../../../core/types/salon";
+import { ReservationsCollection_DEPRECATED } from "../../../core/db/mongodb";
 import { reservationView } from "./reservation-view";
 
 export async function reservation(ctx: Context) {

@@ -1,8 +1,8 @@
 import Debug from "debug";
 import { Middleware } from "koa";
-import { SalonsCollection_DEPRECATED } from "../base/db/mongodb";
-import { Salon } from "../base/types/salon";
-import { State } from "../base/types/app/state";
+import { SalonsCollection_DEPRECATED } from "../core/db/mongodb";
+import { Salon } from "../core/types/salon";
+import { State } from "../core/types/app/state";
 
 const debug = Debug("app:salon")
 

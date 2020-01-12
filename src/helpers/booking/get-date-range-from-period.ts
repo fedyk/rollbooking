@@ -1,6 +1,6 @@
 import { DateRange } from "../../lib/date-range";
-import { DayOfWeek } from "../../base/types/dat-of-week";
-import { TimePeriod } from "../../base/types/time-period";
+import { DayOfWeek } from "../../core/types/dat-of-week";
+import { TimePeriod } from "../../core/types/time-period";
 
 export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
   const day = date.getDay();

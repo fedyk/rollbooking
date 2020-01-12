@@ -1,8 +1,8 @@
 import { syncBookingSlots } from "./sync-booking-slots";
-import { Salon } from "../../base/types/salon";
+import { Salon } from "../../core/types/salon";
 import { createTestSalon } from "./create-test-salon";
 import { deleteTestSalon } from "./delete-test-salon";
-import { BookingSlotsCollection_DEPRECATED, closeClient } from "../../base/db/mongodb";
+import { BookingSlotsCollection_DEPRECATED, closeClient } from "../../core/db/mongodb";
 import { nativeDateToDateObject } from "../../helpers/date/native-date-to-date-object";
 
 describe("syncBookingSlots", function() {

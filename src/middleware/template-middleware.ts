@@ -1,4 +1,4 @@
-import { State } from "../base/types/app/state";
+import { State } from "../core/types/app/state";
 import { ParameterizedContext } from "koa";
 import { App$Context } from "../web/types";
 import { stringMapJoin } from "../helpers/string-map-join";

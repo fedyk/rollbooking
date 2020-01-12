@@ -1,5 +1,5 @@
 import { SelectOption } from "../../../helpers/form";
-import { BookingSlot } from "../../../base/types/booking-slot";
+import { BookingSlot } from "../../../core/types/booking-slot";
 
 interface Options {
   bookingSlots: Map<string, BookingSlot[]>;

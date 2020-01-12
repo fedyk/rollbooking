@@ -8,7 +8,7 @@ import {
   BookingSlotsCollection_DEPRECATED,
   ClientsCollection_DEPRECATED,
   closeClient,
-} from "../../base/db/mongodb";
+} from "../../core/db/mongodb";
 
 export async function deleteTestSalon(salonId: string) {
   ok(ObjectID.isValid(salonId), "salonId argument is not valid ObjectID");

@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
-import { Client } from "../../base/types/client";
-import { closeClient, ClientsCollection_DEPRECATED } from "../../base/db/mongodb";
+import { Client } from "../../core/types/client";
+import { closeClient, ClientsCollection_DEPRECATED } from "../../core/db/mongodb";
 
 interface Options {
   salonId: ObjectID,

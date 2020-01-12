@@ -1,4 +1,4 @@
-import { TimeOfDay } from "../../base/types/time-of-day";
+import { TimeOfDay } from "../../core/types/time-of-day";
 
 export function isoTimeToTimeOfDay(time: any): TimeOfDay {
   time = (time + "").trim();

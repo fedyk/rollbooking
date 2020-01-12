@@ -2,13 +2,13 @@ import { Context } from "koa";
 import { ObjectID } from "bson";
 import { stringify, ParsedUrlQueryInput } from "querystring";
 import { isEmail } from "../../../utils/is-email";
-import { Salon } from "../../../base/types/salon";
-import { User } from "../../../base/types/user";
-import { Client } from "../../../base/types/client";
-import { SessionPayload } from "../../../base/types/session";
+import { Salon } from "../../../core/types/salon";
+import { User } from "../../../core/types/user";
+import { Client } from "../../../core/types/client";
+import { SessionPayload } from "../../../core/types/session";
 import { parseCheckoutRequestBody } from "../helpers/parse-checkout-request-body";
 import { syncBookingSlots } from "../../../tasks_DEPRECATED/salon/sync-booking-slots";
-import { ReservationsCollection_DEPRECATED, UsersCollection_DEPRECATED, ClientsCollection_DEPRECATED, BookingSlotsCollection_DEPRECATED } from "../../../base/db/mongodb";
+import { ReservationsCollection_DEPRECATED, UsersCollection_DEPRECATED, ClientsCollection_DEPRECATED, BookingSlotsCollection_DEPRECATED } from "../../../core/db/mongodb";
 import { ReservationURLParams } from "../interfaces";
 import { CheckoutContext } from "../middlewares/checkout-middleware";
 

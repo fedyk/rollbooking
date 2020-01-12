@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
-import { closeClient, ReservationsCollection_DEPRECATED } from "../../base/db/mongodb";
-import { Reservation, Status } from "../../base/types/reservation";
+import { closeClient, ReservationsCollection_DEPRECATED } from "../../core/db/mongodb";
+import { Reservation, Status } from "../../core/types/reservation";
 import { nativeDateToDateTime } from "../../helpers/date/native-date-to-date-time";
 
 interface Options {

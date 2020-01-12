@@ -1,7 +1,7 @@
 import { ObjectID } from "bson";
 import { getResults } from "./get-results";
-import { SalonService } from "../../../base/types/salon";
-import { BookingSlot } from "../../../base/types/booking-slot";
+import { SalonService } from "../../../core/types/salon";
+import { BookingSlot } from "../../../core/types/booking-slot";
 import { nativeDateToDateTime } from "../../../helpers/date/native-date-to-date-time";
 
 const services: SalonService[] = [

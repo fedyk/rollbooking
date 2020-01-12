@@ -1,10 +1,10 @@
 import { Context } from "koa";
-import { Salon, SalonService } from "../../../base/types/salon";
+import { Salon, SalonService } from "../../../core/types/salon";
 import { parseCheckoutRequestQuery } from "../helpers/parse-checkout-request-query";
-import { BookingSlotsCollection_DEPRECATED, UsersCollection_DEPRECATED } from "../../../base/db/mongodb";
-import { User } from "../../../base/types/user";
-import { SessionPayload } from "../../../base/types/session";
-import { BookingSlot } from "../../../base/types/booking-slot";
+import { BookingSlotsCollection_DEPRECATED, UsersCollection_DEPRECATED } from "../../../core/db/mongodb";
+import { User } from "../../../core/types/user";
+import { SessionPayload } from "../../../core/types/session";
+import { BookingSlot } from "../../../core/types/booking-slot";
 
 export interface CheckoutState {
   salon?: Salon;

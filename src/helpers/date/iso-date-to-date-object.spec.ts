@@ -1,4 +1,4 @@
-import { Date } from "../../base/types/date";
+import { Date } from "../../core/types/date";
 import { isoDateToDateObject } from "./iso-date-to-date-object";
 
 test("isoDateToDateObject", function() {

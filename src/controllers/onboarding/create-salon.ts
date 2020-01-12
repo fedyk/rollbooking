@@ -1,10 +1,10 @@
 import debugFactory from 'debug'
 import { Context } from "koa";
-import { User } from "../../base/types/user";
+import { User } from "../../core/types/user";
 import { renderer } from "../../lib/render";
-import { Salon } from "../../base/types/salon";
-import { DayOfWeek } from "../../base/types/dat-of-week";
-import { SalonsCollection_DEPRECATED } from "../../base/db/mongodb";
+import { Salon } from "../../core/types/salon";
+import { DayOfWeek } from "../../core/types/dat-of-week";
+import { SalonsCollection_DEPRECATED } from "../../core/db/mongodb";
 import { ObjectID } from "bson";
 
 const debug = debugFactory('controller:onboarding')

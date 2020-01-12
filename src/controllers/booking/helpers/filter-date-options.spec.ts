@@ -1,5 +1,5 @@
 import { filterDateOptions } from "./filter-date-options";
-import { BookingSlot } from "../../../base/types/booking-slot";
+import { BookingSlot } from "../../../core/types/booking-slot";
 
 test("filterDateOptions", function() {
   const bookingSlots = new Map<string, BookingSlot[]>();
