@@ -25,7 +25,7 @@ env.addGlobal('__', function(text) {
   return text;
 })
 
-export function middleware() {
+export function middleware_DEPRECATED() {
   debug('create a new middleware')
 
   return function(ctx, next) {
@@ -47,16 +47,16 @@ export function middleware() {
   }
 }
 
-export function renderer(path, locals = {}) {
+export function renderer_DEPRECATED(path, locals = {}) {
   return new Promise((resolve, reject) => {
     render(path, locals, (err, resp) => err ? reject(err) : resolve(resp))
   })
 }
 
-export function json(data: any): string {
+export function json_DEPRECATED(data: any): string {
   return JSON.stringify(data);
 }
 
-export function addFilter(name, func, async = false) {
+export function addFilter_DEPRECATED(name, func, async = false) {
   return env.addFilter(name, func, async)
 }

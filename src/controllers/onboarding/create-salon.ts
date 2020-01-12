@@ -1,7 +1,7 @@
 import debugFactory from 'debug'
 import { Context } from "koa";
 import { User } from "../../core/types/user";
-import { renderer } from "../../lib/render";
+import { renderer_DEPRECATED } from "../../lib/render";
 import { Salon } from "../../core/types/salon";
 import { DayOfWeek } from "../../core/types/dat-of-week";
 import { SalonsCollection_DEPRECATED } from "../../core/db/mongodb";
@@ -77,6 +77,6 @@ export async function createSalon(ctx: Context): Promise<any> {
 
     debug('Fail in attempt to create new salon. Details: %O', e);
 
-    ctx.body = await renderer('onboarding/index.njk', { user, error });
+    ctx.body = await renderer_DEPRECATED('onboarding/index.njk', { user, error });
   }
 }

@@ -1,6 +1,6 @@
 import { Context } from "koa";
-import { renderer } from "../../lib/render";
+import { renderer_DEPRECATED } from "../../lib/render";
 
 export async function login(ctx: Context) {
-  ctx.body = await renderer('auth/login.njk');
+  ctx.body = await renderer_DEPRECATED('auth/login.njk');
 }

@@ -4,7 +4,7 @@ import getDateMonth from '../utils/get-date-month'
 import getErrorMessage from '../utils/get-error-message'
 import { toDate, toTime } from '../utils/date'
 
-export const renderFilters = [
+export const renderFilters_DEPRECATED = [
   ['dateToLocalTime', dateToLocalTime],
   ['getDateDay', getDateDay],
   ['getDateMonth', getDateMonth],
