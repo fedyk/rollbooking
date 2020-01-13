@@ -67,7 +67,7 @@ function classes_array(val: any[], escaping) {
   for (var i = 0; i < val.length; i++) {
     className = classes(val[i]);
     if (!className) continue;
-    escapeEnabled && escaping[i] && (className = escape(className));
+    escapeEnabled && escaping[i] && (className = escape_DEPRECATE(className));
     classString = classString + padding + className;
     padding = ' ';
   }
@@ -150,7 +150,7 @@ function attr(key, val, escaped = false, terse = false) {
     }
   }
 
-  if (escaped) val = escape(val);
+  if (escaped) val = escape_DEPRECATE(val);
   return ' ' + key + '="' + val + '"';
 };
 
@@ -193,7 +193,7 @@ export function attrs(obj: object, escaped = true, terse = false) {
  */
 
 var match_html = /["&<>]/;
-export function escape(_html) {
+export function escape_DEPRECATE(_html) {
   var html = '' + _html;
   var regexResult = match_html.exec(html);
   if (!regexResult) return _html;

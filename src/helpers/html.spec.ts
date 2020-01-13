@@ -1,8 +1,8 @@
-import { escape, attrs, classes, script, stylesheet } from "./html";
+import { escape_DEPRECATE, attrs, classes, script, stylesheet } from "./html";
 
 test('html/escape', () => {
-  expect(escape("test")).toBe("test")
-  expect(escape("test <script>")).toBe("test &lt;script&gt;")
+  expect(escape_DEPRECATE("test")).toBe("test")
+  expect(escape_DEPRECATE("test <script>")).toBe("test &lt;script&gt;")
 });
 
 test('html/attrs', () => {

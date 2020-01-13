@@ -1,30 +1,33 @@
-import { State } from "../types/app/state";
-import { ParameterizedContext } from "koa";
-import { App$Context } from "../web_WIP/types";
+import Debug from "debug"
+import { Middleware } from "koa";
+import { State, Context } from "../types/app";
 import { stringMapJoin } from "../helpers/string-map-join";
-import { stylesheet, script, escape } from "../helpers/html";
+import { stylesheet, script, escape_DEPRECATE } from "../helpers/html";
+
+const debug = Debug("template")
 
 /**
  * @example
  * 
  * Code:
  * ```
- * router.get("/", templateMiddleware, async (ctx) => {
+ * router.get("/", template, async (ctx) => {
  *   ctx.body = "Hello";
  * })
  * ```
  */
-export async function template(ctx: ParameterizedContext<State, App$Context>, next) {
+
+export const template: Middleware<State, Context> = async(ctx, next) => {
   ctx.state.scripts = [
     "/js/jquery.js",
     "/js/popper.js",
     "/js/bootstrap.js",
-  ];
+  ]
 
   ctx.state.styles = [
     "/css/bootstrap.css",
     "/css/bootstrap-theme.css",
-  ];
+  ]
 
   ctx.state.title = "Rollbooking";
 
@@ -66,8 +69,8 @@ export const renderTemplate = (props: Props): string => /*html*/`
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <title>${escape(props.title)}</title>
-      <meta name="description" content="${escape(props.description)}">
+      <title>${escape_DEPRECATE(props.title)}</title>
+      <meta name="description" content="${escape_DEPRECATE(props.description)}">
       <link rel="icon" type="image/png" href="/images/favicon.png">
       <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
       ${stringMapJoin(props.styles, (href => stylesheet(href)))}
@@ -98,7 +101,7 @@ export const renderContent = ({ body, isAuthenticated, userName }: ContentProps)
     </nav>
 
     ${isAuthenticated
-    ? `<a class="btn btn-link" href="/profile">${escape(userName)}</a>`
+    ? `<a class="btn btn-link" href="/profile">${escape_DEPRECATE(userName)}</a>`
     : `<a class="btn btn-link" href="/login">Sign in</a> <a class="btn btn-outline-primary" href="/join">Sign up</a>`
   }
   </div>
