@@ -25,7 +25,7 @@ router.get('/google', passport.authenticate('google', {
 }));
 
 router.get('/logout', ctx => {
-  ctx.logout()
+  // ctx.logout()
   ctx.redirect('/login')
 });
 
