@@ -11,3 +11,5 @@ export interface State {
   scripts?: string[];
   styles?: string[];
 }
+
+export type Middleware = Koa.Middleware<State, Context>;
