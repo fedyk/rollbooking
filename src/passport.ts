@@ -1,11 +1,10 @@
-import { ObjectID } from "bson";
-// import * as Router from "@koa/router"
+// // import { ObjectID } from "bson";
 // import * as passport from "koa-passport";
-import { App$Context } from "./types";
+// import * as Router from "@koa/router";
 // import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-// import { mapGoogleProfileToUser } from "../mappers/users";
-// import { UsersCollection } from "../adapters/mongodb";
-// import { User } from "../types/user";
+// // import { mapGoogleProfileToUser } from "../.mappers_DEPRECATED/users";
+// // import { UsersCollection_DEPRECATED } from "../storage_DEPRECATED/mongodb";
+// // import { User } from "../types/user";
 
 // export const router = new Router()
 
@@ -26,44 +25,31 @@ import { App$Context } from "./types";
 // }));
 
 // router.get('/logout', ctx => {
-//   ctx.logout()
+//   // ctx.logout()
 //   ctx.redirect('/login')
 // });
 
 // export const initialize = () => passport.initialize();
 // export const session = () => passport.session();
+// export const onlyAuthenticated = async (ctx, next) => !ctx.isAuthenticated() ? ctx.redirect('/login') : next()
 
-export function onlyAuthenticated(ctx: App$Context, next: () => void) {
-  if (ctx.isAuthenticated()) {
-    return next()
-  }
-  else {
-    ctx.throw("401", new Error("You are not authorized"))
-  }
-}
+// interface SelectParam<Context> {
+//   guest: (ctx: Context) => void
+//   loggedIn: (ctx: Context) => void
+// }
 
-interface SelectParams {
-  guest: (ctx: App$Context) => void
-  authenticated: (ctx: App$Context) => void
-}
+// export function select<Context = any>(params: SelectParam<Context>) {
+//   return function(ctx: Context) {
+//     return (ctx as any).isAuthenticated() ? params.loggedIn(ctx) : params.guest(ctx)
+//   }
+// }
 
-export function select(params: SelectParams) {
-  return function(ctx: App$Context) {
-    if (ctx.isAuthenticated()) {
-      return params.authenticated(ctx)
-    }
-    else {
-      return params.guest(ctx)
-    }
-  }
-}
-
-// function serializeUser(user: User, done) {
+// async function serializeUser(user: User, done) {
 //   done(null, user._id.toHexString());
 // }
 
-// async function deSerializeUser(id: number, done) {
-//   const $users = await UsersCollection();
+// async function deserializeUser(id: number, done) {
+//   const $users = await UsersCollection_DEPRECATED();
 
 //   if (!ObjectID.isValid(id)) {
 //     return done(new Error("User id is not valid ObjectID"))
@@ -83,7 +69,7 @@ export function select(params: SelectParams) {
 
 // async function passportGoogleStrategy(accessToken, refreshToken, profile, done: (err: Error, user: User) => void) {
 //   try {
-//     const $user = await UsersCollection();
+//     const $user = await UsersCollection_DEPRECATED();
 
 //     let user = await $user.findOne({
 //       googleId: profile.id

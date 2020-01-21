@@ -9,20 +9,22 @@ import { Client } from "../types/client";
 import { Session } from "../types/session";
 import { BookingSlotSubscription } from "../types/booking-slot-subscription";
 
-const client = new MongoClient(config_DEPRECATED.MONGODB_URI, {
+const client_DEPRECATED = new MongoClient(config_DEPRECATED.MONGODB_URI, {
   useNewUrlParser: true
 });
 
 export async function getClient_DEPRECATED(): Promise<MongoClient> {
-  if (!client.isConnected()) {
-    await client.connect();
+  console.warn("call deprecated function: getClient_DEPRECATED")
+
+  if (!client_DEPRECATED.isConnected()) {
+    await client_DEPRECATED.connect();
   }
 
-  return client;
+  return client_DEPRECATED;
 }
 
-export async function closeClient() {
-  return await client.close();
+export async function closeClient_DEPRECATED() {
+  return await client_DEPRECATED.close();
 }
 
 export async function getCollection_DEPRECATED(name): Promise<Collection<any>> {

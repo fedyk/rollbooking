@@ -1,16 +1,15 @@
 import * as Koa from "koa"
 import { join } from "path"
 import * as serve from "koa-static"
-import * as session from "koa-session"
-import * as passport from "koa-passport"
+import * as koaSession from "koa-session"
 import * as bodyParser from "koa-bodyparser"
 
 import * as config from "./lib/config"
-import { config as sessionConfig } from "./lib/session"
+import * as session from "./session"
 
 import { router } from "./router";
 import { State, Context } from "./types/app";
-import * as mongo from "./mongo"
+import * as mongo from "./storage"
 
 export async function createServer() {
   const mongoClient = await mongo.createClient(config.MONGODB_URI)
@@ -21,10 +20,8 @@ export async function createServer() {
   app.context.mongoDatabase = mongoDatabase
   app.keys = config.APP_KEYS.split(";")
   app.use(bodyParser())
-  app.use(session(sessionConfig, app))
+  app.use(koaSession(session.getSessionConfig(mongoDatabase), app))
   app.use(serve(join(__dirname, "../public")))
-  // app.use(passport.initialize())
-  // app.use(passport.session())
   app.use(router.routes());
   app.listen(config.PORT, () => console.log(`app is listening PORT ${config.PORT}`))
 
@@ -35,9 +32,7 @@ export async function createServer() {
   }
 }
 
-/**
- * If process won't exit in 5s second after determination signal, force exit
- */
+/** If process won't exit in 5s second after determination signal, force exit */
 function shutdown(signal) {
   return function (err) {
     console.log(`Received ${signal} signal...`);

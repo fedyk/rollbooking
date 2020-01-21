@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 
 export function createClient(uri: string) {
   const client = new MongoClient(uri, {
-    autoReconnect: true,
+    // autoReconnect: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
   })

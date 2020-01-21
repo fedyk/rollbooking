@@ -9,9 +9,15 @@ export function getWelcomeView() {
       <div class="col-4">
         <h1>Rollbooking</h1>
         <p class="lead">Try how fast an simple rollbooking is:</p>
-        <form action="" method="post">
+        <form action="/join" method="post">
           <div class="form-group">
-            <input class="form-control form-control-lg" type="text" name="name" placeholder="Your Business Name" autofocus="" required="">
+            <input class="form-control form-control-lg" type="text" name="business-name" placeholder="Your Business Name" autofocus="" required="">
+          </div>
+          <div class="form-group">
+            <input class="form-control form-control-lg" type="email" name="email" placeholder="Email" required="">
+          </div>
+          <div class="form-group">
+            <input class="form-control form-control-lg" type="password" name="password" placeholder="Password" required="">
           </div>
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block">Continue</button>

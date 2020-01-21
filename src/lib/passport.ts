@@ -3,7 +3,7 @@ import * as passport from "koa-passport";
 import * as Router from "@koa/router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { mapGoogleProfileToUser } from "../.mappers_DEPRECATED/users";
-import { UsersCollection_DEPRECATED } from "../mongo/mongodb";
+import { UsersCollection_DEPRECATED } from "../storage_DEPRECATED/mongodb";
 import { User } from "../types/user";
 
 export const router = new Router()
