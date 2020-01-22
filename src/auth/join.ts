@@ -2,6 +2,7 @@ import { Middleware } from 'koa';
 import { Context, State } from '../types/app';
 import * as validators from '../validators';
 import * as accounts from '../accounts';
+import * as password from "../lib/password";
 import { DayOfWeek } from '../types/dat-of-week';
 import { uniqId } from '../lib/uniq-id';
 
@@ -16,7 +17,7 @@ export const join: Middleware<State, Context> = async (ctx) => {
     email: body.email,
     avatar: null,
     timezone: body.timezone,
-    password: body.password,
+    password: password.hash(body.password),
   }
 
   const business: accounts.Business = {
@@ -99,7 +100,15 @@ function parseBody(body: any) {
 }
 
 function getBusinessAlias(businessName: string): string {
-  return businessName.replace(/[\W_]+/g, " ");
+  let alias = businessName.replace(/[\W_]+/g, " ");
+
+  alias = alias.toLowerCase()
+
+  if (alias.length < 3) {
+    alias += 100 + Math.round(Math.random() * 900) // 100 - 999
+  }
+
+  return alias
 }
 
 function getDefaultServices(): accounts.BusinessService[] {

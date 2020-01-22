@@ -8,5 +8,5 @@ import * as dashboard from './dashboard'
 export const router = new Router<State, Context>();
 
 router.get('/', middleware.template, welcome.getWelcomePage)
-router.get('/join', middleware.template, auth.join)
+router.post('/join', auth.join)
 router.get('/dashboard', middleware.template, dashboard.getDashboard)
