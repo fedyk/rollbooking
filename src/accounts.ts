@@ -69,6 +69,10 @@ export function createUser(db: Db, user: User) {
   return getCollection(db).insertOne(user).then(r => r.insertedId);
 }
 
+export function getById(db: Db, id: string) {
+  return getCollection(db).findOne({ id })
+}
+
 export function createBusiness(db: Db, business: Business) {
   return getCollection(db).insertOne(business).then(r => r.insertedId)
 }

@@ -1,4 +1,5 @@
-import { Middleware } from 'koa';
+import * as koa from 'koa';
+import * as crypto from 'crypto';
 import { Context, State } from '../types/app';
 import * as validators from '../validators';
 import * as accounts from '../accounts';
@@ -6,7 +7,7 @@ import * as password from "../lib/password";
 import { DayOfWeek } from '../types/dat-of-week';
 import { uniqId } from '../lib/uniq-id';
 
-export const join: Middleware<State, Context> = async (ctx) => {
+export const join: koa.Middleware<State, Context> = async (ctx) => {
   const body = parseBody(ctx.request.body)
 
   const user: accounts.User = {
@@ -15,7 +16,7 @@ export const join: Middleware<State, Context> = async (ctx) => {
     alias: "",
     name: body.businessName + "'s owner",
     email: body.email,
-    avatar: null,
+    avatar: getGravatarUrl(body.email),
     timezone: body.timezone,
     password: password.hash(body.password),
   }
@@ -65,11 +66,13 @@ function parseBody(body: any) {
     throw new Error("Business name should be somewhat between 2 and 200 characters");
   }
 
-  const email = body.email
+  let email = body.email
 
   if (typeof email !== "string") {
     throw new Error("Email should be a string")
   }
+
+  email = email.trim().toLowerCase()
 
   if (!validators.isEmail(email)) {
     throw new Error("Invalid email format");
@@ -143,4 +146,10 @@ function getDefaultHours() {
       seconds: 0,
     }
   }))
+}
+
+function getGravatarUrl(email: string) {
+  const hash = crypto.createHash('md5').update(email).digest("hex")
+
+  return `https://www.gravatar.com/avatar/${hash}.jpg?s=512&d=mp`
 }
