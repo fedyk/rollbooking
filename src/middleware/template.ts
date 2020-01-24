@@ -63,7 +63,7 @@ interface Props {
 }
 
 // Template as a function
-export const renderTemplate = (props: Props): string => /*html*/`
+const renderTemplate = (props: Props): string => /*html*/`
   <!doctype html>
   <html lang="en">
     <head>
@@ -88,7 +88,7 @@ interface ContentProps {
   isAuthenticated: boolean;
 }
 
-export const renderContent = ({ body, isAuthenticated, userName }: ContentProps) => /*html*/`
+const renderContent = ({ body, isAuthenticated, userName }: ContentProps) => /*html*/`
 <div class="mb-3 bg-white border-bottom">
 
   <div class="container d-flex flex-column flex-md-row align-items-center pt-2 pb-2">

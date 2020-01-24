@@ -73,6 +73,10 @@ export function getById(db: Db, id: string) {
   return getCollection(db).findOne({ id })
 }
 
+export function getRecentBusinesses(db: Db) {
+  return getCollection(db).find({ type: "business" }).limit(20).toArray()
+}
+
 export function createBusiness(db: Db, business: Business) {
   return getCollection(db).insertOne(business).then(r => r.insertedId)
 }
