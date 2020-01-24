@@ -1,5 +1,7 @@
 import Debug from "debug"
 import { Middleware } from "koa";
+import * as ejs from "ejs";
+import { session } from "./session"
 import { State, Context } from "../types/app";
 import { stringMapJoin } from "../helpers/string-map-join";
 import { stylesheet, script, escape_DEPRECATE } from "../helpers/html";
@@ -17,7 +19,7 @@ const debug = Debug("template")
  * ```
  */
 
-export const template: Middleware<State, Context> = async(ctx, next) => {
+export const template: Middleware<State, Context> = async (ctx, next) => {
   ctx.state.scripts = [
     "/js/jquery.js",
     "/js/popper.js",
@@ -31,19 +33,16 @@ export const template: Middleware<State, Context> = async(ctx, next) => {
 
   ctx.state.title = "Rollbooking";
 
-  await next()
+  await session(ctx, next)
 
-  const isAuthenticated = ctx.isAuthenticated ? ctx.isAuthenticated() : false;
-  const userName = isAuthenticated ? ctx.state.user.name : null;
+  ctx.response.type = "html"
 
-  // todo: do we need mobile support
   const body = renderContent({
-    isAuthenticated: isAuthenticated,
-    userName: userName,
+    isAuthenticated: !!ctx.state.user,
+    userName: ctx.state.user ? ctx.state.user.name : null,
+    userId: ctx.state.user ? ctx.state.user.id : null,
     body: ctx.body
   })
-
-  ctx.response.type = "html";
 
   ctx.body = renderTemplate({
     title: ctx.state.title,
@@ -54,7 +53,7 @@ export const template: Middleware<State, Context> = async(ctx, next) => {
   });
 }
 
-interface Props {
+interface TemplateProps {
   title: string;
   description: string;
   body: String;
@@ -63,7 +62,7 @@ interface Props {
 }
 
 // Template as a function
-const renderTemplate = (props: Props): string => /*html*/`
+const renderTemplate = (props: TemplateProps): string => /*html*/`
   <!doctype html>
   <html lang="en">
     <head>
@@ -84,30 +83,33 @@ const renderTemplate = (props: Props): string => /*html*/`
 
 interface ContentProps {
   body: string;
-  userName: string;
+  userId?: string;
+  userName?: string;
   isAuthenticated: boolean;
 }
 
-const renderContent = ({ body, isAuthenticated, userName }: ContentProps) => /*html*/`
-<div class="mb-3 bg-white border-bottom">
-
-  <div class="container d-flex flex-column flex-md-row align-items-center pt-2 pb-2">
-    <a class="my-0 mr-md-auto" href="/" title="Home">
-      <img src="/images/logo.svg" width="128" height="30">
-    </a>
-
-    <nav class="my-2 my-md-0 mr-md-3">
-      <a class="p-2 text-dark" href="/salons">Salons</a>
-    </nav>
-
-    ${isAuthenticated
-    ? `<a class="btn btn-link" href="/profile">${escape_DEPRECATE(userName)}</a>`
-    : `<a class="btn btn-link" href="/login">Sign in</a> <a class="btn btn-outline-primary" href="/join">Sign up</a>`
-  }
+function renderContent(props: ContentProps) {
+  return ejs.render(/*html*/`
+  <div class="mb-3 bg-white border-bottom">
+  
+    <div class="container d-flex flex-column flex-md-row align-items-center pt-2 pb-2">
+      <a class="my-0 mr-md-auto" href="/" title="Home">
+        <img src="/images/logo.svg" width="128" height="30">
+      </a>
+  
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="/explore">Explore</a>
+      </nav>
+  
+      ${props.isAuthenticated
+      ? `<a class="btn btn-link" href="/p/${props.userId}"><%= props.userName %></a>`
+      : `<a class="btn btn-link" href="/login">Sign in</a>`
+    }
+    </div>
   </div>
-</div>
-
-<div class="container">${body}</div>
-
-<div class="container pt-4 pb-4">© 2019 Rollbooking</nav>
-`
+  
+  <div class="container">${props.body}</div>
+  
+  <div class="container pt-4 pb-4">© 2020 Rollbooking</div>
+  `, { props })
+}
