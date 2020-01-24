@@ -11,4 +11,3 @@ export const getDashboard: Middleware<State, Context> = async (ctx) => {
     user: user
   })
 }
-
