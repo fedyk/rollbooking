@@ -8,10 +8,12 @@ export interface Context extends Koa.Context {
 }
 
 export interface State {
+  user?: User
+
+  // template related props
   title?: string;
   scripts?: string[];
   styles?: string[];
-  user?: User
 }
 
 export type Middleware = Koa.Middleware<State, Context>;

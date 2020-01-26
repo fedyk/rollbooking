@@ -46,8 +46,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "watch": "tsc --watch",
-    "start": "node ./dist/server",
-    "dev": "nodemon --inspect ./dist/server  --watch ./dist --signal SIGTERM"
+    "start": "node dist/server.js",
+    "dev": "nodemon --inspect --watch dist --signal SIGTERM dist/server.js"
   },
   "cacheDirectories": [
     "node_modules"

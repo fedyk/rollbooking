@@ -9,19 +9,21 @@ import * as explore from './explore'
 
 export const router = new Router<State, Context>();
 
+router.use(middleware.session)
+
 /**
  * General
  */
-router.get('/', middleware.template, welcome.getWelcomePage)
+router.get('/', middleware.template, middleware.layout, welcome.getWelcomePage)
 router.post('/join', auth.join)
-router.get("/explore", middleware.template, explore.getExplore)
+router.get("/explore", middleware.template, middleware.layout, explore.getExplore)
 
 /**
  * Dashboard
  */
-router.get('/dashboard', middleware.template, dashboard.getDashboard)
+router.get('/dashboard', middleware.template, middleware.layout, dashboard.getDashboard)
 
 /**
  * Profiles
  */
-router.get('/p/:id', middleware.template, accountProfile.getAccountProfile)
+router.get('/p/:id', middleware.template, middleware.layout, accountProfile.getAccountProfile)

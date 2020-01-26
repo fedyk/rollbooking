@@ -1,0 +1,67 @@
+<div class="position-relative bg-light">
+  <div class="container">
+    <div class="d-flex py-3">
+      <!-- <div class="mr-2">
+          <img src="https://solidolbarbers.com/images/logos/logo.black.svg" class="rounded bg-dark" width="150">
+        </div> -->
+
+      <div>
+        <h4 class="mb-0"><%= account.name %></h4>
+        <address class="text-muted mb-0">Lviv, Ukraine</address>
+      </div>
+
+      <!-- <div>
+          <button class="btn btn-block btn-primary">Reserve</button>
+        </div> -->
+    </div>
+
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="/p/<%= account.id %>">Reservation</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/p/<%= account.id %>?tab=services">Services</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/p/<%= account.id %>?tab=masters">Masters</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/p/<%= account.id %>?tab=settings">Settings</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<main role="main" class="container pt-3">
+  <h5 class="mb-3">Services</h5>
+
+  <ul class="list-group list-group-flush mb-3">
+    <li class="list-group-item d-flex justify-content-between px-0">
+      <div>
+        <h6 class="my-0">Heir cut</h6>
+        <p class="mb-1"><small class="text-muted">Brief description</small></p>
+        <div>
+          <button type="button" class="btn btn-sm btn-outline-primary">10:00</button>
+          <button type="button" class="btn btn-sm btn-outline-primary">11:00</button>
+          <button type="button" class="btn btn-sm btn-outline-primary">12:00</button>
+        </div>
+
+      </div>
+      <span class="text-muted">$50</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between px-0">
+      <div>
+        <h6 class="my-0">Second product</h6>
+        <small class="text-muted">Brief description</small>
+      </div>
+      <span class="text-muted">$8</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between px-0">
+      <div>
+        <h6 class="my-0">Third item</h6>
+        <small class="text-muted">Brief description</small>
+      </div>
+      <span class="text-muted">$5</span>
+    </li>
+  </ul>
+</main>
