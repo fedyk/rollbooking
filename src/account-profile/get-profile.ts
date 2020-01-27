@@ -1,5 +1,4 @@
 import { Middleware } from 'koa';
-import * as ejs from "ejs";
 import * as Types from '../types';
 import * as accounts from '../accounts';
 import { getUserProfile } from "./get-user-profile"

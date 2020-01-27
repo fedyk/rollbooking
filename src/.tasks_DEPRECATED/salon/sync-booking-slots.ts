@@ -99,7 +99,7 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
     services,
     reservations: reservations.map(v => ({
       range: new DateRange(dateTimeToNativeDate(v.start), dateTimeToNativeDate(v.end)),
-      userId: v.masterId.toHexString()
+      userId: v.userId
     }))
   });
 
