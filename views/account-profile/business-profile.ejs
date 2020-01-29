@@ -33,37 +33,5 @@
 </div>
 
 <main role="main" class="container pt-3">
-  <h5 class="mb-3">Services</h5>
-
-  <pre><%= JSON.stringify(slots, null, 2) %></pre>
-
-  <ul class="list-group list-group-flush mb-3">
-    <li class="list-group-item d-flex justify-content-between px-0">
-      <div>
-        <h6 class="my-0">Heir cut</h6>
-        <p class="mb-1"><small class="text-muted">Brief description</small></p>
-        <div>
-          <button type="button" class="btn btn-sm btn-outline-primary">10:00</button>
-          <button type="button" class="btn btn-sm btn-outline-primary">11:00</button>
-          <button type="button" class="btn btn-sm btn-outline-primary">12:00</button>
-        </div>
-
-      </div>
-      <span class="text-muted">$50</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between px-0">
-      <div>
-        <h6 class="my-0">Second product</h6>
-        <small class="text-muted">Brief description</small>
-      </div>
-      <span class="text-muted">$8</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between px-0">
-      <div>
-        <h6 class="my-0">Third item</h6>
-        <small class="text-muted">Brief description</small>
-      </div>
-      <span class="text-muted">$5</span>
-    </li>
-  </ul>
+  <%- include('./slots', { services: services, servicesSlots: servicesSlots }); %>
 </main>
