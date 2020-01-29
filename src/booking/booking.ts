@@ -1,87 +1,84 @@
-import Debug from "debug"
-import * as DateFNS from "date-fns"
+import debug from "debug"
+import * as dateFns from "date-fns"
 import * as tz from "timezone-support"
 import { Business } from "../accounts";
-import { Reservation, DayOfWeek, DateTime } from "../types";
+import { Reservation, DayOfWeek } from "../types";
 import { Slot } from "./types";
-import { BusinessHours } from "../types/salon";
 import { TimePeriod } from "../types/time-period";
 
 export class Booking {
-  store: Map<string, BusinessBooking>
-
-  constructor() {
-    this.store = new Map()
-  }
-}
-
-export class BusinessBooking {
   business: Business
   timezone: ReturnType<typeof tz.findTimeZone>
-  usersReservations: Map<string, Reservation[]>
+  reservations: Reservation[]
+  users: Array<{ id: string }>
+  services: Array<{ id: string, duration: number }>
 
-  constructor(business: Business) {
+  constructor(business: Business, reservations: Reservation[]) {
     this.business = business
     this.timezone = tz.findTimeZone(business.timezone)
-    this.usersReservations = new Map()
+    this.reservations = reservations
+    this.users = business.employees
+    this.services = business.services.map(s => ({ id: s.id, duration: s.duration }))
   }
 
-  dispose() {
-    this.usersReservations.clear()
-  }
-
-  addUserReservations(userId: string, reservations: Reservation[]) {
-    const userReservations = this.usersReservations.get(userId)
-
-    if (userReservations) {
-      userReservations.push(...reservations)
-    }
-    else {
-      this.usersReservations.set(userId, reservations)
-    }
+  destroy() {
+    // TBD
   }
 
   getNearestSlots(): Slot[] {
-    const start = tz.getZonedTime(new Date(), this.timezone);
-    const end = tz.getZonedTime(DateFNS.addDays(new Date, 31), this.timezone);
-    const services = this.business.services.map(s => ({
-      id: s.id,
-      duration: s.duration
-    }))
+    const start = tz.getZonedTime(new Date(), this.timezone)
+    const end = tz.getZonedTime(dateFns.addDays(new Date, 1), this.timezone)
+    const startDate = tz.convertTimeToDate(start)
+    const endDate = tz.convertTimeToDate(end)
+    const startTime = tz.getUnixTime(start)
+    const endTime = tz.getUnixTime(end)
 
-    const periodRanges = getPeriodRanges(start, end, this.business.regularHours);
+    // get general ranges
+    const businessRanges = getPeriodRanges(startDate, endDate, this.business.regularHours)
+
+    // available slots
     const slots: Slot[] = [];
-    const usersReservedRanges = new Map<string, DateRange[]>();
 
-    reservations.forEach(reservation => {
-      if (!usersReservedRanges.has(reservation.userId)) {
-        usersReservedRanges.set(reservation.userId, [reservation.range]);
+    // user reserved time
+    const reservations = new Map<string, DateTimeRange[]>()
+
+    for (let i = 0; i < this.reservations.length; i++) {
+      const r = this.reservations[i]
+      const list = reservations.get(r.userId)
+      const start = tz.getUnixTime(r.start, this.timezone)
+      const end = tz.getUnixTime(r.end, this.timezone)
+      const dateRange = new DateTimeRange(start, end)
+
+      if (list) {
+        list.push(dateRange)
       }
       else {
-        usersReservedRanges.get(reservation.userId).push(reservation.range);
+        reservations.set(r.userId, [dateRange])
       }
-    });
+    }
 
-    periodRanges.forEach(range => {
-      users.forEach(user => {
-        const reservedRanges = usersReservedRanges.has(user.id) ? usersReservedRanges.get(user.id) : [];
+    for (let i = 0; i < businessRanges.length; i++) {
+      const range = businessRanges[i];
+      
+      for (let j = 0; j < this.users.length; j++) {
+        const user = this.users[j];
+        const userReservations = reservations.get(user.id) || []
+        const availableRanges = range.exclude(userReservations);
 
-        services.forEach(service => {
-          const availableRanges = range.exclude(reservedRanges);
-          const serviceDurationInMs = service.duration * 60 * 1000;
+        for (let k = 0; k < this.services.length; k++) {
+          const service = this.services[k]
+          const durationInMs = service.duration * 60 * 1000
 
-          availableRanges.forEach(function (availableRange) {
-            const times = availableRange.split(serviceDurationInMs, {
-              round: true
-            });
+          for (let l = 0; l < availableRanges.length; l++) {
+            const availableRange = availableRanges[l]
+            const times = availableRange.split(durationInMs, true)
 
             // remove last result
-            times.pop();
+            times.pop()
 
             times.forEach(time => {
-              const start = nativeDateToDateTime(time);
-              time.setTime(time.getTime() + serviceDurationInMs);
-              const end = nativeDateToDateTime(time);
+              const start = tz.getZonedTime(time.startTime, this.timezone)
+              const end = tz.getZonedTime(time.endTime, this.timezone)
 
               slots.push({
                 start,
@@ -90,68 +87,73 @@ export class BusinessBooking {
                 serviceId: service.id
               })
             })
-          });
-        })
-      })
-    })
+          }
+        }
+      }
+    }
 
     return slots;
-
   }
 }
 
 
-function getPeriodRanges(start: DateTime, end: DateTime, regularHours: TimePeriod[]): DateTimeRange[] {
-  const allPeriod = new DateTimeRange(start, end)
-  const groupedRegularHours = getGroupedPeriodsByDayOfWeek(regularHours);
-  const ranges = [];
+function getPeriodRanges(start: Date, end: Date, timePeriods: TimePeriod[]): DateTimeRange[] {
+  const startTime = start.getTime()
+  const endTime = end.getTime()
+  const wholePeriod = new DateTimeRange(startTime, endTime)
+  const hashedTimePeriods = mapPeriodsByDayOfWeek(timePeriods)
+  const unspecifiedDayTimePeriods = hashedTimePeriods.get(DayOfWeek.DAY_OF_WEEK_UNSPECIFIED)
+  const ranges: DateTimeRange[] = [];
+  let current = start
 
-  let curr = tz.convertTimeToDate(start)
+  while (current.getTime() <= endTime) {
+    const dayOfWeek = current.getDay() as DayOfWeek
+    const thisDayTimePeriods = hashedTimePeriods.get(dayOfWeek)
 
-  while (curr.getTime() <= end.getTime()) {
-    const currDayOfWeek = curr.getDay() as DayOfWeek;
-
-    if (groupedRegularHours.has(currDayOfWeek)) {
-      ranges.push(...groupedRegularHours.get(currDayOfWeek).map(period => {
-        return getDateRangeFromPeriod(curr, period)
+    if (thisDayTimePeriods) {
+      ranges.push(...thisDayTimePeriods.map(function(period) {
+        return getDateRangeFromPeriod(current, period)
       }))
     }
 
-    if (groupedRegularHours.has(DayOfWeek.DAY_OF_WEEK_UNSPECIFIED)) {
-      ranges.push(...groupedRegularHours.get(DayOfWeek.DAY_OF_WEEK_UNSPECIFIED).map(period => {
-        return getDateRangeFromPeriod(curr, period);
+    if (unspecifiedDayTimePeriods) {
+      ranges.push(...unspecifiedDayTimePeriods.map(function(period) {
+        return getDateRangeFromPeriod(current, period);
       }))
     }
 
-    curr = DateFNS.addDays(curr, 1);
+    current = dateFns.addDays(current, 1);
   }
 
-  const mergedRanges = DateRange.merge(ranges);
+  const mergedRanges = merge(ranges)
+  const fittedRanges = mergedRanges.map(range => intersection(range, wholePeriod))
+  const filteredRanges = fittedRanges.filter(Boolean) as DateTimeRange[]
 
-  return mergedRanges
-    .filter(range => range.isOverlap(allPeriod))
-    .map(range => DateRange.intersection(range, allPeriod));
+  return filteredRanges
 }
 
-function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWeek, TimePeriod[]> {
+function mapPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWeek, TimePeriod[]> {
   const map = new Map<DayOfWeek, TimePeriod[]>();
 
   for (let i = 0; i < periods.length; i++) {
-    const period = periods[i];
+    const period = periods[i]
+    const list = map.get(period.openDay)
 
-    if (!map.has(period.openDay)) {
+    if (!list) {
       map.set(period.openDay, [period]);
     }
     else {
-      map.get(period.openDay).push(period);
+      list.push(period);
     }
 
     if (period.openDay !== period.closeDay) {
-      if (!map.has(period.closeDay)) {
+      const list = map.get(period.closeDay)
+
+      if (!list) {
         map.set(period.closeDay, [period]);
       }
       else {
-        map.get(period.closeDay).push(period);
+        list.push(period);
       }
     }
   }
@@ -159,8 +161,10 @@ function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWeek, Tim
   return map;
 }
 
-function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
-  const day = date.getDay();
+function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateTimeRange {
+  const day = date.getDay()
+  const start = new Date(date)
+  const end = new Date(date)
 
   if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED) {
     if (day !== period.openDay && day !== period.closeDay) {
@@ -168,8 +172,7 @@ function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
     }
   }
 
-  const start = new Date(date.getTime());
-
+  // ???
   if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED) {
     let diff = day - period.openDay;
 
@@ -189,8 +192,6 @@ function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
   start.setSeconds(0)
   start.setMilliseconds(0)
 
-  const end = new Date(date.getTime());
-
   if (period.closeDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED) {
     let diff = period.closeDay - day;
 
@@ -206,65 +207,16 @@ function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
   end.setSeconds(0)
   end.setMilliseconds(0)
 
-  return new DateTimeRange(start, end);
+  return new DateTimeRange(start.getTime(), end.getTime());
 }
 
-
-export class DateTimeRange {
-  readonly start: DateTime
+class DateTimeRange {
   readonly startTime: number
-  readonly end: DateTime
   readonly endTime: number
 
-  constructor(start: DateTime, end: DateTime) {
-    this.start = start
-    this.startTime = tz.getUnixTime(start)
-    this.end = end
-    this.endTime = tz.getUnixTime(end)
-  }
-
-  /**
-   * 
-   * dateRangeA: ---|-----------|---------
-   * dateRangeB: ------|-----------|------
-   * dateRangeC: --------|--------|-------
-   * result    : --------|======|---------
-   */
-  static intersection(a: DateTimeRange, b: DateTimeRange): DateTimeRange {
-    if (!a.isOverlap(b)) {
-      return null;
-    }
-
-    const start = a.start.getTime() >= b.start.getTime() ? a.start : b.start;
-    const end = a.end.getTime() <= b.end.getTime() ? a.end : b.end;
-
-    return new DateTimeRange(start, end);
-  }
-
-  static merge(ranges: DateTimeRange[]): DateTimeRange[] {
-    if (ranges.length === 0) {
-      return []
-    }
-
-    // Create an empty stack
-    const result = [];
-
-    // Sort ranges by start
-    const sortedRanges = ranges.slice().sort((a, b) => a.start.getTime() - b.start.getTime())
-
-    sortedRanges.forEach(range => {
-      if (result.length === 0 || result[result.length - 1].end < range.start) {
-        result.push(range)
-      }
-      else {
-        result[result.length - 1] = new DateTimeRange(
-          result[result.length - 1].start,
-          result[result.length - 1].end > range.end ? result[result.length - 1].end : range.end
-        )
-      }
-    })
-
-    return result;
+  constructor(start: number, end: number) {
+    this.startTime = start
+    this.endTime = end
   }
 
   isOverlap(dateRange: DateTimeRange): boolean {
@@ -285,50 +237,53 @@ export class DateTimeRange {
 
 
   clone(): DateTimeRange {
-    return new DateTimeRange(this.start, this.end)
+    return new DateTimeRange(this.startTime, this.endTime)
   }
 
-  exclude(dateRange: DateTimeRange | DateTimeRange[]): DateTimeRange[] {
-    if (Array.isArray(dateRange)) {
-      let result = [this.clone()]
+  exclude(dateRanges: DateTimeRange | DateTimeRange[]): DateTimeRange[] {
+    if (Array.isArray(dateRanges)) {
+      let excluded = [
+        this.clone()
+      ]
 
-      dateRange.forEach(v => {
-        let tmp = [];
+      for (let i = 0; i < dateRanges.length; i++) {
+        let dateRange = dateRanges[i]
+        let tmp: DateTimeRange[] = []
 
-        result.forEach(r => {
-          tmp = tmp.concat(r.exclude(v))
-        })
+        for (let j = 0; j < excluded.length; j++) {
+          tmp.push(...excluded[j].exclude(dateRange))
+        }
 
-        result = tmp;
-      })
+        excluded = tmp
+      }
 
-      return result;
+      return excluded;
     }
 
-    if (!this.isOverlap(dateRange)) {
+    if (!this.isOverlap(dateRanges)) {
       return [this.clone()]
     }
 
-    if (this.startTime < dateRange.startTime && dateRange.endTime < this.endTime) {
+    if (this.startTime < dateRanges.startTime && dateRanges.endTime < this.endTime) {
       return [
-        new DateTimeRange(this.start, dateRange.start),
-        new DateTimeRange(dateRange.end, this.end)
+        new DateTimeRange(this.startTime, dateRanges.startTime),
+        new DateTimeRange(dateRanges.endTime, this.endTime)
       ]
     }
 
-    if (dateRange.startTime <= this.startTime && this.endTime <= dateRange.endTime) {
+    if (dateRanges.startTime <= this.startTime && this.endTime <= dateRanges.endTime) {
       return []
     }
 
-    if (dateRange.startTime <= this.startTime && dateRange.endTime < this.endTime) {
+    if (dateRanges.startTime <= this.startTime && dateRanges.endTime < this.endTime) {
       return [
-        new DateTimeRange(dateRange.end, this.end)
+        new DateTimeRange(dateRanges.endTime, this.endTime)
       ]
     }
 
-    if (this.startTime < dateRange.startTime && this.endTime <= dateRange.endTime) {
+    if (this.startTime < dateRanges.startTime && this.endTime <= dateRanges.endTime) {
       return [
-        new DateTimeRange(this.start, dateRange.start)
+        new DateTimeRange(this.startTime, dateRanges.startTime)
       ]
     }
 
@@ -347,20 +302,62 @@ export class DateTimeRange {
    */
   split(periodInMs: number, round = false): DateTimeRange[] {
     const periods: DateTimeRange[] = []
-    const current = tz.convertTimeToDate(this.start)
-    const end = tz.convertTimeToDate(this.end)
+    const endTime = this.endTime
+    let current = this.startTime
 
-    // while(round ? current <= end : current < end) {
+    while (round ? current <= endTime : current < endTime) {
+      periods.push(new DateTimeRange(current, current += periodInMs))
+    }
 
-    //   current.
-    //   current = new Date(current.getTime())
-    //   current.setMilliseconds(period)
-    // }
+    if (!round && current !== endTime) {
+      periods.push(new DateTimeRange(current, endTime))
+    }
 
-    // if (!round && current !== this.end) {
-    //   periods.push(new Date(this.end.getTime()))
-    // }
-
-    return periods;
+    return periods
   }
+}
+
+/**
+ * 
+ * dateRangeA: ---|-----------|---------
+ * dateRangeB: ------|-----------|------
+ * dateRangeC: --------|--------|-------
+ * result    : --------|======|---------
+ */
+function intersection(a: DateTimeRange, b: DateTimeRange): DateTimeRange | void {
+  if (!a.isOverlap(b)) {
+    return
+  }
+
+  const start = a.startTime >= b.startTime ? a.startTime : b.startTime;
+  const end = a.endTime <= b.endTime ? a.endTime : b.endTime;
+
+  return new DateTimeRange(start, end);
+}
+
+function merge(ranges: DateTimeRange[]): DateTimeRange[] {
+  if (ranges.length === 0) {
+    return []
+  }
+
+  const result: DateTimeRange[] = [];
+
+  // sort by startTime
+  const sortedRanges = ranges.slice().sort((a, b) => a.startTime - b.startTime)
+
+  for (let i = 0; i < sortedRanges.length; i++) {
+    const range = sortedRanges[i]
+
+    if (result.length === 0 || result[result.length - 1].endTime < range.startTime) {
+      result.push(range)
+    }
+    else {
+      result[result.length - 1] = new DateTimeRange(
+        result[result.length - 1].startTime,
+        result[result.length - 1].endTime > range.endTime ? result[result.length - 1].endTime : range.endTime
+      )
+    }
+  }
+
+  return result;
 }
