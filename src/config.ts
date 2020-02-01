@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config({ path: __dirname + "/../.env" })
 
 if (!process.env.APP_KEYS) {
   throw new Error('No keys config. Set APP_KEYS environment variable. The format is <string_key1>;<string_key2>.')

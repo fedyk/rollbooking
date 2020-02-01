@@ -1,12 +1,10 @@
+import * as config from "./config"
 import * as Koa from "koa"
 import { join } from "path"
 import * as serve from "koa-static"
 import * as koaSession from "koa-session"
 import * as bodyParser from "koa-bodyparser"
-
-import * as config from "./lib/config"
 import * as session from "./session"
-
 import { router } from "./router";
 import { State, Context } from "./types/app";
 import * as mongo from "./storage"
