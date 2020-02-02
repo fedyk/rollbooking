@@ -1,6 +1,6 @@
 import * as Koa from "koa";
 import { MongoClient, Db } from "mongodb";
-import { User } from "../accounts";
+import { User, Business } from "../accounts";
 
 export interface Context extends Koa.Context {
   mongoClient: MongoClient
@@ -9,6 +9,7 @@ export interface Context extends Koa.Context {
 
 export interface State {
   user?: User
+  business?: Business
 
   // template related props
   title?: string;

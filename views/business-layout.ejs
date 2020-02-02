@@ -6,8 +6,8 @@
         </div> -->
 
       <div>
-        <h4 class="mb-0"><%= account.name %></h4>
-        <address class="text-muted mb-0">Lviv, Ukraine</address>
+        <h4 class="mb-0"><%= business.name %></h4>
+        <address class="text-muted mb-0">TBD</address>
       </div>
 
       <!-- <div>
@@ -17,21 +17,18 @@
 
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link active" href="/p/<%= account.id %>">Reservation</a>
+        <a class="nav-link active" href="/p/<%= business.id %>">Reservation</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/p/<%= account.id %>?tab=services">Services</a>
+        <a class="nav-link" href="/p/<%= business.id %>/masters">Masters</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/p/<%= account.id %>?tab=masters">Masters</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/p/<%= account.id %>?tab=settings">Settings</a>
+        <a class="nav-link" href="/p/<%= business.id %>/settings">Settings</a>
       </li>
     </ul>
   </div>
 </div>
 
 <main role="main" class="container pt-3">
-  <%- include('./slots', { services: services, servicesSlots: servicesSlots }); %>
+  <%- body %>
 </main>

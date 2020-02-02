@@ -3,7 +3,7 @@ import * as dateFns from "date-fns"
 import * as tz from "timezone-support"
 import { Business } from "../accounts";
 import { Reservation, DayOfWeek } from "../types";
-import { Slot } from "./types";
+import * as types from "./types";
 import { TimePeriod } from "../types/time-period";
 
 export class Booking {
@@ -25,9 +25,9 @@ export class Booking {
     // TBD
   }
 
-  getNearestSlots(): Slot[] {
+  getServicesSlots() {
     const start = tz.getZonedTime(new Date(), this.timezone)
-    const end = tz.getZonedTime(dateFns.addDays(new Date, 1), this.timezone)
+    const end = tz.getZonedTime(dateFns.addDays(new Date, 30), this.timezone)
     const startDate = tz.convertTimeToDate(start)
     const endDate = tz.convertTimeToDate(end)
     const startTime = tz.getUnixTime(start)
@@ -36,12 +36,15 @@ export class Booking {
     // get general ranges
     const businessRanges = getPeriodRanges(startDate, endDate, this.business.regularHours)
 
-    // available slots
-    const slots: Slot[] = [];
+    // available slots by service id
+    const slotsByServiceId = new Map(this.services.map(s => {
+      return [s.id, [] as types.Slot[]]
+    }))
 
     // user reserved time
     const reservations = new Map<string, DateTimeRange[]>()
 
+    // reservations by user
     for (let i = 0; i < this.reservations.length; i++) {
       const r = this.reservations[i]
       const list = reservations.get(r.userId)
@@ -57,17 +60,17 @@ export class Booking {
       }
     }
 
-    for (let i = 0; i < businessRanges.length; i++) {
-      const range = businessRanges[i];
-      
-      for (let j = 0; j < this.users.length; j++) {
-        const user = this.users[j];
-        const userReservations = reservations.get(user.id) || []
-        const availableRanges = range.exclude(userReservations);
+    for (let k = 0; k < this.services.length; k++) {
+      const service = this.services[k]
+      const durationInMs = service.duration * 60 * 1000
 
-        for (let k = 0; k < this.services.length; k++) {
-          const service = this.services[k]
-          const durationInMs = service.duration * 60 * 1000
+      for (let i = 0; i < businessRanges.length; i++) {
+        const range = businessRanges[i]
+
+        for (let j = 0; j < this.users.length; j++) {
+          const user = this.users[j];
+          const userReservations = reservations.get(user.id) || []
+          const availableRanges = range.exclude(userReservations);
 
           for (let l = 0; l < availableRanges.length; l++) {
             const availableRange = availableRanges[l]
@@ -80,7 +83,7 @@ export class Booking {
               const start = tz.getZonedTime(time.startTime, this.timezone)
               const end = tz.getZonedTime(time.endTime, this.timezone)
 
-              slots.push({
+              slotsByServiceId.get(service.id).push({
                 start,
                 end,
                 userId: user.id,
@@ -89,10 +92,14 @@ export class Booking {
             })
           }
         }
+
+        if (slotsByServiceId.get(service.id).length !== 0) {
+          break;
+        }
       }
     }
 
-    return slots;
+    return Array.from(slotsByServiceId);
   }
 }
 
@@ -111,13 +118,13 @@ function getPeriodRanges(start: Date, end: Date, timePeriods: TimePeriod[]): Dat
     const thisDayTimePeriods = hashedTimePeriods.get(dayOfWeek)
 
     if (thisDayTimePeriods) {
-      ranges.push(...thisDayTimePeriods.map(function(period) {
+      ranges.push(...thisDayTimePeriods.map(function (period) {
         return getDateRangeFromPeriod(current, period)
       }))
     }
 
     if (unspecifiedDayTimePeriods) {
-      ranges.push(...unspecifiedDayTimePeriods.map(function(period) {
+      ranges.push(...unspecifiedDayTimePeriods.map(function (period) {
         return getDateRangeFromPeriod(current, period);
       }))
     }

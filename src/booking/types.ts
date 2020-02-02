@@ -8,3 +8,8 @@ export interface Slot {
   userId: string
   serviceId: string
 }
+
+export interface ServiceSlots {
+  serviceId: string
+  slots: Slot[]
+}

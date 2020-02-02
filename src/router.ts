@@ -18,12 +18,11 @@ router.get('/', middleware.template, middleware.layout, welcome.getWelcomePage)
 router.post('/join', auth.join)
 router.get("/explore", middleware.template, middleware.layout, explore.getExplore)
 
-/**
- * Dashboard
- */
+/** Dashboard */
 router.get('/dashboard', middleware.template, middleware.layout, dashboard.getDashboard)
 
-/**
- * Profiles
- */
-router.get('/p/:id', middleware.template, middleware.layout, accountProfile.getAccountProfile)
+/** Account */
+router.get('/p/:id', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessProfile)
+router.get('/p/:id/booking', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessBooking)
+router.get('/p/:id/masters', middleware.template, middleware.layout, accountProfile.getBusinessMasters)
+router.get('/p/:id/settings', middleware.template, middleware.layout, accountProfile.getBusinessSettings)

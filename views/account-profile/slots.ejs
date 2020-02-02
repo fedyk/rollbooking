@@ -1,22 +1,18 @@
 <h5 class="mb-3">Services</h5>
 
 <ul class="list-group list-group-flush mb-3">
-  <% services.forEach(function(service, index) { %>
-    <li class="list-group-item d-flex justify-content-between px-0">
+  <% services.forEach(function(service) { %>
+  <li class="list-group-item d-flex justify-content-between px-0">
+    <div>
+      <h6 class="my-0"><%= service.name %></h6>
+      <p class="mb-1"><small class="text-muted"><%= service.description %></small></p>
       <div>
-        <h6 class="my-0"><%= service.name %></h6>
-        <p class="mb-1"><small class="text-muted"><%= service.description %></small></p>
-        <div>
-          <% servicesSlots[index].forEach(function(slot) { %>
-            <button type="button" class="btn btn-sm btn-outline-primary"><%= slot.start.hours + ":" + slot.start.minutes %></button>  
-          <% }) %>
-        </div>
-  
+        <% service.slots.forEach(function(slot) { %>
+        <a href="<%= slot.url %>" class="btn btn-sm btn-outline-primary" title="<%= slot.title %>"><%= slot.text %></a>
+        <% }) %>
       </div>
-      <span class="text-muted"><% service.price %></span>
-    </li>
+    </div>
+    <span class="text-muted"><% service.price %></span>
+  </li>
   <% }) %>
 </ul>
-
-<pre><%= JSON.stringify(servicesSlots, null, 2) %></pre>
-<pre><%= JSON.stringify(services, null, 2) %></pre>
