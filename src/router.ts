@@ -24,5 +24,5 @@ router.get('/dashboard', middleware.template, middleware.layout, dashboard.getDa
 /** Account */
 router.get('/p/:id', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessProfile)
 router.get('/p/:id/booking', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessBooking)
-router.get('/p/:id/masters', middleware.template, middleware.layout, accountProfile.getBusinessMasters)
-router.get('/p/:id/settings', middleware.template, middleware.layout, accountProfile.getBusinessSettings)
+router.get('/p/:id/masters', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessMasters)
+router.get('/p/:id/settings', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessSettings)
