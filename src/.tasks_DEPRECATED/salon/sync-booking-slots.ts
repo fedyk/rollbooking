@@ -6,7 +6,7 @@ import { addDay } from "../../utils/date";
 import { BusinessHours, SpecialHours } from "../../types/salon";
 import { Reservation } from "../../types/reservation";
 import { DateRange } from "../../lib/date-range";
-import { closeClient, ReservationsCollection_DEPRECATED, SalonsCollection_DEPRECATED, BookingSlotsCollection_DEPRECATED } from "../../db/mongodb";
+import { closeClient, ReservationsCollection_DEPRECATED, SalonsCollection_DEPRECATED, BookingSlotsCollection_DEPRECATED } from "../../db";
 import { Date as DateObject } from "../../types/date";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
 import { getBookingSlots } from "../../helpers/booking/get-booking-slots";
@@ -99,7 +99,7 @@ export async function syncBookingSlots(salonId: ObjectID, startDate: DateObject 
     services,
     reservations: reservations.map(v => ({
       range: new DateRange(dateTimeToNativeDate(v.start), dateTimeToNativeDate(v.end)),
-      userId: v.masterId.toHexString()
+      userId: v.userId
     }))
   });
 

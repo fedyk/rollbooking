@@ -56,8 +56,10 @@ export interface BusinessService {
   id: string
   name: string
   description: string
-  duration: number // in minutes
-  currencyCode: string // ISO 4217
+  /** service duration in minutes */
+  duration: number
+  /** ISO 4217 */
+  currencyCode: string 
   price: number
 }
 

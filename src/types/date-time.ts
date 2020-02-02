@@ -1,5 +1,5 @@
 /**
- * Zone-less date-time type. Inspered by Google My Business
+ * Zone-less date-time type. Inspired by Google My Business
  * @see https://developers.google.com/my-business/reference/rest/v4/Date
  */
 export interface DateTime {
@@ -8,5 +8,6 @@ export interface DateTime {
   day: number;
   hours: number;
   minutes: number;
-  seconds: number;
+  seconds?: number;
+  milliseconds?: number;
 }
