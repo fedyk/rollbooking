@@ -4,7 +4,7 @@ import * as auth from './auth'
 import * as middleware from './middleware'
 import * as welcome from './welcome-page/get-welcome-page'
 import * as dashboard from './dashboard'
-import * as accountProfile from './controllers'
+import controllers from './controllers'
 import * as explore from './explore'
 
 export const router = new Router<State, Context>();
@@ -19,8 +19,8 @@ router.get("/explore", middleware.template, middleware.layout, explore.getExplor
 /** Dashboard */
 router.get('/dashboard', middleware.template, middleware.layout, dashboard.getDashboard)
 
-/** Account */
-router.get('/p/:id', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessProfile)
-router.get('/p/:id/booking', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessBooking)
-router.get('/p/:id/masters', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessMasters)
-router.get('/p/:id/settings', middleware.template, middleware.layout, accountProfile.accountLayout, accountProfile.getBusinessSettings)
+/** Business */
+router.get("/b/:id", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getReservations)
+router.get("/b/:id/booking", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getBooking)
+router.get("/b/:id/masters", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getMasters)
+router.get("/b/:id/settings", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getSettings)

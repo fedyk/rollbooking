@@ -1,8 +1,8 @@
-import * as Types from '../types';
-import * as accounts from '../accounts';
-import { nativeDateToDateTime } from '../helpers/date/native-date-to-date-time';
+import * as Types from '../../types';
+import * as accounts from '../../accounts';
+import { nativeDateToDateTime } from '../../helpers/date/native-date-to-date-time';
 
-export const getBusinessBooking: Types.Middleware = async (ctx) => {
+export const getBooking: Types.Middleware = async (ctx) => {
   const business = ctx.state.business as accounts.Business
 
   if (!business) {

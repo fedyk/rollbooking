@@ -39,7 +39,7 @@ const renderLayout = (props: Props) => /*html*/`
     </nav>
 
     ${props.isAuthenticated
-    ? `<a class="btn btn-link" href="/p/${props.userId}">${html.escape_DEPRECATE(props.userName)}</a>`
+    ? `<a class="btn btn-link" href="/b/${props.userId}">${html.escape_DEPRECATE(props.userName)}</a>`
     : `<a class="btn btn-link" href="/login">Sign in</a>`
   }
   </div>

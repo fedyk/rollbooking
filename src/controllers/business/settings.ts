@@ -1,12 +1,12 @@
-import * as Types from '../types';
-import * as accounts from '../accounts';
+import * as Types from '../../types';
+import * as accounts from '../../accounts';
 
-export const getBusinessMasters: Types.Middleware = async (ctx) => {
+export const getSettings: Types.Middleware = async (ctx) => {
   const business = ctx.state.business as accounts.Business
 
   if (!business) {
     return ctx.throw(404, new Error("Page does not exist"))
   }
-  ctx.state.title = "Masters"
+  ctx.state.title = "Settings"
   ctx.body = JSON.stringify(business, null, 2)
 }
