@@ -4,16 +4,14 @@ import * as auth from './auth'
 import * as middleware from './middleware'
 import * as welcome from './welcome-page/get-welcome-page'
 import * as dashboard from './dashboard'
-import * as accountProfile from './account-profile'
+import * as accountProfile from './controllers'
 import * as explore from './explore'
 
 export const router = new Router<State, Context>();
 
 router.use(middleware.session)
 
-/**
- * General
- */
+/** General */
 router.get('/', middleware.template, middleware.layout, welcome.getWelcomePage)
 router.post('/join', auth.join)
 router.get("/explore", middleware.template, middleware.layout, explore.getExplore)
