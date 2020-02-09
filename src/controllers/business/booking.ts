@@ -1,3 +1,4 @@
+import * as ejs from "ejs";
 import * as Types from '../../types';
 import * as accounts from '../../accounts';
 import { nativeDateToDateTime } from '../../helpers/date/native-date-to-date-time';
@@ -11,7 +12,7 @@ export const getBooking: Types.Middleware = async (ctx) => {
 
   const query = parseQuery(ctx.request.query)
   
-  ctx.body = JSON.stringify(query, null, 2)
+  ctx.body = await ejs.renderFile(`views/business/booking.ejs`, {})
 }
 
 function parseQuery(query: any) {
