@@ -5,7 +5,7 @@ export interface Reservation {
   businessId: string;
   clientId: string;
   userId: string;
-  serviceId: number;
+  serviceId: string;
   start: DateTime;
   end: DateTime;
   status: Status;
