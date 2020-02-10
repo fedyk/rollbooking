@@ -5,6 +5,7 @@ import { nativeDateToDateTime } from '../../helpers/date/native-date-to-date-tim
 
 export const getBooking: Types.Middleware = async (ctx) => {
   const business = ctx.state.business as accounts.Business
+  const user = ctx.state.user
 
   if (!business) {
     return ctx.throw(404, new Error("Page does not exist"))
@@ -12,7 +13,9 @@ export const getBooking: Types.Middleware = async (ctx) => {
 
   const query = parseQuery(ctx.request.query)
   
-  ctx.body = await ejs.renderFile(`views/business/booking.ejs`, {})
+  ctx.body = await ejs.renderFile(`views/business/booking.ejs`, {
+    user
+  })
 }
 
 function parseQuery(query: any) {

@@ -18,18 +18,24 @@
 <form>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label for="firstNameInput">First name</label>
-      <input type="text" class="form-control" id="firstNameInput">
+      <% if (user) { %>
+      <label for="staticName">Name</label>
+      <input type="text" readonly class="form-control-plaintext" id="staticName" value="<%= user.name %>">
+      <% } else { %>
+      <label for="nameInput">Name</label>
+      <input type="text" class="form-control" id="nameInput">
+      <% } %>
     </div>
-    <div class="form-group col-md-6">
-      <label for="lastNameInput">Last name</label>
-      <input type="text" class="form-control" id="lastNameInput">
-    </div>
-  </div>
 
-  <div class="form-group">
-    <label for="emailInput">Email</label>
-    <input type="email" class="form-control" id="emailInput" placeholder="">
+    <div class="form-group col-md-6">
+      <% if (user) { %>
+      <label for="staticName">Email</label>
+      <input type="text" readonly class="form-control-plaintext" id="staticName" value="<%= user.email %>">
+      <% } else { %>
+      <label for="emailInput">Email</label>
+      <input type="email" class="form-control" id="emailInput" placeholder="">
+      <% } %>
+    </div>
   </div>
 
   <div class="form-group">
@@ -37,7 +43,6 @@
     <input type="phone" class="form-control" id="phoneInput" placeholder="666-555-444">
   </div>
 
-  
   <div class="form-group">
     <div class="form-check">
       <input class="form-check-input" type="checkbox" id="gridCheck">
