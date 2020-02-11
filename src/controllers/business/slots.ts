@@ -7,7 +7,7 @@ import { Booking, Slot } from '../../booking';
 import { dateTimeToISODate } from '../../helpers/date/date-time-to-iso-date';
 import { DateTime } from '../../types';
 
-export const getReservations: types.Middleware = async (ctx) => {
+export const getSlots: types.Middleware = async (ctx) => {
   const business = ctx.state.business as accounts.Business
   const booking = new Booking(business, [])
   const servicesSlots = booking.getServicesSlots()
@@ -26,7 +26,7 @@ export const getReservations: types.Middleware = async (ctx) => {
       slots: slots.map(slot => ({
         title: dateTimeToISODate(slot.start),
         text: formatDateTime(slot.start),
-        url: `/b/${business.id}/booking?` + querystring.stringify({ user_id: slot.userId, service_id: serviceId, date: dateTimeToISODate(slot.start) })
+        url: `/b/${business.id}/create/event?` + querystring.stringify({ user_id: slot.userId, service_id: serviceId, date: dateTimeToISODate(slot.start) })
       }))
     }
   })
