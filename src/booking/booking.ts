@@ -1,19 +1,19 @@
-import debug from "debug"
 import * as dateFns from "date-fns"
 import * as tz from "timezone-support"
 import { Business } from "../accounts";
-import { Reservation, DayOfWeek } from "../types";
+import { Event } from "../events";
+import { DayOfWeek } from "../types";
 import * as types from "./types";
 import { TimePeriod } from "../types/time-period";
 
 export class Booking {
   business: Business
   timezone: ReturnType<typeof tz.findTimeZone>
-  reservations: Reservation[]
+  reservations: Event[]
   users: Array<{ id: string }>
   services: Array<{ id: string, duration: number }>
 
-  constructor(business: Business, reservations: Reservation[]) {
+  constructor(business: Business, reservations: Event[]) {
     this.business = business
     this.timezone = tz.findTimeZone(business.timezone)
     this.reservations = reservations

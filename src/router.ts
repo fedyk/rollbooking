@@ -20,7 +20,9 @@ router.get("/explore", middleware.template, middleware.layout, explore.getExplor
 router.get('/dashboard', middleware.template, middleware.layout, dashboard.getDashboard)
 
 /** Business */
-router.get("/b/:id", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getReservations)
-router.get("/b/:id/booking", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getBooking)
+router.get("/b/:id", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getSlots)
+router.get("/b/:id/create/event", middleware.template, middleware.layout, controllers.business.layout, controllers.business.createEvent)
+router.post("/b/:id/create/event", middleware.template, middleware.layout, controllers.business.layout, controllers.business.createEvent)
+router.get("/b/:id/events/:eventId", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getEvent)
 router.get("/b/:id/masters", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getMasters)
 router.get("/b/:id/settings", middleware.template, middleware.layout, controllers.business.layout, controllers.business.getSettings)

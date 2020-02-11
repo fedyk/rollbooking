@@ -1,5 +1,5 @@
 export * from "./layout"
-export * from "./reservations"
-export * from "./booking"
+export * from "./slots"
+export * from "./events"
 export * from "./masters"
 export * from "./settings"

@@ -1,11 +1,11 @@
 import { DateTime } from "./date-time";
 
-export interface Reservation {
+export interface Reservation_DEPRECATED {
   id: string;
   businessId: string;
   clientId: string;
   userId: string;
-  serviceId: number;
+  serviceId: string;
   start: DateTime;
   end: DateTime;
   status: Status;
