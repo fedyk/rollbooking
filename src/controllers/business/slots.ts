@@ -1,9 +1,8 @@
-import * as tz from "timezone-support";
 import * as ejs from "ejs";
 import * as querystring from "querystring";
 import * as types from '../../types';
 import * as accounts from '../../accounts';
-import { Booking, Slot } from '../../booking';
+import { Booking } from '../../booking';
 import { dateTimeToISODate } from '../../helpers/date/date-time-to-iso-date';
 import { DateTime } from '../../types';
 
