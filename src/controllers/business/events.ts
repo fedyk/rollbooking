@@ -1,5 +1,6 @@
 import * as ejs from "ejs";
 import * as dateFns from "date-fns";
+import * as localize from "date-fns/locale/en-US/_lib/localize";
 import * as Types from '../../types';
 import * as accounts from '../../accounts';
 import * as events from '../../events';
@@ -87,8 +88,10 @@ export const getEvent: Types.Middleware = async (ctx) => {
   }
 
   ctx.body = await ejs.renderFile(`views/business/get-event.ejs`, {
-    reservation: event,
-    user
+    event,
+    user,
+    day: event.start.day,
+    month: localize.month(event.start.month - 1, { width: "abbreviated" })
   })
 }
 
