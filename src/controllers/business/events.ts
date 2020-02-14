@@ -1,9 +1,9 @@
 import * as ejs from "ejs";
 import * as dateFns from "date-fns";
 import * as localize from "date-fns/locale/en-US/_lib/localize";
-import * as tz from "timezone-support"
 import * as Types from '../../types';
 import * as accounts from '../../accounts';
+import * as clients from '../../clients';
 import * as events from '../../events';
 import { nativeDateToDateTime } from '../../helpers/date/native-date-to-date-time';
 import { uniqId } from "../../lib/uniq-id";
@@ -12,7 +12,8 @@ import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-dat
 
 export const createEvent: Types.Middleware = async (ctx) => {
   const business = ctx.state.business as accounts.Business
-  const user = ctx.state.user
+  let user = ctx.state.user
+  const clientId = ctx.session.clientId
 
   if (!business) {
     return ctx.throw(404, new Error("Page does not exist"))
@@ -20,11 +21,12 @@ export const createEvent: Types.Middleware = async (ctx) => {
 
   const query = parseQuery(ctx.request.query)
   const service = business.services.find(s => s.id === query.serviceId)
-  const employe = business.employees.find(e => e.id === query.userId)
 
   if (!service) {
     return ctx.throw(404, "Page does not exist")
   }
+
+  const employe = business.employees.find(e => e.id === query.userId)
 
   if (!employe) {
     return ctx.throw(404, "Page does not exist")
@@ -47,7 +49,7 @@ export const createEvent: Types.Middleware = async (ctx) => {
       start: nativeDateToDateTime(startDate),
       end: nativeDateToDateTime(endDate),
       status: Status.Confirmed,
-      timezone: user.timezone,
+      timezone: business.timezone,
       createdAt: new Date,
       updatedAt: new Date
     })
