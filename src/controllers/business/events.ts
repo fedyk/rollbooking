@@ -19,8 +19,6 @@ export const createEvent: Types.Middleware = async (ctx) => {
   }
 
   const query = parseQuery(ctx.request.query)
-  const timezone = tz.findTimeZone(business.timezone)
-  const time = tz.getZonedTime(query.date, timezone)
   const service = business.services.find(s => s.id === query.serviceId)
   const employe = business.employees.find(e => e.id === query.userId)
 
@@ -112,6 +110,7 @@ export const getEvent: Types.Middleware = async (ctx) => {
   ctx.body = await ejs.renderFile(`views/business/get-event.ejs`, {
     event,
     user,
+    day: event.start.day,
     month: localize.month(event.start.month - 1, { width: "abbreviated" }),
     userName: employee.name,
     serviceName: service.name,
