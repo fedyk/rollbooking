@@ -1,6 +1,7 @@
 import * as ejs from "ejs";
 import * as dateFns from "date-fns";
 import * as localize from "date-fns/locale/en-US/_lib/localize";
+import * as tz from "timezone-support"
 import * as Types from '../../types';
 import * as accounts from '../../accounts';
 import * as events from '../../events';
@@ -17,23 +18,26 @@ export const createEvent: Types.Middleware = async (ctx) => {
     return ctx.throw(404, new Error("Page does not exist"))
   }
 
-  if (!user) {
-    throw new Error("add support anonymous user")
-  }
-
   const query = parseQuery(ctx.request.query)
   const service = business.services.find(s => s.id === query.serviceId)
+  const employe = business.employees.find(e => e.id === query.userId)
 
   if (!service) {
     return ctx.throw(404, "Page does not exist")
   }
 
+  if (!employe) {
+    return ctx.throw(404, "Page does not exist")
+  }
+
+  const employeAccount = await accounts.getById(ctx.mongoDatabase, employe.id)
+
   if (ctx.request.method === "POST") {
     const eventId = uniqId()
     const clientId = user.id
-    const startDate = dateTimeToNativeDate(query.date)
-    const endDate = dateFns.addMinutes(startDate, service.duration)
-  
+    const startDate = query.date
+    const endDate = dateFns.addMinutes(query.date, service.duration)
+
     const result = await events.create(ctx.mongoDatabase, {
       id: eventId,
       businessId: business.id,
@@ -51,15 +55,19 @@ export const createEvent: Types.Middleware = async (ctx) => {
     if (result.insertedCount !== 1) {
       throw new Error("Event has not been created.")
     }
-  
+
     return ctx.redirect(`/b/${business.id}/events/${eventId}`)
   }
 
   ctx.body = await ejs.renderFile("views/business/create-event.ejs", {
     user,
+    day: query.date.getDate(),
+    month: dateFns.format(query.date, "MMM"),
+    userName: employeAccount.name,
+    serviceName: service.name,
+    time: dateFns.format(query.date, "ccc, HH:mm")
   })
 }
-
 
 export const getEvent: Types.Middleware = async (ctx) => {
   const business = ctx.state.business as accounts.Business
@@ -87,11 +95,26 @@ export const getEvent: Types.Middleware = async (ctx) => {
     return ctx.throw(404, "Reservation does not exist")
   }
 
+  const employee = await accounts.getById(ctx.mongoDatabase, event.userId)
+
+  if (!employee) {
+    return ctx.throw(404, "Reservation does not exist")
+  }
+
+  const service = business.services.find(s => s.id === event.serviceId)
+
+  if (!service) {
+    return ctx.throw(404, "Reservation does not exist")
+  }
+
   ctx.body = await ejs.renderFile(`views/business/get-event.ejs`, {
     event,
     user,
     day: event.start.day,
-    month: localize.month(event.start.month - 1, { width: "abbreviated" })
+    month: localize.month(event.start.month - 1, { width: "abbreviated" }),
+    userName: employee.name,
+    serviceName: service.name,
+    time: dateFns.format(dateTimeToNativeDate(event.start), "ccc, HH:mm")
   })
 }
 
@@ -118,13 +141,11 @@ function parseQuery(query: any) {
     throw RangeError("Invalid date")
   }
 
-  const nativeDate = new Date(dateString)
+  const date = new Date(dateString)
 
-  if (Number.isNaN(nativeDate.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     throw RangeError("Invalid date format")
   }
-
-  const date = nativeDateToDateTime(nativeDate)
 
   return { userId, serviceId, date }
 }

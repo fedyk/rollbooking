@@ -1,14 +1,7 @@
-<div class="row">
-  <div class="col flex-grow-0">
-    <div class="h2 m-0"><%= day %></div>
-    <div class="h6 m-0"><%= month %></div>
-  </div>
-  <div class="col">
-    <div class="font-weight-light">Rollbooking Salon</div>
-    <div class="text-muted">
-      <span>Haricut service</span>
-      <span>·</span>
-      <span>Tues at 4:00 PM</span>
-    </div>
-  </div>
-</div>
+<%- include("../components/event-cart", {
+  day: day,
+  month: month,
+  userName: userName,
+  serviceName: serviceName,
+  time: time,
+}) %>
