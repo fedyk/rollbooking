@@ -4,20 +4,33 @@ import { DateTime } from "./types";
 export interface Event {
   id: string
   businessId: string
-  attendees: {
+  organizer: {
     id: string
+    name: string
     type: "user" | "client"
-  }[]
+  }
+  assigner: {
+    id: string
+    name: string
+  }
+  client?: {
+    id: string
+    name: string
+    type: "user" | "client"
+  }
   serviceId: string
   start: DateTime
   end: DateTime
-  status: Status
-  timezone?: string
+  status: "pending" | "confirmed" | "rejected" | "deleted"
   createdAt: Date
   updatedAt: Date
 }
 
-/*
+/**
+ * The example of Google Calendar Object
+ * @see https://developers.google.com/calendar/v3/reference/events#resource-representations
+ * @example
+ * 
 {
   "kind": "calendar#event",
   "etag": etag,
@@ -163,14 +176,7 @@ export interface Event {
     }
   ]
 }
-*/
-
-export enum Status {
-  Pending = 1,
-  Confirmed = 2,
-  Rejected = 3,
-  Deleted = 4,
-}
+ */
 
 export function getCollection(db: Db) {
   return db.collection<Event>("events")
@@ -180,6 +186,7 @@ export function create(db: Db, reservation: Event) {
   return getCollection(db).insertOne(reservation)
 }
 
+/** @todo FilterQuery has a problem with nested filters(e.g. "organizer.id") */
 export function findOne(db: Db, query: FilterQuery<Event>) {
   return getCollection(db).findOne(query)
 }
