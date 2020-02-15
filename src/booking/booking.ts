@@ -47,7 +47,7 @@ export class Booking {
     // reservations by user
     for (let i = 0; i < this.reservations.length; i++) {
       const r = this.reservations[i]
-      const list = reservations.get(r.userId)
+      const list = reservations.get(r.assigner.id)
       const start = tz.getUnixTime(r.start, this.timezone)
       const end = tz.getUnixTime(r.end, this.timezone)
       const dateRange = new DateTimeRange(start, end)
@@ -56,7 +56,7 @@ export class Booking {
         list.push(dateRange)
       }
       else {
-        reservations.set(r.userId, [dateRange])
+        reservations.set(r.assigner.id, [dateRange])
       }
     }
 

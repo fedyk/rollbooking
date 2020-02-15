@@ -29,7 +29,12 @@ export const join: koa.Middleware<State, Context> = async (ctx) => {
     avatar: null,
     desc: null,
     timezone: body.timezone,
-    employees: [{ id: user.id, role: accounts.EmployeeRole.Owner }],
+    employees: [{
+      id: user.id,
+      name: user.name,
+      avatar: user.avatar,
+      role: accounts.EmployeeRole.Owner
+    }],
     services: getDefaultServices(),
     regularHours: getDefaultHours(),
     specialHours: [],

@@ -48,6 +48,8 @@ export enum EmployeeRole {
 
 export interface BusinessEmployee {
   id: string
+  name: string
+  avatar: string
   role: EmployeeRole
   position?: string
 }
