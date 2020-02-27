@@ -190,3 +190,7 @@ export function create(db: Db, reservation: Event) {
 export function findOne(db: Db, query: FilterQuery<Event>) {
   return getCollection(db).findOne(query)
 }
+
+export function getMany(db: Db, query: FilterQuery<Event>) {
+  return getCollection(db).find(query)
+}

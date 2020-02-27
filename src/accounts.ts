@@ -81,6 +81,10 @@ export function getUserById(db: Db, id: string): Promise<User> {
   return getCollection(db).findOne({ id, type: "user" })
 }
 
+export function getBusinessById(db: Db, id: string): Promise<User> {
+  return getCollection(db).findOne({ id, type: "business" })
+}
+
 export function getRecentBusinesses(db: Db) {
   return getCollection(db).find({ type: "business" }).limit(20).toArray()
 }
