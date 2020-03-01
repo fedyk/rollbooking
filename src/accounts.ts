@@ -77,11 +77,11 @@ export function getById(db: Db, id: string) {
   return getCollection(db).findOne({ id })
 }
 
-export function getUserById(db: Db, id: string): Promise<User> {
+export function getUserById(db: Db, id: string): Promise<User | null> {
   return getCollection(db).findOne({ id, type: "user" })
 }
 
-export function getBusinessById(db: Db, id: string): Promise<Business> {
+export function getBusinessById(db: Db, id: string): Promise<Business | null> {
   return getCollection(db).findOne({ id, type: "business" })
 }
 

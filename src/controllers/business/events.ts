@@ -7,15 +7,18 @@ import * as clients from '../../clients';
 import * as events from '../../events';
 import { nativeDateToDateTime } from '../../helpers/date/native-date-to-date-time';
 import { uniqId } from "../../lib/uniq-id";
-import { Status } from "../../types";
 import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
 
 export const createEvent: Types.Middleware = async (ctx) => {
+  if (!ctx.session) {
+    return ctx.throw(404, "Internal problem with session. please try again later")
+  }
+
   const business = ctx.state.business as accounts.Business
   /** Logged-in user */
-  const user = ctx.state.user
+  const user = ctx.state.user || null
   /** Anonymous client(his ID) */
-  const clientId = ctx.session ? ctx.session.clientId : void 0
+  const clientId = ctx.session.clientId
 
   if (!business) {
     return ctx.throw(404, new Error("Page does not exist"))
@@ -42,7 +45,7 @@ export const createEvent: Types.Middleware = async (ctx) => {
     const startDate = query.date
     const endDate = dateFns.addMinutes(query.date, service.duration)
 
-    let organizer: accounts.User | clients.Client = user;
+    let organizer: accounts.User | clients.Client | null = user;
 
     if (!organizer && clientId) {
       organizer = await clients.getById(ctx.mongoDatabase, clientId)
@@ -100,13 +103,17 @@ export const createEvent: Types.Middleware = async (ctx) => {
     user,
     day: query.date.getDate(),
     month: dateFns.format(query.date, "MMM"),
-    userName: employeeAccount.name,
+    userName: employeeAccount ? employeeAccount.name : "",
     serviceName: service.name,
     time: dateFns.format(query.date, "ccc, HH:mm")
   })
 }
 
 export const getEvent: Types.Middleware = async (ctx) => {
+  if (!ctx.session) {
+    return ctx.throw(404, "Internal problem with session. please try again later")
+  }
+ 
   const business = ctx.state.business as accounts.Business
   const user = ctx.state.user
   const clientId = user ? user.id : ctx.session.clientId

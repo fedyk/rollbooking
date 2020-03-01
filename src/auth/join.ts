@@ -8,6 +8,10 @@ import { DayOfWeek } from '../types/dat-of-week';
 import { uniqId } from '../lib/uniq-id';
 
 export const join: koa.Middleware<State, Context> = async (ctx) => {
+  if (!ctx.session) {
+    throw new Error("Internal issue with sessions services. Please try again later")
+  }
+
   const body = parseBody(ctx.request.body)
 
   const user: accounts.User = {
@@ -26,8 +30,8 @@ export const join: koa.Middleware<State, Context> = async (ctx) => {
     type: "business",
     name: body.businessName,
     alias: getBusinessAlias(body.businessName),
-    avatar: null,
-    desc: null,
+    avatar: "",
+    desc: "",
     timezone: body.timezone,
     employees: [{
       id: user.id,

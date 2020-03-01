@@ -82,18 +82,22 @@ export class Booking {
             times.forEach(time => {
               const start = tz.getZonedTime(time.startTime, this.timezone)
               const end = tz.getZonedTime(time.endTime, this.timezone)
+              const slots = slotsByServiceId.get(service.id)
 
-              slotsByServiceId.get(service.id).push({
-                start,
-                end,
-                userId: user.id,
-                serviceId: service.id
-              })
+              if (slots) {
+                slots.push({
+                  start,
+                  end,
+                  userId: user.id,
+                  serviceId: service.id
+                })
+              }
             })
           }
         }
 
-        if (slotsByServiceId.get(service.id).length !== 0) {
+        const slots = slotsByServiceId.get(service.id)
+        if (slots && slots.length !== 0) {
           break;
         }
       }

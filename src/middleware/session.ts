@@ -13,7 +13,7 @@ export const session: types.Middleware = async(ctx, next) => {
     const userId = ctx.session.userId
   
     if (userId && !ctx.state.user) {
-      ctx.state.user = await accounts.getUserById(ctx.mongoDatabase, userId)
+      ctx.state.user = await accounts.getUserById(ctx.mongoDatabase, userId) || void 0
     }
   }
 

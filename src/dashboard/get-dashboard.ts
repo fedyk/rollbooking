@@ -11,7 +11,7 @@ import { dateToISODate } from '../helpers/date/date-to-iso-date';
  * @todo add checkbox for list of events
  */
 export const getDashboard: Middleware<State, Context> = async (ctx) => {
-  const userId = ctx.session.userId
+  const userId = ctx.session ? ctx.session.userId : void 0
 
   if (!userId) {
     return ctx.throw(404, "Page does not exist or you have no access to it")
@@ -21,6 +21,10 @@ export const getDashboard: Middleware<State, Context> = async (ctx) => {
 
   if (!user) {
     return ctx.throw(404, "Your session has missed data about you. Please re-login again")
+  }
+
+  if (!user.business) {
+    return ctx.throw(404, "User has no business associated")
   }
 
   const businessId = user.business.default_business_id;
@@ -76,7 +80,7 @@ function formatEvents(events: Events.Event[], services: Map<string, Accounts.Bus
     const startMinutes = e.start.minutes.toString().padStart(2, "0")
     const endHours = e.end.hours.toString().padStart(2, "0")
     const endMinutes = e.end.minutes.toString().padStart(2, "0")
-    
+
     /**
      * @todo service should be placed to event
      */
