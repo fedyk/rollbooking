@@ -6,20 +6,23 @@ export function indexPeriodsByOpenDay(periods: TimePeriod[]): Map<DayOfWeek, Tim
 
   for (let i = 0; i < periods.length; i++) {
     const period = periods[i];
+    const timePeriod = map.get(period.openDay)
 
-    if (!map.has(period.openDay)) {
+    if (!timePeriod) {
       map.set(period.openDay, [period]);
     }
     else {
-      map.get(period.openDay).push(period);
+      timePeriod.push(period);
     }
 
     if (period.openDay !== period.closeDay) {
-      if (!map.has(period.closeDay)) {
+      const timePeriod = map.get(period.closeDay)
+
+      if (!timePeriod) {
         map.set(period.closeDay, [period]);
       }
       else {
-        map.get(period.closeDay).push(period);
+        timePeriod.push(period);
       }
     }
   }

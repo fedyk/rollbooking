@@ -81,7 +81,7 @@ export function getUserById(db: Db, id: string): Promise<User> {
   return getCollection(db).findOne({ id, type: "user" })
 }
 
-export function getBusinessById(db: Db, id: string): Promise<User> {
+export function getBusinessById(db: Db, id: string): Promise<Business> {
   return getCollection(db).findOne({ id, type: "business" })
 }
 

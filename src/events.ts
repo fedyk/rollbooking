@@ -4,6 +4,9 @@ import { DateTime } from "./types";
 export interface Event {
   id: string
   businessId: string
+  start: DateTime
+  end: DateTime
+  status: "pending" | "confirmed" | "rejected" | "deleted"
   organizer: {
     id: string
     name: string
@@ -18,10 +21,10 @@ export interface Event {
     name: string
     type: "user" | "client"
   }
+  /**
+   * @todo add support of multiple services in event
+   */
   serviceId: string
-  start: DateTime
-  end: DateTime
-  status: "pending" | "confirmed" | "rejected" | "deleted"
   createdAt: Date
   updatedAt: Date
 }

@@ -6,8 +6,8 @@ import { ObjectID } from "bson";
 const SEPARATOR = ".";
 const KEEP_ARRAY = false;
 
-export function toDottedObject(obj: any, target = {}, path = []) {
-  const keys = Object.keys(obj);
+export function toDottedObject(obj: any, target = {}, path: string[] = []) {
+  const keys: string[] = Object.keys(obj);
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];

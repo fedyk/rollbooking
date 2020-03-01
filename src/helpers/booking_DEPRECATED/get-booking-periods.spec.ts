@@ -1,7 +1,7 @@
 import { getBookingPeriods } from "./get-booking-periods";
 import { Date as DateObject } from "../../types/date";
 import { DayOfWeek } from "../../types/dat-of-week";
-import { DateRange } from "../../lib/date-range";
+import { DateRange_DEPRECATED } from "../../lib/date-range";
 
 describe("getBookingPeriods", function () {
   const start: DateObject = {
@@ -62,19 +62,19 @@ describe("getBookingPeriods", function () {
         periods: []
       }
     )).toEqual([
-      new DateRange(
+      new DateRange_DEPRECATED(
         new Date(2018, 11, 17, 8, 0, 0),
         new Date(2018, 11, 17, 9, 0, 0)
       ),
-      new DateRange(
+      new DateRange_DEPRECATED(
         new Date(2018, 11, 17, 10, 0, 0),
         new Date(2018, 11, 17, 18, 0, 0)
       ),
-      new DateRange(
+      new DateRange_DEPRECATED(
         new Date(2018, 11, 18, 8, 0, 0),
         new Date(2018, 11, 18, 9, 0, 0)
       ),
-      new DateRange(
+      new DateRange_DEPRECATED(
         new Date(2018, 11, 18, 10, 0, 0),
         new Date(2018, 11, 18, 16, 0, 0)
       ),
@@ -114,11 +114,11 @@ describe("getBookingPeriods", function () {
         periods: []
       }
     )).toEqual([
-      new DateRange(
+      new DateRange_DEPRECATED(
         new Date(2018, 11, 17, 0, 0, 0),
         new Date(2018, 11, 17, 1, 0, 0)
       ),
-      new DateRange(
+      new DateRange_DEPRECATED(
         new Date(2018, 11, 17, 23, 0),
         new Date(2018, 11, 18, 1, 0)
       )
@@ -153,7 +153,7 @@ describe("getBookingPeriods", function () {
         periods: []
       }
     )).toEqual([
-      new DateRange(
+      new DateRange_DEPRECATED(
         new Date(2019, 0, 2, 10, 0),
         new Date(2019, 0, 2, 16, 0)
       )

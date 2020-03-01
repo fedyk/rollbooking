@@ -14,8 +14,8 @@ export const layout: types.Middleware = async (ctx, next) => {
 
   ctx.body = renderLayout({
     isAuthenticated: !!ctx.state.user,
-    userName: ctx.state.user ? ctx.state.user.name : null,
-    userId: ctx.state.user ? ctx.state.user.id : null,
+    userName: ctx.state.user ? ctx.state.user.name : void 0,
+    userId: ctx.state.user ? ctx.state.user.id : void 0,
     body: ctx.body,
   })
 }

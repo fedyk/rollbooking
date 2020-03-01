@@ -7,19 +7,19 @@ export function isoDateToDateObject(date: any): DateObject {
   const [year, month, day] = date.split("-").map(v => parseInt(v, 10)) as number[];
 
   if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
-    return null;
+    throw new RangeError("invalid date format")
   }
 
   if (year <= 1990) {
-    return null;
+    throw new RangeError("invalid date format")
   }
 
   if (month < 1 || 12 < month) {
-    return null;
+    throw new RangeError("invalid date format")
   }
   
   if (day < 0 || 31 < day) {
-    return null;
+    throw new RangeError("invalid date format")
   }
 
   const nativeDate = new Date(year, month - 1, day);

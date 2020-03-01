@@ -1,5 +1,5 @@
 import { DayOfWeek } from "../../types/dat-of-week";
-import { DateRange } from "../../lib/date-range";
+import { DateRange_DEPRECATED } from "../../lib/date-range";
 import { getBookingSlots, Slot } from "./get-booking-slots";
 
 describe("getBookingSlots", function () {
@@ -46,13 +46,13 @@ describe("getBookingSlots", function () {
       }],
       reservations: [{
         userId: "1",
-        range: new DateRange("2018-01-01T10:00:00", "2018-01-01T10:30:00")
+        range: new DateRange_DEPRECATED("2018-01-01T10:00:00", "2018-01-01T10:30:00")
       }, {
         userId: "1",
-        range: new DateRange("2018-01-01T11:00:00", "2018-01-01T12:00:00")
+        range: new DateRange_DEPRECATED("2018-01-01T11:00:00", "2018-01-01T12:00:00")
       }, {
         userId: "1",
-        range: new DateRange("2018-01-01T13:00:00", "2018-01-01T13:30:00")
+        range: new DateRange_DEPRECATED("2018-01-01T13:00:00", "2018-01-01T13:30:00")
       }],
     })).toEqual([{
       userId: "1",

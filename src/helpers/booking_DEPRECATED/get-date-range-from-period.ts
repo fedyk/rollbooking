@@ -1,8 +1,8 @@
-import { DateRange } from "../../lib/date-range";
+import { DateRange_DEPRECATED } from "../../lib/date-range";
 import { DayOfWeek } from "../../types/dat-of-week";
 import { TimePeriod } from "../../types/time-period";
 
-export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
+export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange_DEPRECATED {
   const day = date.getDay();
 
   if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED) {
@@ -49,5 +49,5 @@ export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRang
   end.setSeconds(0)
   end.setMilliseconds(0)
 
-  return new DateRange(start, end);
+  return new DateRange_DEPRECATED(start, end);
 }

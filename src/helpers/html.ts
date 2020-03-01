@@ -4,45 +4,6 @@
 
 var has_own_property = Object.prototype.hasOwnProperty;
 
-/**
- * Merge two attribute objects giving precedence
- * to values in object `b`. Classes are special-cased
- * allowing for arrays and merging/joining appropriately
- * resulting in a string.
- *
- * @param {Object} a
- * @param {Object} b
- * @return {Object} a
- * @api private
- */
-export function merge(a: object | object[], b: object = null) {
-  if (arguments.length === 1) {
-    var attrs = a[0];
-    for (var i = 1; i < (a as object[]).length; i++) {
-      attrs = merge(attrs, a[i]);
-    }
-    return attrs;
-  }
-
-  let valA, valB;
-
-  for (var key in b) {
-    if (key === 'class') {
-      valA = a[key] || [];
-      a[key] = (Array.isArray(valA) ? valA : [valA]).concat(b[key] || []);
-    } else if (key === 'style') {
-      valA = style(a[key]);
-      valA = valA && valA[valA.length - 1] !== ';' ? valA + ';' : valA;
-      valB = style(b[key]);
-      valB = valB && valB[valB.length - 1] !== ';' ? valB + ';' : valB;
-      a[key] = valA + valB;
-    } else {
-      a[key] = b[key];
-    }
-  }
-
-  return a;
-};
 
 /**
  * Process array, object, or string as a string of classes delimited by a space.

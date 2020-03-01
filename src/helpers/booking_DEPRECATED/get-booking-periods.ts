@@ -1,5 +1,5 @@
 import { addDay } from "../../utils/date";
-import { DateRange } from "../../lib/date-range";
+import { DateRange_DEPRECATED } from "../../lib/date-range";
 import { DayOfWeek } from "../../types/dat-of-week";
 import { Date as DateObject } from "../../types/date";
 import { BusinessHours, SpecialHours } from "../../types/salon";
@@ -12,7 +12,7 @@ export function getBookingPeriods(
   end: DateObject,
   regularHours: BusinessHours,
   specialHours: SpecialHours
-): DateRange[] {
+): DateRange_DEPRECATED[] {
   const startDate = dateObjectToNativeDate(start);
   const endDate = dateObjectToNativeDate(end);
 
@@ -21,7 +21,7 @@ export function getBookingPeriods(
   endDate.setSeconds(59);
   endDate.setMilliseconds(999);
 
-  const allPeriod = new DateRange(startDate, endDate);
+  const allPeriod = new DateRange_DEPRECATED(startDate, endDate);
 
   const periodsByStartDay = indexPeriodsByOpenDay(regularHours.periods);
   const ranges = [];
@@ -42,9 +42,9 @@ export function getBookingPeriods(
     curr = addDay(curr, 1);
   }
 
-  const mergedRanges = DateRange.merge(ranges);
+  const mergedRanges = DateRange_DEPRECATED.merge(ranges);
 
   return mergedRanges
     .filter(range => range.isOverlap(allPeriod))
-    .map(range => DateRange.intersection(range, allPeriod));
+    .map(range => DateRange_DEPRECATED.intersection(range, allPeriod));
 }

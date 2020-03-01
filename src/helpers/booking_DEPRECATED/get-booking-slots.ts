@@ -1,5 +1,5 @@
 import { addDay } from "../../utils/date";
-import { DateRange } from "../../lib/date-range";
+import { DateRange_DEPRECATED } from "../../lib/date-range";
 import { DateTime } from "../../types/date-time";
 import { DayOfWeek } from "../../types/dat-of-week";
 import { TimePeriod } from "../../types/time-period";
@@ -21,7 +21,7 @@ export interface Params {
     duration: number;
   }>;
   reservations: {
-    range: DateRange;
+    range: DateRange_DEPRECATED;
     userId: string;
   }[];
 }
@@ -36,7 +36,7 @@ export interface Slot {
 export function getBookingSlots({ regularHours, specialHours, startPeriod, endPeriod, users, reservations, services }: Params): Slot[] {
   const ranges = getPeriods(startPeriod, endPeriod, regularHours, specialHours);
   const slots: Slot[] = [];
-  const usersReservedRanges = new Map<string, DateRange[]>();
+  const usersReservedRanges = new Map<string, DateRange_DEPRECATED[]>();
 
   reservations.forEach(reservation => {
     if (!usersReservedRanges.has(reservation.userId)) {
@@ -88,7 +88,7 @@ export function getPeriods(
   end: DateObject,
   regularHours: BusinessHours,
   specialHours: SpecialHours
-): DateRange[] {
+): DateRange_DEPRECATED[] {
   const startDate = dateObjectToNativeDate(start);
   const endDate = dateObjectToNativeDate(end);
 
@@ -97,7 +97,7 @@ export function getPeriods(
   endDate.setSeconds(59);
   endDate.setMilliseconds(999);
 
-  const allPeriod = new DateRange(startDate, endDate);
+  const allPeriod = new DateRange_DEPRECATED(startDate, endDate);
 
   const periodsByStartDay = getGroupedPeriodsByDayOfWeek(regularHours.periods);
   const ranges = [];
@@ -122,11 +122,11 @@ export function getPeriods(
     curr = addDay(curr, 1);
   }
 
-  const mergedRanges = DateRange.merge(ranges);
+  const mergedRanges = DateRange_DEPRECATED.merge(ranges);
 
   return mergedRanges
     .filter(range => range.isOverlap(allPeriod))
-    .map(range => DateRange.intersection(range, allPeriod));
+    .map(range => DateRange_DEPRECATED.intersection(range, allPeriod));
 }
 
 export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWeek, TimePeriod[]> {
@@ -155,7 +155,7 @@ export function getGroupedPeriodsByDayOfWeek(periods: TimePeriod[]): Map<DayOfWe
   return map;
 }
 
-export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange {
+export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRange_DEPRECATED {
   const day = date.getDay();
 
   if (period.openDay !== DayOfWeek.DAY_OF_WEEK_UNSPECIFIED) {
@@ -202,5 +202,5 @@ export function getDateRangeFromPeriod(date: Date, period: TimePeriod): DateRang
   end.setSeconds(0)
   end.setMilliseconds(0)
 
-  return new DateRange(start, end);
+  return new DateRange_DEPRECATED(start, end);
 }

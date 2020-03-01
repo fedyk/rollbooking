@@ -15,7 +15,7 @@ export const createEvent: Types.Middleware = async (ctx) => {
   /** Logged-in user */
   const user = ctx.state.user
   /** Anonymous client(his ID) */
-  const clientId = ctx.session.clientId
+  const clientId = ctx.session ? ctx.session.clientId : void 0
 
   if (!business) {
     return ctx.throw(404, new Error("Page does not exist"))
