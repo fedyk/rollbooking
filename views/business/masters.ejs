@@ -1,0 +1,10 @@
+<div class="card">
+  <ul class="list-group list-group-flush">
+    <% masters.forEach(function(master) { %>
+    <li class="list-group-item">
+      <a href="/b/<%= account.id%>/master/<%= master.id %>" class="h5 stretched-link d-block mb-0"><%= master.name %></a>
+      <span class="text-muted"><%= master.position %></span>
+    </li>
+    <% }) %>
+  </ul>
+</div>

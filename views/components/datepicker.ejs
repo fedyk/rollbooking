@@ -1,0 +1,44 @@
+<%
+  // Validate required property
+  if (!datePicker) {
+    throw new RangeError("`datepicker` prop cannot be empty")
+  }
+
+  if (!datePicker.constructor || datePicker.constructor.name !== "DatePicker") {
+    throw new RangeError("`datePicker` should be an instance of DatePicker")
+  }
+%>
+
+<table class="table-condensed">
+  <thead>
+    <tr>
+      <th>
+        <a class="btn btn-sm" href="<%= datePicker.getPreviousUrl() %>">«</a>
+      </th>
+      <th class="text-center" colspan="5"><%= datePicker.getFormattedDate() %></th>
+      <th>
+        <a class="btn btn-sm" href="<%= datePicker.getNextUrl() %>">»</a>
+      </th>
+    </tr>
+    <tr>
+      <th class="text-center">Su</th>
+      <th class="text-center">Mo</th>
+      <th class="text-center">Tu</th>
+      <th class="text-center">We</th>
+      <th class="text-center">Th</th>
+      <th class="text-center">Fr</th>
+      <th class="text-center">Sa</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% datePicker.getWeeks().forEach(function(week) { %>
+    <tr>
+      <% week.days.forEach(function(day) { %>
+      <td data-day="01/26/2020">
+        <a href="<%= day.url %>" class="btn btn-sm btn-block text-center <%= day.selected ? 'btn-outline-primary' : '' %>"><%= day.day %></a>
+      </td>
+      <% }) %>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>

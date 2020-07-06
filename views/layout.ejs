@@ -1,0 +1,21 @@
+<div class="border-bottom bg-white">
+  <div class="container d-flex flex-column flex-md-row align-items-center py-2">
+    <a class="my-0 mr-md-auto" href="/" title="Home">
+      <img src="/images/logo.svg" width="128" height="30">
+    </a>
+
+    <nav class="my-2 my-md-0 mr-md-3">
+      <a class="btn btn-link" href="/explore">Explore</a>
+    </nav>
+
+    <% if (isAuthenticated) { %>
+      <a class="btn btn-link" href="/b/<%= userId %>"><%= userName %></a>
+    <% } else { %>
+      <a class="btn btn-link" href="/login">Sign in</a>
+    <% }  %>
+  </div>
+</div>
+
+<%- body %>
+
+<div class="container py-3">© 2020 Rollbooking</div>
