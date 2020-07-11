@@ -1,21 +1,21 @@
-import * as ejs from "ejs";
 import * as dateFns from "date-fns";
 import * as localize from "date-fns/locale/en-US/_lib/localize";
-import * as Types from '../../types';
-import * as accounts from '../../account';
-import * as users from '../../users';
-import * as clients from '../../clients';
-import * as events from '../../events';
-import { nativeDateToDateTime } from '../../helpers/date/native-date-to-date-time';
-import { uniqId } from "../../lib/uniq-id";
-import { dateTimeToNativeDate } from "../../helpers/date/date-time-to-native-date";
+import * as Types from '../types';
+import * as accounts from '../account';
+import * as users from '../users';
+import * as clients from '../clients';
+import * as events from '../events';
+import { nativeDateToDateTime } from '../helpers/date/native-date-to-date-time';
+import { uniqId } from "../lib/uniq-id";
+import { dateTimeToNativeDate } from "../helpers/date/date-time-to-native-date";
+import { renderView } from "../render";
 
 export const createEvent: Types.Middleware = async (ctx) => {
   if (!ctx.session) {
     return ctx.throw(404, "Internal problem with session. please try again later")
   }
 
-  const business = ctx.state.business as accounts.Account
+  const business = await accounts.getBusinessById(ctx.mongo, ctx.params.id)
 
   /** Logged-in user */
   const user = ctx.state.user || null
@@ -102,7 +102,7 @@ export const createEvent: Types.Middleware = async (ctx) => {
     return ctx.redirect(`/b/${business.id}/events/${eventId}`)
   }
 
-  ctx.body = await ejs.renderFile("views/business/create-event.ejs", {
+  ctx.body = await renderView("create-event.ejs", {
     user,
     day: query.date.getDate(),
     month: dateFns.format(query.date, "MMM"),
@@ -117,7 +117,7 @@ export const getEvent: Types.Middleware = async (ctx) => {
     return ctx.throw(404, "Internal problem with session. please try again later")
   }
  
-  const business = ctx.state.business as accounts.Account
+  const business = await accounts.getBusinessById(ctx.mongo, ctx.params.id)
   const user = ctx.state.user
   const clientId = user ? user.id : ctx.session.clientId
   const eventId = ctx.params.eventId
@@ -155,7 +155,7 @@ export const getEvent: Types.Middleware = async (ctx) => {
     return ctx.throw(404, "Reservation does not exist")
   }
 
-  ctx.body = await ejs.renderFile(`views/business/get-event.ejs`, {
+  ctx.body = await renderView(`get-event.ejs`, {
     event,
     user,
     day: event.start.day,

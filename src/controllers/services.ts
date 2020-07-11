@@ -1,17 +1,17 @@
-import * as ejs from "ejs";
 import * as querystring from "querystring";
 import * as tz from "timezone-support";
 import * as dateFns from "date-fns";
 
-import * as types from '../../types';
-import * as accounts from '../../account';
-import * as Events from "../../events";
-import { Booking } from '../../booking';
-import { dateTimeToISODate } from '../../helpers/date/date-time-to-iso-date';
-import { DateTime } from '../../types';
+import * as types from '../types';
+import * as accounts from '../account';
+import * as Events from "../events";
+import { Booking } from '../booking';
+import { dateTimeToISODate } from '../helpers/date/date-time-to-iso-date';
+import { DateTime } from '../types';
+import { renderView } from "../render";
 
 export const services: types.Middleware = async (ctx) => {
-  const business = ctx.state.business as accounts.Account
+  const business = await accounts.getBusinessById(ctx.mongo, ctx.params.id)
 
   if (!business) {
     return ctx.throw(404, new Error("Page not found"))
@@ -66,7 +66,8 @@ export const services: types.Middleware = async (ctx) => {
   })
 
   ctx.state.title = business.name
-  ctx.body = await ejs.renderFile(`views/business/services.ejs`, {
+  ctx.body = await renderView(`services.ejs`, {
+    name: business.name,
     business,
     services
   })

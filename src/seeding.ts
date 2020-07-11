@@ -1,5 +1,5 @@
 import { MONGODB_URI } from "./config"
-import { createClient, getDatabase, closeClient } from "./storage"
+import { createClient, getDatabase, closeClient } from "./mongo"
 import { User, createUser, createUsers } from "./users"
 import { uniqId } from "./lib/uniq-id"
 import { Account, Service, EmployeeRole, createAccount } from "./account"

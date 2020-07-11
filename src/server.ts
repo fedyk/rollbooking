@@ -7,7 +7,7 @@ import * as bodyParser from "koa-bodyparser"
 import * as session from "./session"
 import { router } from "./router";
 import { State, Context } from "./types/app";
-import * as mongo from "./storage"
+import * as mongo from "./mongo"
 import { errorHandler } from "./middleware"
 
 export async function createServer() {

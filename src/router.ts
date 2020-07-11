@@ -1,16 +1,15 @@
 import * as Router from "@koa/router"
-import { State, Context } from "./types/app";
+import { Context } from "./types/app";
 import { join } from "./controllers/join"
-import controllers from "./controllers"
-import { welcome } from "./controllers"
-import { dashboard } from "./controllers"
+import { welcome } from "./controllers/welcome/welcome"
+import { dashboard } from "./controllers/dashboard/dashboard"
 import { getExplore } from "./controllers/explore"
 import { login } from "./controllers/login";
 import { layout, template, session } from "./middleware";
+import { services } from "./controllers/services";
+import { createEvent, getEvent } from "./controllers/events";
 
 export const router = new Router<any, Context>();
-
-const { business } = controllers;
 
 /** Add user to context */
 router.use(session)
@@ -25,8 +24,6 @@ router.all("/login", template, login)
 router.get("/dashboard", template, layout, dashboard)
 
 /** Business */
-router.get("/b/:id", template, layout, business.layout, business.services)
-router.all("/b/:id/create/event", template, layout, business.layout, business.createEvent)
-router.get("/b/:id/events/:eventId", template, layout, business.layout, business.getEvent)
-router.get("/b/:id/masters", template, layout, business.layout, business.getMasters)
-router.get("/b/:id/settings", template, layout, business.layout, business.getSettings)
+router.get("/b/:id", template, layout, services)
+router.all("/b/:id/create/event", template, layout, createEvent)
+router.get("/e/:eventId", template, layout, getEvent)
