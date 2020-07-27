@@ -1,16 +1,17 @@
+import * as Router from "@koa/router"
 import * as querystring from "querystring";
 import * as tz from "timezone-support";
 import * as dateFns from "date-fns";
 
 import * as types from '../types';
-import * as accounts from '../account';
-import * as Events from "../events";
+import * as accounts from '../models/businesses';
+import * as Events from "../models/events";
 import { Booking } from '../booking';
 import { dateTimeToISODate } from '../helpers/date/date-time-to-iso-date';
 import { DateTime } from '../types';
 import { renderView } from "../render";
 
-export const services: types.Middleware = async (ctx) => {
+export const business: types.Middleware = async (ctx) => {
   const business = await accounts.getBusinessById(ctx.mongo, ctx.params.id)
 
   if (!business) {
@@ -23,6 +24,7 @@ export const services: types.Middleware = async (ctx) => {
     throw new RangeError(`Business ${business.id} has missed or invalid timezone`)
   }
 
+  const currentUserId = ctx.session?.userId
   const startTime = tz.getZonedTime(new Date, timezone)
   const endTime = tz.getZonedTime(dateFns.addDays(new Date, 7), timezone)
 
@@ -60,14 +62,29 @@ export const services: types.Middleware = async (ctx) => {
       slots: slots.map(slot => ({
         title: dateTimeToISODate(slot.start),
         text: formatDateTime(slot.start),
-        url: `/b/${business.id}/create/event?` + querystring.stringify({ user_id: slot.userId, service_id: serviceId, date: dateTimeToISODate(slot.start) })
+        url: Router.url("/business/:businessId/event/new", {
+          businessId: business.id
+        }) + "?" + querystring.stringify({
+          user_id: slot.userId,
+          service_id: serviceId,
+          date: dateTimeToISODate(slot.start)
+        })
       }))
     }
   })
 
+  const avatarUrl = `/images/business-avatar-${business.id.charCodeAt(0) % 3}.png`
+  const settingsUrl = business.ownerId === currentUserId
+    ? Router.url("/business/:businessId/settings", {
+      businessId: business.id
+    })
+    : void 0
+
   ctx.state.title = business.name
-  ctx.body = await renderView(`services.ejs`, {
+  ctx.body = await renderView("business.ejs", {
     name: business.name,
+    avatarUrl,
+    settingsUrl,
     business,
     services
   })

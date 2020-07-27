@@ -1,20 +1,19 @@
-import { Middleware } from 'koa';
-import * as ejs from "ejs";
+import * as querystring from "querystring";
 import * as dateFns from "date-fns";
 import * as tz from "timezone-support";
-import * as users from "../../users";
-import * as accounts from "../../account";
-import * as Events from "../../events";
-import { Context, State } from '../../types/app';
-import { DatePicker } from '../../datepicker/datepicker';
-import { dateToISODate } from '../../helpers/date/date-to-iso-date';
+import * as users from "../models/users";
+import * as accounts from "../models/businesses";
+import * as Events from "../models/events";
+import { Context, State } from '../types/app';
+import { datepicker } from '../helpers/datepicker';
+import { dateToISODate } from '../helpers/date/date-to-iso-date';
+import { renderView } from '../render';
+import { Middleware } from "../types";
+import Router = require('@koa/router');
 
-/**
- * @todo add checkbox for list of events
- */
-export const dashboard: Middleware<State, Context> = async (ctx) => {
+export const calendar: Middleware<State, Context> = async (ctx) => {
   const userId = ctx.session ? ctx.session.userId : void 0
-  
+
   if (!userId) {
     return ctx.throw(404, "Page does not exist or you have no access to it")
   }
@@ -41,7 +40,7 @@ export const dashboard: Middleware<State, Context> = async (ctx) => {
   const backupDate = tz.getZonedTime(new Date, timezone)
   const date = dateFns.parse(ctx.request.query.date, "yyyy-MM-dd", new Date)
   const selectedDate = dateFns.isValid(date) ? tz.convertDateToTime(date) : backupDate
-  
+
   const events = await Events.find(ctx.mongo, {
     businessId: businessId,
     $and: [
@@ -60,18 +59,23 @@ export const dashboard: Middleware<State, Context> = async (ctx) => {
     .limit(100)
     .sort("createdAt", -1)
     .toArray()
-  
+
   const services = new Map(business.services.map(s => [s.id, s]))
   const employees = new Map(business.employees.map(e => [e.id, e]))
   const formattedEvents = formatEvents(events, services, employees, businessId)
 
-  const datePicker = new DatePicker({
+  const datePicker = datepicker({
     selectedDate: tz.convertTimeToDate(selectedDate),
-    urlBuilder: d => "/dashboard?date=" + dateToISODate(d)
+    urlBuilder: function (date) {
+      return "/calendar?" + querystring.stringify({
+        date: dateToISODate(date)
+      })
+    },
+    weekStartsOn: 1
   })
 
   ctx.state.title = "Welcome";
-  ctx.body = await ejs.renderFile("views/dashboard/get-dashboard.ejs", {
+  ctx.body = await renderView("calendar.ejs", {
     user: user,
     business: business,
     formattedEvents: formattedEvents,
@@ -83,7 +87,7 @@ function formatEvents(
   events: Events.Event[],
   services: Map<string, accounts.Service>,
   employees: Map<string, accounts.Employee>,
-  bussinessId: string
+  businessId: string
 ) {
   return events.map(e => {
     const startHours = e.start.hours.toString().padStart(2, "0")
@@ -106,7 +110,7 @@ function formatEvents(
 
     return {
       id: e.id,
-      url: `/b/${bussinessId}/events/${e.id}`,
+      url: Router.url("/business/:businessId/event/:eventId", { businessId, eventId: e.id }),
       serviceName,
       servicePrice,
       clientName: e.client ? e.client.name : "Appointment",

@@ -1,5 +1,5 @@
 import { Db, FilterQuery } from "mongodb";
-import { DateTime } from "./types";
+import { DateTime } from "../types";
 
 export interface Event {
   id: string

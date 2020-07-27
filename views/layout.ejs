@@ -9,7 +9,7 @@
     </nav>
 
     <% if (isAuthenticated) { %>
-    <a class="btn btn-link" href="/b/<%= userId %>"><%= userName %></a>
+    <a class="btn btn-link" href="/profile"><%= userName %></a>
     <% } else { %>
     <a class="btn btn-link" href="/login">Sign in</a>
     <% }  %>

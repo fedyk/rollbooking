@@ -2,63 +2,76 @@ import * as koa from 'koa';
 import * as crypto from 'crypto';
 import { Context, State } from '../types/app';
 import * as validators from '../validators';
-import * as accounts from '../account';
-import * as users from '../users';
+import * as accounts from '../models/businesses';
+import * as users from '../models/users';
 import * as password from "../lib/password";
 import { DayOfWeek } from '../types/dat-of-week';
 import { uniqId } from '../lib/uniq-id';
+import { renderView } from '../render';
 
-export const join: koa.Middleware<State, Context> = async (ctx) => {
+export const welcome: koa.Middleware<State, Context> = async (ctx) => {
   if (!ctx.session) {
     throw new Error("Internal issue with sessions services. Please try again later")
   }
 
-  const body = parseBody(ctx.request.body)
-
-  const user: users.User = {
-    id: uniqId(),
-    alias: "",
-    name: body.businessName + "'s owner",
-    email: body.email,
-    avatar: getGravatarUrl(body.email),
-    timezone: body.timezone,
-    password: password.hash(body.password),
-    defaultBusinessId: null,
-    ownedBusinessIds: [],
+  if (ctx.state.user) {
+    return ctx.redirect("/calendar")
   }
 
-  const business: accounts.Account = {
-    id: uniqId(),
-    name: body.businessName,
-    alias: getBusinessAlias(body.businessName),
-    avatar: "",
-    desc: "",
-    timezone: body.timezone,
-    ownerId: user.id,
-    employees: [{
-      id: user.id,
-      name: user.name,
-      avatar: user.avatar,
-      role: accounts.EmployeeRole.Owner
-    }],
-    services: getDefaultServices(),
-    regularHours: getDefaultHours(),
-    specialHours: [],
-    createdAt: new Date,
-    updatedAt: new Date
+  if (ctx.request.method === "POST") {
+
+    const body = parseBody(ctx.request.body)
+
+    const user: users.User = {
+      id: uniqId(),
+      alias: "",
+      name: body.businessName + "'s owner",
+      email: body.email,
+      avatar: getGravatarUrl(body.email),
+      timezone: body.timezone,
+      password: password.hash(body.password),
+      defaultBusinessId: null,
+      ownedBusinessIds: [],
+    }
+
+    const business: accounts.Business = {
+      id: uniqId(),
+      name: body.businessName,
+      alias: getBusinessAlias(body.businessName),
+      avatar: "",
+      desc: "",
+      timezone: body.timezone,
+      ownerId: user.id,
+      employees: [{
+        id: user.id,
+        name: user.name,
+        avatar: user.avatar,
+        role: accounts.EmployeeRole.Owner
+      }],
+      services: getDefaultServices(),
+      regularHours: getDefaultHours(),
+      specialHours: [],
+      createdAt: new Date,
+      updatedAt: new Date
+    }
+
+    user.defaultBusinessId = business.id
+    user.ownedBusinessIds = [business.id]
+
+    const result1 = await accounts.createAccount(ctx.mongo, business)
+    const result2 = await users.createUser(ctx.mongo, user)
+
+    // todo: get check
+
+    ctx.session.userId = user.id
+    return ctx.redirect("/calendar")
   }
 
-  user.defaultBusinessId = business.id
-  user.ownedBusinessIds = [business.id]
+  ctx.state.title = "Welcome"
+  ctx.state.scripts?.push("/js/vendor/jstz.min.js")
+  ctx.state.scripts?.push("/js/welcome.js")
+  ctx.body = await renderView("welcome.ejs")
 
-  const result1 = await accounts.createAccount(ctx.mongo, business)
-  const result2 = await users.createUser(ctx.mongo, user)
-
-  // todo: get check
-
-  ctx.session.userId = user.id
-  ctx.state.title = "Join to Rollbooking"
-  ctx.redirect("/dashboard")
 }
 
 function parseBody(body: any) {

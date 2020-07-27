@@ -1,7 +1,7 @@
 import * as koa from 'koa';
 import { Context, State } from '../types/app';
 import * as validators from '../validators';
-import * as users from '../users';
+import * as users from '../models/users';
 import * as password from "../lib/password";
 import { renderView } from '../render';
 
@@ -19,7 +19,7 @@ export const login: koa.Middleware<State, Context> = async (ctx) => {
     }
     else {
       ctx.session.userId = user.id
-      ctx.redirect("/dashboard")
+      ctx.redirect("/calendar")
     }
   }
 

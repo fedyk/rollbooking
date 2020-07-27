@@ -1,6 +1,6 @@
 import * as Koa from "koa";
 import { MongoClient, Db } from "mongodb";
-import { User } from "../users";
+import { User } from "../models/users";
 
 export interface Context extends Koa.Context {
   mongo: Db

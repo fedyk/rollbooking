@@ -1,13 +1,15 @@
 import * as Router from "@koa/router"
 import { Context } from "./types/app";
-import { join } from "./controllers/join"
-import { welcome } from "./controllers/welcome/welcome"
-import { dashboard } from "./controllers/dashboard/dashboard"
-import { getExplore } from "./controllers/explore"
+import { welcome } from "./controllers/welcome"
+import { calendar } from "./controllers/calendar"
+import { explore } from "./controllers/explore"
 import { login } from "./controllers/login";
 import { layout, template, session } from "./middleware";
-import { services } from "./controllers/services";
-import { createEvent, getEvent } from "./controllers/events";
+import { business } from "./controllers/business";
+import { createEvent } from "./controllers/create-event";
+import { event } from "./controllers/event";
+import { users as businessSettingsUsers } from "./controllers/business-settings/users";
+import { layout as businessSettingsLayout } from "./controllers/business-settings/layout";
 
 export const router = new Router<any, Context>();
 
@@ -15,15 +17,12 @@ export const router = new Router<any, Context>();
 router.use(session)
 
 /** General Pages */
-router.get("/", template, layout, welcome)
-router.post("/join", join)
-router.get("/explore", template, layout, getExplore)
+router.all("/", template, layout, welcome)
+router.get("/explore", template, layout, explore)
 router.all("/login", template, login)
 
-/** Dashboard */
-router.get("/dashboard", template, layout, dashboard)
-
-/** Business */
-router.get("/b/:id", template, layout, services)
-router.all("/b/:id/create/event", template, layout, createEvent)
-router.get("/e/:eventId", template, layout, getEvent)
+router.get("/calendar", template, layout, calendar)
+router.get("/business/:id", template, layout, business)
+router.all("/business/:id/event/new", template, layout, createEvent)
+router.get("/business/:businessId/event/:eventId", template, layout, event)
+router.all("/business/:businessId/settings", template, layout, businessSettingsLayout, businessSettingsUsers)

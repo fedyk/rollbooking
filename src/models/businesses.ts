@@ -1,9 +1,8 @@
 import { Db } from "mongodb";
-import { TimePeriod } from "./types/time-period";
-import { SpecialHourPeriod } from "./types/special-hour-period";
+import { TimePeriod } from "../types/time-period";
+import { SpecialHourPeriod } from "../types/special-hour-period";
 
-
-export interface Account {
+export interface Business {
   id: string
   name: string
   alias: string
@@ -39,13 +38,13 @@ export interface Service {
 }
 
 export enum EmployeeRole {
-  Owner = 1,
-  Admin = 2,
-  Normal = 3,
+  Owner = "owner",
+  Admin = "admin",
+  Normal = "employe",
 }
 
 export function getCollection(db: Db) {
-  return db.collection<Account>("accounts")
+  return db.collection<Business>("businesses")
 }
 
 export function getBusinessById(db: Db, id: string) {
@@ -56,6 +55,6 @@ export function getRecentBusinesses(db: Db) {
   return getCollection(db).find().limit(20).toArray()
 }
 
-export function createAccount(db: Db, business: Account) {
+export function createAccount(db: Db, business: Business) {
   return getCollection(db).insertOne(business).then(r => r.insertedId)
 }

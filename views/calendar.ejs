@@ -1,0 +1,28 @@
+<div class="pt-3">
+  <div class="row">
+    <div class="col flex-grow-0">
+      <%- include("components/datepicker") -%>
+    </div>
+    <div class="col">
+      <div class="h6">Upcoming appointments</div>
+
+      <% if (formattedEvents.length === 0) { %>
+      <div class="text-center py-3">
+        <a href="/business/<%= business.id %>" class="btn btn-sm btn-success">New Appointment</a>
+      </div>
+      <% } %>
+
+      <div class="list-group">
+        <% formattedEvents.forEach(function(formattedEvent) { %>
+        <a href="<%= formattedEvent.url %>" class="list-group-item list-group-item-action">
+          <div class="h6"><%= formattedEvent.clientName %></div>
+          <div><%= formattedEvent.time %>, <%= formattedEvent.serviceName %> <span class="text-muted">by</span>
+            <%= formattedEvent.assignerName %></div>
+        </a>
+        <% }); %>
+      </div>
+
+    </div>
+  </div>
+
+</div>

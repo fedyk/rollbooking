@@ -1,13 +1,12 @@
+import Router = require("@koa/router");
 import * as dateFns from "date-fns";
-import * as localize from "date-fns/locale/en-US/_lib/localize";
 import * as Types from '../types';
-import * as accounts from '../account';
-import * as users from '../users';
-import * as clients from '../clients';
-import * as events from '../events';
+import * as accounts from '../models/businesses';
+import * as users from '../models/users';
+import * as clients from '../models/clients';
+import * as events from '../models/events';
 import { nativeDateToDateTime } from '../helpers/date/native-date-to-date-time';
 import { uniqId } from "../lib/uniq-id";
-import { dateTimeToNativeDate } from "../helpers/date/date-time-to-native-date";
 import { renderView } from "../render";
 
 export const createEvent: Types.Middleware = async (ctx) => {
@@ -99,7 +98,7 @@ export const createEvent: Types.Middleware = async (ctx) => {
       throw new Error("Event has not been created.")
     }
 
-    return ctx.redirect(`/b/${business.id}/events/${eventId}`)
+    return ctx.redirect(Router.url("/business/:businessId/event/:eventId", { businessId: business.id, eventId }))
   }
 
   ctx.body = await renderView("create-event.ejs", {
@@ -111,61 +110,6 @@ export const createEvent: Types.Middleware = async (ctx) => {
     time: dateFns.format(query.date, "ccc, HH:mm")
   })
 }
-
-export const getEvent: Types.Middleware = async (ctx) => {
-  if (!ctx.session) {
-    return ctx.throw(404, "Internal problem with session. please try again later")
-  }
- 
-  const business = await accounts.getBusinessById(ctx.mongo, ctx.params.id)
-  const user = ctx.state.user
-  const clientId = user ? user.id : ctx.session.clientId
-  const eventId = ctx.params.eventId
-
-  if (!business) {
-    return ctx.throw(404, new Error("Page does not exist"))
-  }
-
-  if (!clientId) {
-    return ctx.throw(404, "Page does not exist")
-  }
-
-  if (!eventId) {
-    return ctx.throw(404, "Reservation does not exist")
-  }
-
-  const event = await events.findOne(ctx.mongo, {
-    id: eventId,
-    "client.id": clientId
-  })
-
-  if (!event) {
-    return ctx.throw(404, "Reservation does not exist")
-  }
-
-  const employee = await users.getUserById(ctx.mongo, event.assigner.id)
-
-  if (!employee) {
-    return ctx.throw(404, "Reservation does not exist")
-  }
-
-  const service = business.services.find(s => s.id === event.serviceId)
-
-  if (!service) {
-    return ctx.throw(404, "Reservation does not exist")
-  }
-
-  ctx.body = await renderView(`get-event.ejs`, {
-    event,
-    user,
-    day: event.start.day,
-    month: localize.month(event.start.month - 1, { width: "abbreviated" }),
-    userName: employee.name,
-    serviceName: service.name,
-    time: dateFns.format(dateTimeToNativeDate(event.start), "ccc, HH:mm")
-  })
-}
-
 
 function parseQuery(query: any) {
   if (typeof query !== "object") {

@@ -2,5 +2,4 @@ const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)
 
 export function isEmail(email: string) {
   return regexp.test(email)
-  
 }

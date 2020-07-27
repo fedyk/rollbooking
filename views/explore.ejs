@@ -1,0 +1,9 @@
+<h6>Recent businesses</h6>
+
+<div class="list-group">
+  <% items.forEach(function(item){ %>
+  <a href="<%= item.url %>" class="list-group-item list-group-item-action">
+    <%= item.name -%>
+  </a>
+  <% }); %>
+</div>

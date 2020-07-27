@@ -1,0 +1,40 @@
+<h6 class="h6 mb-3">Users</h6>
+
+<ul class="list-unstyled">
+  <% employees.forEach(employe => { %>
+  <li class="media mb-3">
+    <img src="<%= employe.avatar %> " class="mr-3 rounded" alt="..." width="64">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1"><%= employe.name %></h5>
+      <div><%= JSON.stringify(employe, null, 2) %></div>
+    </div>
+  </li>
+  <% }) %>
+  <li class="media">
+    <img src="/images/business-avatar-0.png" class="mr-3 rounded" alt="..." width="64">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1">List-based media object</h5>
+      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio,
+      vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec
+      lacinia congue felis in faucibus.
+    </div>
+  </li>
+  <li class="media my-4">
+    <img src="/images/business-avatar-1.png" class="mr-3 rounded" alt="..." width="64">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1">List-based media object</h5>
+      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio,
+      vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec
+      lacinia congue felis in faucibus.
+    </div>
+  </li>
+  <li class="media">
+    <img src="/images/business-avatar-2.png" class="mr-3 rounded" alt="..." width="64">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1">List-based media object</h5>
+      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio,
+      vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec
+      lacinia congue felis in faucibus.
+    </div>
+  </li>
+</ul>

@@ -17,5 +17,6 @@ export const layout: types.Middleware = async (ctx, next) => {
     userName: ctx.state.user ? ctx.state.user.name : void 0,
     userId: ctx.state.user ? ctx.state.user.id : void 0,
     body: ctx.body,
+    
   })
 }

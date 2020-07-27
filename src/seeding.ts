@@ -1,15 +1,15 @@
 import { MONGODB_URI } from "./config"
 import { createClient, getDatabase, closeClient } from "./mongo"
-import { User, createUser, createUsers } from "./users"
+import { User, createUser, createUsers } from "./models/users"
 import { uniqId } from "./lib/uniq-id"
-import { Account, Service, EmployeeRole, createAccount } from "./account"
+import { Business, Service, EmployeeRole, createAccount } from "./models/businesses"
 import { TimePeriod } from "./types/time-period"
 import { DayOfWeek } from "./types"
 
 /**
  * Fill storage with random data for simplifying dev/tests
  */
-seeding().then(() => console.log("done"))
+seeding().then(() => console.log("done")).catch(err => console.error(err))
 
 async function seeding() {
   const mongo = await createClient(MONGODB_URI)
@@ -39,7 +39,7 @@ async function seeding() {
   }
 }
 
-function getRandomAccount(owner: User, employees: User[]): Account {
+function getRandomAccount(owner: User, employees: User[]): Business {
   const name = getRandomAccountName()
   const services = getRandomServices()
   const regularHours = getRandomRegularHours()

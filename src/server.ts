@@ -1,26 +1,26 @@
 import * as config from "./config"
 import * as Koa from "koa"
-import { join } from "path"
+import * as path from "path"
 import * as serve from "koa-static"
 import * as koaSession from "koa-session"
 import * as bodyParser from "koa-bodyparser"
-import * as session from "./session"
-import { router } from "./router";
-import { State, Context } from "./types/app";
+import * as session from "./sessions"
 import * as mongo from "./mongo"
+import { router } from "./router";
 import { errorHandler } from "./middleware"
+import { State, Context } from "./types/app";
 
 export async function createServer() {
+  const app = new Koa<State, Context>()
   const mongoClient = await mongo.createClient(config.MONGODB_URI)
   const mongoDatabase = mongo.getDatabase(mongoClient)
-  const app = new Koa<State, Context>()
 
   app.context.mongo = mongoDatabase
   app.keys = config.APP_KEYS.split(";")
   app.use(errorHandler)
   app.use(bodyParser())
   app.use(koaSession(session.getSessionConfig(mongoDatabase), app))
-  app.use(serve(join(__dirname, "../public")))
+  app.use(serve(path.join(__dirname, "../public")))
   app.use(router.routes());
   app.listen(config.PORT, () => console.log(`app is listening PORT ${config.PORT}`))
 
