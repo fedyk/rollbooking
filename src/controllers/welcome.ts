@@ -1,5 +1,4 @@
 import * as koa from 'koa';
-import * as crypto from 'crypto';
 import { Context, State } from '../types/app';
 import * as validators from '../validators';
 import * as accounts from '../models/businesses';
@@ -8,6 +7,7 @@ import * as password from "../lib/password";
 import { DayOfWeek } from '../types/dat-of-week';
 import { uniqId } from '../lib/uniq-id';
 import { renderView } from '../render';
+import { getGravatarUrl } from '../helpers/gravatar';
 
 export const welcome: koa.Middleware<State, Context> = async (ctx) => {
   if (!ctx.session) {
@@ -24,31 +24,35 @@ export const welcome: koa.Middleware<State, Context> = async (ctx) => {
 
     const user: users.User = {
       id: uniqId(),
-      alias: "",
       name: body.businessName + "'s owner",
       email: body.email,
-      avatar: getGravatarUrl(body.email),
+      avatarUrl: getGravatarUrl(body.email),
       timezone: body.timezone,
-      password: password.hash(body.password),
+      password: password.hashPassword(body.password),
       defaultBusinessId: null,
       ownedBusinessIds: [],
     }
+
+    const services = getDefaultServices()
 
     const business: accounts.Business = {
       id: uniqId(),
       name: body.businessName,
       alias: getBusinessAlias(body.businessName),
-      avatar: "",
-      desc: "",
+      avatarUrl: "",
+      description: "",
       timezone: body.timezone,
       ownerId: user.id,
       employees: [{
         id: user.id,
         name: user.name,
-        avatar: user.avatar,
-        role: accounts.EmployeeRole.Owner
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+        role: "owner",
+        position: "",
       }],
-      services: getDefaultServices(),
+      services: services,
+      servicesCount: services.length,
       regularHours: getDefaultHours(),
       specialHours: [],
       createdAt: new Date,
@@ -69,7 +73,7 @@ export const welcome: koa.Middleware<State, Context> = async (ctx) => {
 
   ctx.state.title = "Welcome"
   ctx.state.scripts?.push("/js/vendor/jstz.min.js")
-  ctx.state.scripts?.push("/js/welcome.js")
+  ctx.state.scripts?.push("/js/timezone.js")
   ctx.body = await renderView("welcome.ejs")
 
 }
@@ -139,7 +143,7 @@ function getBusinessAlias(businessName: string): string {
 
 function getDefaultServices(): accounts.Service[] {
   return [{
-    id: uniqId(),
+    id: 1,
     name: "Hair cut",
     description: "",
     duration: 30,
@@ -169,10 +173,4 @@ function getDefaultHours() {
       seconds: 0,
     }
   }))
-}
-
-function getGravatarUrl(email: string) {
-  const hash = crypto.createHash('md5').update(email).digest("hex")
-
-  return `https://www.gravatar.com/avatar/${hash}.jpg?s=512&d=mp`
 }

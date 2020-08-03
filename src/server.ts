@@ -9,11 +9,14 @@ import * as mongo from "./mongo"
 import { router } from "./router";
 import { errorHandler } from "./middleware"
 import { State, Context } from "./types/app";
+import * as migrations from "./migrations";
 
 export async function createServer() {
   const app = new Koa<State, Context>()
   const mongoClient = await mongo.createClient(config.MONGODB_URI)
   const mongoDatabase = mongo.getDatabase(mongoClient)
+
+  await migrations.up(mongoDatabase)
 
   app.context.mongo = mongoDatabase
   app.keys = config.APP_KEYS.split(";")

@@ -1,0 +1,43 @@
+<div class="d-flex mb-3 pb-1 border-bottom">
+  <a class="h5" href="<%= listUrl %>">Services</a>
+  <h5 class="text-muted mx-1">/</h5>
+  <h5><%= pageTitle %></h5>
+</div>
+
+<form method="POST" action="">
+  <div class="form-group">
+    <label for="nameInput">Name</label>
+    <input type="text" name="name" value="<%= service.name %>" class="form-control" id="nameInput"
+      aria-describedby="nameHelp" autofocus>
+  </div>
+
+  <div class="form-group">
+    <label for="descriptionInput">Description</label>
+    <textarea name="description" class="form-control" id="descriptionInput" rows="2"
+      placeholder="Tell us little bit about service"><%= service.description %></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label for="durationInput">Duration</label>
+      <div class="input-group">
+        <input type="number" name="duration" value="<%= service.duration %>" class="form-control" id="durationInput" placeholder="">
+        <div class="input-group-append">
+          <span class="input-group-text">minutes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group col-6">
+      <label for="priceInput">Price</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">$</span>
+        </div>
+        <input type="number" name="price" value="<%= service.price %>" class="form-control" id="priceInput" placeholder="00.00">
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-success"><%= submitLabel %></button>
+</form>

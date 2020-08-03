@@ -75,7 +75,7 @@ export const business: types.Middleware = async (ctx) => {
 
   const avatarUrl = `/images/business-avatar-${business.id.charCodeAt(0) % 3}.png`
   const settingsUrl = business.ownerId === currentUserId
-    ? Router.url("/business/:businessId/settings", {
+    ? Router.url("/business/:businessId/settings/profile", {
       businessId: business.id
     })
     : void 0

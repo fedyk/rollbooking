@@ -85,7 +85,7 @@ export const calendar: Middleware<State, Context> = async (ctx) => {
 
 function formatEvents(
   events: Events.Event[],
-  services: Map<string, accounts.Service>,
+  services: Map<number, accounts.Service>,
   employees: Map<string, accounts.Employee>,
   businessId: string
 ) {

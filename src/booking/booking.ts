@@ -10,8 +10,13 @@ export class Booking {
   business: Business
   timezone: ReturnType<typeof tz.findTimeZone>
   reservations: Event[]
-  users: Array<{ id: string }>
-  services: Array<{ id: string, duration: number }>
+  users: Array<{
+    id: string
+  }>
+  services: Array<{
+    id: number,
+    duration: number
+  }>
 
   constructor(business: Business, reservations: Event[]) {
     this.business = business

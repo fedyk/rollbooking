@@ -1,0 +1,15 @@
+<div class="d-flex align-items-center justify-content-between mb-3 pb-1 border-bottom">
+  <h5>Services</h5>
+  <a href="<%= addUrl %>" class="btn btn-sm btn-success">Add service</a>
+</div>
+
+<% services.forEach(service => { %>
+<div class="row">
+  <div class="col">
+    <a href="<%= service.url %>" class="d-block"><%= service.name %></a>
+    <div><%= service.price %></div>
+    <div><%= service.duration %></div>
+  </div>
+  <div class="col"><%= service.description %></div>
+</div>
+<% }) %>

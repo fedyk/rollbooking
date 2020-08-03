@@ -9,14 +9,31 @@ export const layout: types.Middleware = async (ctx, next) => {
     throw new RangeError("`businessSettingsLayout` midlware requires `bussinessId` parameter in the scope")
   }
 
-  // first link is selected by default
-  ctx.state.selectedItemId = "users";
-
-  const links = [{
-    id: "users",
-    title: "Users",
-    url: Router.url("/business/:businessId/settings", { businessId })
-  }]
+  /**
+   * To mark item as selected, assign his id to `ctx.state.selectedItemId`
+   */
+  const links = [
+    {
+      id: "profile",
+      title: "Profile",
+      url: Router.url("/business/:businessId/settings/profile", {
+        businessId
+      })
+    },
+    {
+      id: "services",
+      title: "Services",
+      url: Router.url("/business/:businessId/settings/services", {
+        businessId
+      })
+    },
+    {
+      id: "users",
+      title: "Users",
+      url: Router.url("/business/:businessId/settings/users", {
+        businessId
+      })
+    }]
 
   await next()
 

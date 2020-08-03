@@ -17,8 +17,11 @@ export const template: types.Middleware = async (ctx, next) => {
   ]
 
   ctx.state.styles = [
-    "/css/bootstrap.css"
+    "/css/bootstrap.css",
+    "/css/bootstrap-theme.css"
   ]
+
+  ctx.state.alerts = []
 
   ctx.state.title = "Rollbooking";
   ctx.response.type = "html"

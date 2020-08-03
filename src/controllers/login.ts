@@ -12,7 +12,7 @@ export const login: koa.Middleware<State, Context> = async (ctx) => {
 
   if (ctx.request.method === "POST") {
     const body = parseBody(ctx.request.body)
-    const user = await users.findUserByCredentials(ctx.mongo, body.email, password.hash(body.password))
+    const user = await users.findUserByCredentials(ctx.mongo, body.email, password.hashPassword(body.password))
 
     if (!user) {
       throw new Error("Invalid email or password")

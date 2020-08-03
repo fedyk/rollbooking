@@ -24,7 +24,7 @@ export interface Event {
   /**
    * @todo add support of multiple services in event
    */
-  serviceId: string
+  serviceId: number
   createdAt: Date
   updatedAt: Date
 }

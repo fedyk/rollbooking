@@ -3,9 +3,8 @@ import { Db } from "mongodb";
 export interface User {
   id: string
   name: string
-  alias: string
   email: string
-  avatar: string
+  avatarUrl: string
   timezone: string
   password?: string
   ownedBusinessIds: string[]

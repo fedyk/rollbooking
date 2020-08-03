@@ -16,6 +16,19 @@
   </div>
 </div>
 
+<% if (alerts && alerts.length > 0) { %>
+<div class="container pt-3">
+  <% alerts.forEach(alert => { %>
+  <div class="alert alert-<%= alert.type %>" role="alert">
+    <%= alert.text %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <% }) %>
+</div>
+<% } %>
+
 <div class="container pt-3">
   <%- body _%>
 </div>

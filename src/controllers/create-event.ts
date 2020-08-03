@@ -117,13 +117,13 @@ function parseQuery(query: any) {
   }
 
   const userId = query.user_id
-  const serviceId = query.service_id
+  const serviceId = Number(query.service_id)
 
   if (typeof userId !== "string") {
     throw RangeError("Invalid user id")
   }
 
-  if (typeof serviceId !== "string") {
+  if (Number.isNaN(serviceId)) {
     throw RangeError("Invalid service id")
   }
 
@@ -139,7 +139,11 @@ function parseQuery(query: any) {
     throw RangeError("Invalid date format")
   }
 
-  return { userId, serviceId, date }
+  return {
+    userId,
+    serviceId,
+    date
+  }
 }
 
 function parseBody(body: any) {

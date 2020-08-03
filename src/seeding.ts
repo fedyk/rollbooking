@@ -2,9 +2,10 @@ import { MONGODB_URI } from "./config"
 import { createClient, getDatabase, closeClient } from "./mongo"
 import { User, createUser, createUsers } from "./models/users"
 import { uniqId } from "./lib/uniq-id"
-import { Business, Service, EmployeeRole, createAccount } from "./models/businesses"
+import { Business, Service, createAccount } from "./models/businesses"
 import { TimePeriod } from "./types/time-period"
 import { DayOfWeek } from "./types"
+import { service } from "./controllers/business-settings/service"
 
 /**
  * Fill storage with random data for simplifying dev/tests
@@ -47,19 +48,21 @@ function getRandomAccount(owner: User, employees: User[]): Business {
   return {
     id: uniqId(),
     name,
-    desc: getRandomDescription(),
+    description: getRandomDescription(),
     timezone: getRandomTimezone(),
     alias: getAlias(name),
-    avatar: getAvatar(name),
+    avatarUrl: getAvatar(name),
     ownerId: owner.id,
     employees: employees.map(u => ({
       id: u.id,
       name: u.name,
-      avatar: u.avatar,
+      email: u.email,
+      avatarUrl: u.avatarUrl,
       role: getRandomEmplRole(),
       position: getRandomDescription()
     })),
     services: services,
+    servicesCount: services.length,
     regularHours: regularHours,
     specialHours: [],
     createdAt: new Date(),
@@ -86,8 +89,7 @@ function getRandomUser(): User {
     name,
     email,
     timezone: getRandomTimezone(),
-    alias: getAlias(name),
-    avatar: getAvatar(name),
+    avatarUrl: getAvatar(name),
     ownedBusinessIds: [],
     defaultBusinessId: null
   }
@@ -137,15 +139,15 @@ function getRandomServices(): Service[] {
   const services: Service[] = []
 
   for (let i = 0; i < count; i++) {
-    services.push(getRandomService())
+    services.push(getRandomService(i + 1))
   }
 
   return services
 }
 
-function getRandomService(): Service {
+function getRandomService(id: number): Service {
   return {
-    id: uniqId(),
+    id: id,
     name: getRandomServiceName(),
     description: getRandomDescription(),
     duration: 30 + Math.floor(Math.random() * 5) * 5,
@@ -154,8 +156,8 @@ function getRandomService(): Service {
   }
 }
 
-function getRandomEmplRole(): EmployeeRole {
-  return getRandomItem([EmployeeRole.Admin, EmployeeRole.Normal])
+function getRandomEmplRole(): "admin" | "normal" {
+  return getRandomItem(["admin", "normal"])
 }
 
 /**

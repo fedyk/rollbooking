@@ -6,12 +6,13 @@ export interface Business {
   id: string
   name: string
   alias: string
-  avatar: string
-  desc: string
+  avatarUrl: string
+  description: string
   timezone: string
   ownerId: string
   employees: Employee[]
   services: Service[]
+  servicesCount: number
   regularHours: TimePeriod[]
   specialHours: SpecialHourPeriod[]
   createdAt: Date
@@ -21,13 +22,14 @@ export interface Business {
 export interface Employee {
   id: string
   name: string
-  avatar: string
-  role: EmployeeRole
+  email: string
+  avatarUrl: string
+  role: "owner" | "admin" | "normal"
   position?: string
 }
 
 export interface Service {
-  id: string
+  id: number
   name: string
   description: string
   /** service duration in minutes */
@@ -35,12 +37,6 @@ export interface Service {
   /** ISO 4217 */
   currencyCode: string
   price: number
-}
-
-export enum EmployeeRole {
-  Owner = "owner",
-  Admin = "admin",
-  Normal = "employe",
 }
 
 export function getCollection(db: Db) {
@@ -57,4 +53,43 @@ export function getRecentBusinesses(db: Db) {
 
 export function createAccount(db: Db, business: Business) {
   return getCollection(db).insertOne(business).then(r => r.insertedId)
+}
+
+export function pushEmployee(db: Db, businessId: string, employee: Employee) {
+  return getCollection(db).updateOne({
+    id: businessId
+  }, {
+    $push: {
+      employees: employee
+    }
+  })
+}
+export function pushService(db: Db, businessId: string, service: Service) {
+  return getCollection(db).updateOne(
+    {
+      id: businessId
+    },
+    {
+      $inc: {
+        servicesCount: 1
+      },
+      $push: {
+        services: service
+      }
+    }
+  )
+}
+
+export function updateService(db: Db, businessId: string, serviceId: number, service: Service) {
+  return getCollection(db).updateOne(
+    {
+      id: businessId,
+      "services.id": serviceId,
+    },
+    {
+      $set: {
+        "services.$": service
+      }
+    }
+  )
 }
