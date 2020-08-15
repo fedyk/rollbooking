@@ -62,7 +62,7 @@ export const welcome: koa.Middleware<State, Context> = async (ctx) => {
     user.defaultBusinessId = business.id
     user.ownedBusinessIds = [business.id]
 
-    const result1 = await accounts.createAccount(ctx.mongo, business)
+    const result1 = await accounts.createBusiness(ctx.mongo, business)
     const result2 = await users.createUser(ctx.mongo, user)
 
     // todo: get check

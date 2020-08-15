@@ -13,8 +13,7 @@
 
   <div class="form-group">
     <label for="descriptionInput">Description</label>
-    <textarea name="description" class="form-control" id="descriptionInput" rows="2"
-      placeholder="Tell us little bit about service"><%= service.description %></textarea>
+    <input type="text" class="form-control" name="description" value="<%= service.description %>" id="descriptionInput" placeholder="Tell us little bit about service" maxlength="2048">
   </div>
 
   <div class="form-row">

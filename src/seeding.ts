@@ -2,7 +2,7 @@ import { MONGODB_URI } from "./config"
 import { createClient, getDatabase, closeClient } from "./mongo"
 import { User, createUser, createUsers } from "./models/users"
 import { uniqId } from "./lib/uniq-id"
-import { Business, Service, createAccount } from "./models/businesses"
+import { Business, Service, createBusiness } from "./models/businesses"
 import { TimePeriod } from "./types/time-period"
 import { DayOfWeek } from "./types"
 import { service } from "./controllers/business-settings/service"
@@ -30,7 +30,7 @@ async function seeding() {
 
     await createUser(db, user)
     await createUsers(db, employees)
-    await createAccount(db, account)
+    await createBusiness(db, account)
   }
   catch (err) {
     console.error(err)

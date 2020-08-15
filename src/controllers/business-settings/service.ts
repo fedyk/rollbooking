@@ -1,9 +1,7 @@
 import { renderView } from "../../render"
 import { Middleware } from "../../types"
 import { getUrl } from "../../helpers/get-url"
-import { getBusinessById, Service, pushService, updateService } from "../../models/businesses"
-import { cpuUsage } from "process"
-import { type } from "os"
+import { getBusinessById, Service, pushService, setService } from "../../models/businesses"
 
 export const service: Middleware = async (ctx) => {
   const business = await getBusinessById(ctx.mongo, ctx.params.businessId)
@@ -60,7 +58,7 @@ export const service: Middleware = async (ctx) => {
       return ctx.redirect(listUrl)
     }
     else {
-      const result = await updateService(ctx.mongo, business.id, serviceId, {
+      const result = await setService(ctx.mongo, business.id, serviceId, {
         ...service,
         ...body
       })

@@ -3,7 +3,6 @@ import { renderView } from "../../render";
 import { Middleware } from "../../types";
 import { getUrl } from "../../helpers/get-url";
 import { getFormattedServicePrice } from "../../helpers/get-formatted-service-price";
-import { business } from "../business";
 
 export const services: Middleware = async (ctx) => {
   const business = await getBusinessById(ctx.mongo, ctx.params.businessId)
@@ -18,7 +17,7 @@ export const services: Middleware = async (ctx) => {
 
   const services = business.services.map(function (service) {
     return parseService(service, business.id)
-  })
+  }).reverse()
 
   ctx.state.selectedItemId = "services"
   ctx.state.title = business.name

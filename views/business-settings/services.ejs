@@ -1,15 +1,18 @@
-<div class="d-flex align-items-center justify-content-between mb-3 pb-1 border-bottom">
-  <h5>Services</h5>
-  <a href="<%= addUrl %>" class="btn btn-sm btn-success">Add service</a>
-</div>
-
-<% services.forEach(service => { %>
-<div class="row">
-  <div class="col">
-    <a href="<%= service.url %>" class="d-block"><%= service.name %></a>
-    <div><%= service.price %></div>
-    <div><%= service.duration %></div>
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center py-2">
+    <span>Services</span>
+    <a href="<%= addUrl %>" class="btn btn-sm btn-success">Add service</a>
   </div>
-  <div class="col"><%= service.description %></div>
+  <div class="list-group list-group-flush">
+    <% services.forEach(service => { %>
+    <a href="<%= service.url %>" class="list-group-item list-group-item-action">
+      <div class="text-dark font-weight-bold"><%= service.name %></div>
+      <% if (service.description) { %>
+      <div class="text-dark"><%= service.description %></div>
+      <% } %>
+      <div class="text-muted">Price <%= service.price %></div>
+      <div class="text-muted">Duration <%= service.duration %></div>
+    </a>
+    <% }) %>
+  </div>
 </div>
-<% }) %>

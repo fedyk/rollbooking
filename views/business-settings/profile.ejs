@@ -1,18 +1,48 @@
 <h5 class="border-bottom pb-2">Business Profile</h5>
 
-<form action="" method="POST">
+<form action="" method="POST" class="d-block mb-3">
   <div class="form-group">
     <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" name="name" value="<%= name %>">
+    <input type="text" class="form-control" id="name" name="name" value="<%= name %>" required maxlength="256" />
   </div>
 
   <div class="form-group">
     <label for="description">Description</label>
-    <textarea class="form-control" id="description" rows="3" placeholder="Tell us something about your business"><%= description %></textarea>
+    <input type="text" class="form-control" id="description" name="description" maxlength="2048"
+      value="<%= description %>">
   </div>
 
-  <p>To schedule</p>
-  <p>To holidays</p>
-  
-  <button type="submit" class="btn btn-success">Update business</button>
+  <button type="submit" class="btn btn-success">Update profile</button>
 </form>
+
+<h5 class="mb-3">Work hours</h5>
+
+<form action="" method="POST">
+  <input type="hidden" name="action" value="update-regular-hours">
+  <div class="mb-2">
+    <% regularHours.forEach(regularHour => { %>
+    <div class="form-inline">
+      <label class="sr-only" for="dayInput">Day</label>
+      <select class="custom-select mb-2 mr-sm-2" id="dayIpnput">
+        <% daysOfWeek.forEach(day => { %>
+        <option <%= day.value === regularHour.openDay ? "selected" : "" %> value="<%= day.value %>"><%= day.name %>
+        </option>
+        <% }) %>
+      </select>
+
+      <label class="sr-only" for="openTimeInput">Open time</label>
+      <input type="time" class="form-control mb-2 mr-sm-2" id="openTimeInput" name="open_time" value="10:00" min="00:00"
+        max="23:00" required>
+
+      <label class="sr-only" for="closeTimeInput">Close time</label>
+      <input type="time" class="form-control mb-2 mr-sm-2" id="closeTimeInput" name="close_time" value="16:00:00"
+        min="00:00" max="23:00" required>
+    </div>
+    <% }) %>
+  </div>
+  <button class="btn btn-secondary mb-2">Update work hours</button>
+</form>
+
+<h5 class="mb-3">Holidays</h5>
+
+<p>To holidays</p>

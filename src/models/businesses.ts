@@ -39,7 +39,7 @@ export interface Service {
   price: number
 }
 
-export function getCollection(db: Db) {
+function getCollection(db: Db) {
   return db.collection<Business>("businesses")
 }
 
@@ -51,8 +51,16 @@ export function getRecentBusinesses(db: Db) {
   return getCollection(db).find().limit(20).toArray()
 }
 
-export function createAccount(db: Db, business: Business) {
+export function createBusiness(db: Db, business: Business) {
   return getCollection(db).insertOne(business).then(r => r.insertedId)
+}
+
+export function updateBusiness(db: Db, businessId: string, business: Partial<Omit<Business, "id">>) {
+  return getCollection(db).updateOne({
+    id: businessId
+  }, {
+    $set: business
+  })
 }
 
 export function pushEmployee(db: Db, businessId: string, employee: Employee) {
@@ -80,7 +88,7 @@ export function pushService(db: Db, businessId: string, service: Service) {
   )
 }
 
-export function updateService(db: Db, businessId: string, serviceId: number, service: Service) {
+export function setService(db: Db, businessId: string, serviceId: number, service: Service) {
   return getCollection(db).updateOne(
     {
       id: businessId,
@@ -89,6 +97,23 @@ export function updateService(db: Db, businessId: string, serviceId: number, ser
     {
       $set: {
         "services.$": service
+      }
+    }
+  )
+}
+
+export function setUser(db: Db, businessId: string, userId: string, user: Employee) {
+  const key: keyof Business = "employees";
+  const id: keyof Employee = "id"
+
+  return getCollection(db).updateOne(
+    {
+      id: businessId,
+      [`${key}.${id}`]: userId
+    },
+    {
+      $set: {
+        [`${key}.$`]: user
       }
     }
   )

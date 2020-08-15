@@ -33,7 +33,7 @@ export const users: Middleware = async (ctx) => {
       if (business.employees.find(v => v.email === body.email)) {
         ctx.state.alerts?.push({
           text: "User is already invited 👌",
-          type: "success"
+          type: "warning"
         })
       }
       else {
@@ -73,19 +73,23 @@ export const users: Middleware = async (ctx) => {
         })
 
         ctx.state.alerts?.push({
-          text: "Invite send",
+          text: "The invitation has been sent",
           type: "success"
         })
       }
     }
   }
 
-  const employees = business.employees.map(function (employee) {
+  const users = business.employees.map(function (employee) {
     return {
       name: employee.name,
       avatarUrl: employee.avatarUrl,
       role: employee.role,
-      position: employee.position ?? ""
+      position: employee.position ?? "",
+      url: getUrl("/business/:businessId/settings/users/:userId", {
+        businessId: business.id,
+        userId: employee.id,
+      }),
     }
   })
 
@@ -93,7 +97,7 @@ export const users: Middleware = async (ctx) => {
   ctx.state.title = business.name
   ctx.body = await renderView("business-settings/users.ejs", {
     name: business.name,
-    employees: employees,
+    users: users,
   })
 }
 

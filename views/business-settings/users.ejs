@@ -1,6 +1,21 @@
-<div class="border-bottom mb-3 pb-2 d-flex align-items-center justify-content-between">
-  <h5 class="h5">Users</h5>
-  <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#inviteModal">Invite people</button>
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center py-2 bg-transparent">
+    <span>Users</span>
+    <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#inviteModal">Invite people</button>
+  </div>
+
+  <ul class="list-group list-group-flush">
+    <% users.forEach(user => { %>
+    <a href="<%= user.url %>" class="list-group-item list-group-item-action d-flex">
+
+      <img src="<%= user.avatarUrl %>" class="mr-3 rounded" alt="<%= user.name %>" width="64">
+      <div class="">
+        <div class="text-dark font-weight-bold"><%= user.name %></div>
+        <div class="text-muted"><%= user.position %></div>
+      </div>
+    </a>
+    <% }) %>
+  </ul>
 </div>
 
 <div class="modal fade" id="inviteModal" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel"
@@ -19,7 +34,7 @@
             <input type="email" name="email" class="form-control" placeholder="hey@example.com"
               aria-label="People email" required>
             <div class="input-group-append">
-              <button class="btn btn-success" type="submit">Invite</button>
+              <button class="btn btn-success" type="submit">Send invite on email</button>
             </div>
           </div>
         </form>
@@ -27,15 +42,3 @@
     </div>
   </div>
 </div>
-
-<ul class="list-unstyled">
-  <% employees.forEach(employe => { %>
-  <li class="media mb-3">
-    <img src="<%= employe.avatarUrl %> " class="mr-3 rounded" alt="<%= employe.name %>" width="64">
-    <div class="media-body">
-      <h5 class="mt-0 mb-1"><%= employe.name %></h5>
-      <div><%= employe.possition %></div>
-    </div>
-  </li>
-  <% }) %>
-</ul>
