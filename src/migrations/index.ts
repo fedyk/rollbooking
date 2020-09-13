@@ -2,10 +2,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { Db } from "mongodb";
 
-interface Migration {
-  last_migration: number
-}
-
 export async function up(db: Db) {
   const definedMigrations = getDefinedMigrations()
   const lastMigrationRevisiton = await getLastMigrationRevision(db)
@@ -35,9 +31,9 @@ function getDefinedMigrations() {
       return /^\d+\.(js|ts)$/.test(basename)
     })
     .map(function (basename) {
-      const revisiton = Number(basename.split(".")[0])
+      const revision = Number(basename.split(".")[0])
 
-      if (Number.isNaN(revisiton)) {
+      if (Number.isNaN(revision)) {
         throw new Error(`file "${basename}" should have only digits in the name`)
       }
 
@@ -59,7 +55,7 @@ function getDefinedMigrations() {
       }
 
       return {
-        revisiton,
+        revisiton: revision,
         up,
         down
       }
