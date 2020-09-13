@@ -1,7 +1,7 @@
 import { Date as DateObject } from "../../types/date";
 import { nativeDateToDateObject } from "./native-date-to-date-object";
 
-export function isoDateToDateObject(date: any): DateObject {
+export function isoDateToDateObject(date: string): DateObject {
   date = (date + "").trim();
 
   const [year, month, day] = date.split("-").map(v => parseInt(v, 10)) as number[];

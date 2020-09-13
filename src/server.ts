@@ -22,6 +22,7 @@ export async function createServer() {
   app.keys = config.APP_KEYS.split(";")
   app.use(errorHandler)
   app.use(bodyParser())
+  // @ts-ignore
   app.use(koaSession(session.getSessionConfig(mongoDatabase), app))
   app.use(serve(path.join(__dirname, "../public")))
   app.use(router.routes());
@@ -35,8 +36,8 @@ export async function createServer() {
 }
 
 /** If process won't exit in 5s second after determination signal, force exit */
-function shutdown(signal) {
-  return function (err) {
+function shutdown(signal: string) {
+  return function (err: Error) {
     console.log(`Received ${signal} signal...`);
 
     if (err) {
@@ -53,7 +54,7 @@ function shutdown(signal) {
 if (!module.parent) {
   createServer()
     .then(server => {
-      const dispose = (err) => server.dispose().then(() => process.exit(err ? 1 : 0))
+      const dispose = (err: Error) => server.dispose().then(() => process.exit(err ? 1 : 0))
 
       process.on("SIGHUP", dispose)
       process.on("SIGHUP", shutdown("SIGHUP"))

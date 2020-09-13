@@ -101,16 +101,14 @@ export const users: Middleware = async (ctx) => {
   })
 }
 
-function parseRequestAction(query?: object) {
-  if (!query || !query["action"]) {
-    throw new Error("query should contains `action` parameter")
-  }
+function parseRequestAction(query?: any) {
+  const action = String(query?.action ?? "");
 
-  if (query["action"] === "invite-by-email") {
+  if (action === "invite-by-email") {
     return "invite-by-email"
   }
 
-  throw new Error("unsupported action value")
+  return;
 }
 
 function parseInviteByEmailBody(body?: any) {

@@ -37,3 +37,7 @@
     max-width: 1012px;
   }
 }
+
+.close {
+  font-weight: 400;
+}

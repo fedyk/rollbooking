@@ -20,14 +20,14 @@ export function getSessionConfig(db: Db) {
     }
   }
 
-  function get(key, maxAge) {
+  function get(key: string, maxAge: number) {
     return sessions
       .findOne({ key })
       .then(result => result ? result.payload : null)
       .catch(err => console.warn("session#get", err.message))
   }
 
-  function set(key: string, payload, maxAge) {
+  function set(key: string, payload: object, maxAge: number) {
     const filter = {
       key
     }
@@ -50,7 +50,7 @@ export function getSessionConfig(db: Db) {
       .catch(err => console.warn("session#set", err.message))
   }
 
-  function destroy(key) {
+  function destroy(key: string) {
     return sessions
       .deleteOne({ key })
       .catch(err => console.warn("session#destroy", err.message))

@@ -1,11 +1,12 @@
 import * as dateFns from "date-fns";
-import * as localize from "date-fns/locale/en-US/_lib/localize";
 import * as Types from '../types';
 import * as accounts from '../models/businesses';
 import * as users from '../models/users';
 import * as events from '../models/events';
 import { dateTimeToNativeDate } from "../helpers/date/date-time-to-native-date";
 import { renderView } from "../render";
+ 
+const localize = require("date-fns/locale/en-US/_lib/localize");
 
 export const event: Types.Middleware = async (ctx) => {
   if (!ctx.session) {

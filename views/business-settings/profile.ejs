@@ -1,6 +1,8 @@
 <h5 class="border-bottom pb-2">Business Profile</h5>
 
 <form action="" method="POST" class="d-block mb-3">
+  <input type="hidden" name="action" name="update_profile">
+
   <div class="form-group">
     <label for="name">Name</label>
     <input type="text" class="form-control" id="name" name="name" value="<%= name %>" required maxlength="256" />
@@ -14,35 +16,60 @@
 
   <button type="submit" class="btn btn-success">Update profile</button>
 </form>
-
-<h5 class="mb-3">Work hours</h5>
+<h5 class="mb-2">Hours</h5>
 
 <form action="" method="POST">
-  <input type="hidden" name="action" value="update-regular-hours">
-  <div class="mb-2">
-    <% regularHours.forEach(regularHour => { %>
-    <div class="form-inline">
-      <label class="sr-only" for="dayInput">Day</label>
-      <select class="custom-select mb-2 mr-sm-2" id="dayIpnput">
-        <% daysOfWeek.forEach(day => { %>
-        <option <%= day.value === regularHour.openDay ? "selected" : "" %> value="<%= day.value %>"><%= day.name %>
-        </option>
+  <input type="hidden" name="action" value="update_hours">
+
+  <div class="mb-3">
+    <%
+    daysOfWeek.forEach(day => {
+      const dayId = day.value
+      const fieldsetId = "fieldset_" + dayId
+      const fieldsetClass = "col " + (hours.has(dayId) ? "" : "d-none")
+      const labelId = "label_" + dayId
+      const checkboxChecked = hours.has(dayId) ? "checked" : ""
+      const dayHours = hours.get(dayId) || [{ openTime: "", closeTime: "" }]
+    %>
+    <div class="row">
+      <div class="col-2">
+        <div class="mt-2"><%= day.name %></div>
+      </div>
+      <div class="col-2">
+        <div class="custom-control custom-checkbox mt-2">
+          <input type="checkbox" class="custom-control-input" name="open_days[]" value="<%= dayId %>"
+            id="<%= labelId %>" onchange="toggleDay(<%= dayId %>)" <%= checkboxChecked %>>
+          <label class="custom-control-label" for="<%= labelId %>">Open</label>
+        </div>
+      </div>
+
+      <fieldset id="<%= fieldsetId %>" class="<%= fieldsetClass %>">
+        <%
+        dayHours.forEach((hour, index) => {
+          const openTimeName = `day_hours[day_${dayId}][${index}][open_time]`
+          const closeTimeName = `day_hours[day_${dayId}][${index}][close_time]`
+          const closeButtonClass = `close mr-2 ` + (hour.openTime && hour.closeTime && index > 0 ? "" : "invisible")
+          const addButtonClass = `btn btn-link mr-sm-2 ` + (hour.openTime && hour.closeTime ? "" : "invisible")
+        %>
+        <div class="form-inline mb-2" data-day-id="<%= dayId %>" data-index="<%= index %>" data-el="inline-form">
+          <input type="time" class="form-control mr-2" name="<%= openTimeName %>" value="<%= hour.openTime %>"
+            oninput="handleChangeTime(event)" min="00:00" max="23:00" data-el="open-time">
+
+          <input type="time" class="form-control mr-3" name="<%= closeTimeName %>" value="<%= hour.closeTime %>"
+            oninput="handleChangeTime(event)" min="00:00" max="23:00" data-el="close-time">
+
+          <button class="<%= closeButtonClass %>" type="button" onclick="handleRemoveHours(event)" data-el="close-btn">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
+          <button class="<%= addButtonClass %>" type="button" onclick="handleAddHours(event)" data-el="add-btn">Add
+            hours</button>
+        </div>
         <% }) %>
-      </select>
-
-      <label class="sr-only" for="openTimeInput">Open time</label>
-      <input type="time" class="form-control mb-2 mr-sm-2" id="openTimeInput" name="open_time" value="10:00" min="00:00"
-        max="23:00" required>
-
-      <label class="sr-only" for="closeTimeInput">Close time</label>
-      <input type="time" class="form-control mb-2 mr-sm-2" id="closeTimeInput" name="close_time" value="16:00:00"
-        min="00:00" max="23:00" required>
+      </fieldset>
     </div>
     <% }) %>
   </div>
-  <button class="btn btn-secondary mb-2">Update work hours</button>
+
+  <button type="submit" class="btn btn-secondary mb-2">Update hours</button>
 </form>
-
-<h5 class="mb-3">Holidays</h5>
-
-<p>To holidays</p>
