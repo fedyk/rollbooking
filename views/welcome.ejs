@@ -1,31 +1,25 @@
-<main role="main" class="container pt-3">
-  <div class="row">
-    <div class="col-sm">
-      <img width="450" src="https://cdn.dribbble.com/users/129991/screenshots/4870591/phone_addiction.png" />
-    </div>
-
-    <div class="col-md-6 col-lg-4">
-      <h1>Rollbooking</h1>
-      <p class="lead">Try how fast an simple rollbooking is:</p>
-      <form action="" method="POST" id="join-form">
-        <div class="form-group">
-          <input class="form-control form-control-lg" type="text" name="business_name" placeholder="Your Business Name"
-            autofocus="" required="">
-        </div>
-        <div class="form-group">
-          <input class="form-control form-control-lg" type="email" name="email" placeholder="Email" required="">
-        </div>
-        <div class="form-group">
-          <input class="form-control form-control-lg" type="password" name="password" placeholder="Password"
-          required="">
-        </div>
-
-        <input class="timezone-auto-detect" type="hidden" name="timezone" />
-
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary btn-lg btn-block">Continue</button>
-        </div>
-      </form>
-    </div>
+<div class="row">
+  <div class="col-md-5">
+    <h2>Rollbooking</h2>
+    <p class="lead">Simple booking system</p>
+    <form action="" method="POST" id="join-form">
+      <input class="timezone-auto-detect" type="hidden" name="timezone" />
+      <div class="form-group">
+        <input class="form-control" type="text" name="business_name" placeholder="Your Business Name"
+          autofocus="" required="">
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="email" name="email" placeholder="Email" required="">
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="password" name="password" placeholder="Password" required="">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Try it out</button>
+      </div>
+    </form>
   </div>
-</main>
+  <div class="col order-md-first text-center">
+    <img class="img-fluid" src="https://cdn.dribbble.com/users/129991/screenshots/4870591/phone_addiction.png" />
+  </div>
+</div>

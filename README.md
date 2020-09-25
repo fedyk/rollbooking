@@ -8,7 +8,3 @@
     Fast and simple booking system.
   </p>
 </p>
-
-# What's Rollbooking?
-
-Roolbooking is a fast and simple online booking system.
