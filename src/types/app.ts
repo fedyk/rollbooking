@@ -2,6 +2,8 @@ import * as Koa from "koa";
 import { Db } from "mongodb";
 import { User } from "../models/users";
 
+export type ParameterizedContext = Koa.ParameterizedContext<State, Context>
+
 export interface Context extends Koa.Context {
   mongo: Db
 }
@@ -19,4 +21,4 @@ export interface State {
   }[]
 }
 
-export type Middleware<TState = {}, TContext = {}> = Koa.Middleware<TState & State, TContext & Context>
+export type Middleware = Koa.Middleware<State, ParameterizedContext>

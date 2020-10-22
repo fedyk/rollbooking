@@ -11,7 +11,7 @@ import { renderView } from '../render';
 import { Middleware } from "../types";
 import Router = require('@koa/router');
 
-export const calendar: Middleware<State, Context> = async (ctx) => {
+export const calendar: Middleware = async (ctx) => {
   const userId = ctx.session ? ctx.session.userId : void 0
 
   if (!userId) {

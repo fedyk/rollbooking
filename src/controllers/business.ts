@@ -62,7 +62,7 @@ export const business: types.Middleware = async (ctx) => {
       slots: slots.map(slot => ({
         title: dateTimeToISODate(slot.start),
         text: formatDateTime(slot.start),
-        url: Router.url("/business/:businessId/event/new", {
+        url: Router.url("/business/:businessId/event/confirm", {
           businessId: business.id
         }) + "?" + querystring.stringify({
           user_id: slot.userId,

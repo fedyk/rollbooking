@@ -9,7 +9,7 @@ import { renderView } from "../render";
  * })
  * ```
  */
-export const layout: types.Middleware = async (ctx, next) => {
+export const defaultLayout: types.Middleware = async (ctx, next) => {
   await next()
 
   ctx.body = await renderView("layout.ejs", {

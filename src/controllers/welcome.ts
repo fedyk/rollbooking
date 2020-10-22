@@ -1,5 +1,4 @@
-import * as koa from 'koa';
-import { Context, State } from '../types/app';
+import { Middleware } from '../types/app';
 import * as validators from '../validators';
 import * as accounts from '../models/businesses';
 import * as users from '../models/users';
@@ -9,19 +8,13 @@ import { uniqId } from '../lib/uniq-id';
 import { renderView } from '../render';
 import { getGravatarUrl } from '../helpers/gravatar';
 
-export const welcome: koa.Middleware<State, Context> = async (ctx) => {
-  if (!ctx.session) {
-    throw new Error("Internal issue with sessions services. Please try again later")
-  }
-
+export const welcome: Middleware = async (ctx) => {
   if (ctx.state.user) {
     return ctx.redirect("/calendar")
   }
 
   if (ctx.request.method === "POST") {
-
     const body = parseBody(ctx.request.body)
-
     const user: users.User = {
       id: uniqId(),
       name: body.businessName + "'s owner",
@@ -66,8 +59,10 @@ export const welcome: koa.Middleware<State, Context> = async (ctx) => {
     const result2 = await users.createUser(ctx.mongo, user)
 
     // todo: get check
+    if (ctx.session) {
+      ctx.session.userId = user.id
+    }
 
-    ctx.session.userId = user.id
     return ctx.redirect("/calendar")
   }
 
@@ -75,7 +70,6 @@ export const welcome: koa.Middleware<State, Context> = async (ctx) => {
   ctx.state.scripts?.push("/js/vendor/jstz.min.js")
   ctx.state.scripts?.push("/js/timezone.js")
   ctx.body = await renderView("welcome.ejs")
-
 }
 
 function parseBody(body: any) {

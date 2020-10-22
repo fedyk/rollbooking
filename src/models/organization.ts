@@ -2,10 +2,7 @@ import { Db } from "mongodb";
 import { TimePeriod } from "../types/time-period";
 import { SpecialHourPeriod } from "../types/special-hour-period";
 
-/**
- * @deprecated use Organization instead
- */
-export interface Business {
+export interface Organization {
   id: string
   name: string
   alias: string
@@ -43,42 +40,42 @@ export interface Service {
 }
 
 function getCollection(db: Db) {
-  return db.collection<Business>("businesses")
+  return db.collection<Organization>("organizations")
 }
 
-export function getBusinessById(db: Db, id: string) {
+export function getById(db: Db, id: string) {
   return getCollection(db).findOne({ id })
 }
 
-export function getRecentBusinesses(db: Db) {
+export function getRecent(db: Db) {
   return getCollection(db).find().limit(20).toArray()
 }
 
-export function createBusiness(db: Db, business: Business) {
-  return getCollection(db).insertOne(business).then(r => r.insertedId)
+export function create(db: Db, organization: Organization) {
+  return getCollection(db).insertOne(organization).then(r => r.insertedId)
 }
 
-export function updateBusiness(db: Db, businessId: string, business: Partial<Omit<Business, "id">>) {
+export function update(db: Db, organizationId: string, organization: Partial<Omit<Organization, "id">>) {
   return getCollection(db).updateOne({
-    id: businessId
+    id: organizationId
   }, {
-    $set: business
+    $set: organization
   })
 }
 
-export function pushEmployee(db: Db, businessId: string, employee: Employee) {
+export function pushEmployee(db: Db, organizationId: string, employee: Employee) {
   return getCollection(db).updateOne({
-    id: businessId
+    id: organizationId
   }, {
     $push: {
       employees: employee
     }
   })
 }
-export function pushService(db: Db, businessId: string, service: Service) {
+export function pushService(db: Db, organizationId: string, service: Service) {
   return getCollection(db).updateOne(
     {
-      id: businessId
+      id: organizationId
     },
     {
       $inc: {
@@ -91,10 +88,10 @@ export function pushService(db: Db, businessId: string, service: Service) {
   )
 }
 
-export function setService(db: Db, businessId: string, serviceId: number, service: Service) {
+export function setService(db: Db, organizationId: string, serviceId: number, service: Service) {
   return getCollection(db).updateOne(
     {
-      id: businessId,
+      id: organizationId,
       "services.id": serviceId,
     },
     {
@@ -105,13 +102,13 @@ export function setService(db: Db, businessId: string, serviceId: number, servic
   )
 }
 
-export function setUser(db: Db, businessId: string, userId: string, user: Employee) {
-  const key: keyof Business = "employees";
+export function setUser(db: Db, organizationId: string, userId: string, user: Employee) {
+  const key: keyof Organization = "employees";
   const id: keyof Employee = "id"
 
   return getCollection(db).updateOne(
     {
-      id: businessId,
+      id: organizationId,
       [`${key}.${id}`]: userId
     },
     {

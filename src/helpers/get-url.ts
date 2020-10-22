@@ -6,5 +6,5 @@ export function getUrl(path: string, params: object) {
 }
 
 export function base() {
-  return "http://" + HOST
+  return "https://" + HOST
 }

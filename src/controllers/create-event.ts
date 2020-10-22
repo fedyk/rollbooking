@@ -9,7 +9,7 @@ import { nativeDateToDateTime } from '../helpers/date/native-date-to-date-time';
 import { uniqId } from "../lib/uniq-id";
 import { renderView } from "../render";
 
-export const createEvent: Types.Middleware = async (ctx) => {
+export const confirmEvent: Types.Middleware = async (ctx) => {
   if (!ctx.session) {
     return ctx.throw(404, "Internal problem with session. please try again later")
   }

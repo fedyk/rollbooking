@@ -15,9 +15,9 @@
     "@types/koa-session": "5.10.2",
     "@types/koa__router": "^8.0.2",
     "@types/mongodb": "3.5.27",
-    "@types/node": "14.10.1",
+    "@types/node": "14.11.2",
     "date-fns": "^2.16.1",
-    "debug": "^4.1.1",
+    "debug": "^4.2.0",
     "dotenv": "8.2.0",
     "ejs": "^3.1.5",
     "koa": "2.13.0",
@@ -29,7 +29,7 @@
     "mongodb": "3.6.2",
     "parse-int": "1.0.3",
     "timezone-support": "^2.0.2",
-    "typescript": "4.0.2"
+    "typescript": "4.0.3"
   },
   "scripts": {
     "build": "tsc",
