@@ -1,10 +1,10 @@
 import Router = require("@koa/router");
 import * as dateFns from "date-fns";
 import * as Types from '../types';
-import * as accounts from '../models/businesses';
-import * as users from '../models/users';
-import * as clients from '../models/clients';
-import * as events from '../models/events';
+import * as accounts from '../data-access/businesses';
+import * as users from '../data-access/users';
+import * as clients from '../data-access/clients';
+import * as events from '../data-access/events';
 import { nativeDateToDateTime } from '../helpers/date/native-date-to-date-time';
 import { uniqId } from "../lib/uniq-id";
 import { renderView } from "../render";
@@ -47,7 +47,7 @@ export const confirmEvent: Types.Middleware = async (ctx) => {
     const startDate = query.date
     const endDate = dateFns.addMinutes(query.date, service.duration)
 
-    let organizer: users.User | clients.Client | null = user;
+    let organizer: users.IUser | clients.Client | null = user;
 
     if (!organizer && clientId) {
       organizer = await clients.getById(ctx.mongo, clientId)

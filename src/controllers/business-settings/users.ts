@@ -1,12 +1,12 @@
 import Router = require("@koa/router");
 
-import { getBusinessById, pushEmployee } from "../../models/businesses";
+import { getBusinessById, pushEmployee } from "../../data-access/businesses";
 import { renderView } from "../../render";
 import { Middleware } from "../../types";
 import { isEmail } from "../../validators";
 import { sendEmail } from "../../email";
 import { getUrl } from "../../helpers/get-url";
-import { createToken, EmailInviteToken } from "../../models/token";
+import { createToken, EmailInviteToken } from "../../data-access/token";
 import { uniqId } from "../../lib/uniq-id";
 import { getGravatarUrl } from "../../helpers/gravatar";
 

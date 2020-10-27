@@ -1,7 +1,7 @@
 import { Middleware } from 'koa';
 import * as ejs from "ejs";
 import * as Types from '../types';
-import * as accounts from '../models/businesses';
+import * as accounts from '../data-access/businesses';
 import { renderView } from '../render';
 import Router = require('@koa/router');
 

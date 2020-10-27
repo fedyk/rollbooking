@@ -1,7 +1,7 @@
 import { Middleware } from '../types/app';
 import * as validators from '../validators';
-import * as accounts from '../models/businesses';
-import * as users from '../models/users';
+import * as accounts from '../data-access/businesses';
+import * as users from '../data-access/users';
 import * as password from "../lib/password";
 import { DayOfWeek } from '../types/dat-of-week';
 import { uniqId } from '../lib/uniq-id';
@@ -15,7 +15,7 @@ export const welcome: Middleware = async (ctx) => {
 
   if (ctx.request.method === "POST") {
     const body = parseBody(ctx.request.body)
-    const user: users.User = {
+    const user: users.IUser = {
       id: uniqId(),
       name: body.businessName + "'s owner",
       email: body.email,

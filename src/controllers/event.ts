@@ -1,8 +1,8 @@
 import * as dateFns from "date-fns";
 import * as Types from '../types';
-import * as accounts from '../models/businesses';
-import * as users from '../models/users';
-import * as events from '../models/events';
+import * as accounts from '../data-access/businesses';
+import * as users from '../data-access/users';
+import * as events from '../data-access/events';
 import { dateTimeToNativeDate } from "../helpers/date/date-time-to-native-date";
 import { renderView } from "../render";
  

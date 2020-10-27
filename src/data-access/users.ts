@@ -1,6 +1,6 @@
 import { Db } from "mongodb";
 
-export interface User {
+export interface IUser {
   id: string
   name: string
   email: string
@@ -13,11 +13,11 @@ export interface User {
   updated?: Date
 }
 
-export function createUser(db: Db, user: User) {
+export function createUser(db: Db, user: IUser) {
   return getCollection(db).insertOne(user).then(r => r.insertedId);
 }
 
-export function createUsers(db: Db, users: User[]) {
+export function createUsers(db: Db, users: IUser[]) {
   return getCollection(db).insertMany(users);
 }
 
@@ -30,5 +30,5 @@ export function findUserByCredentials(db: Db, email: string, password: string) {
 }
 
 function getCollection(db: Db) {
-  return db.collection<User>("users")
+  return db.collection<IUser>("users")
 }

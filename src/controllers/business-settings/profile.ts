@@ -1,4 +1,4 @@
-import { getBusinessById, updateBusiness } from "../../models/businesses";
+import { getBusinessById, updateBusiness } from "../../data-access/businesses";
 import { renderView } from "../../render";
 import { Middleware, DayOfWeek } from "../../types";
 import { daysOfWeek } from "../../helpers/days-of-week";

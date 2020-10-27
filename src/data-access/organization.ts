@@ -2,10 +2,9 @@ import { Db } from "mongodb";
 import { TimePeriod } from "../types/time-period";
 import { SpecialHourPeriod } from "../types/special-hour-period";
 
-export interface Organization {
+export interface IOrganization {
   id: string
   name: string
-  alias: string
   avatarUrl: string
   description: string
   timezone: string
@@ -40,7 +39,7 @@ export interface Service {
 }
 
 function getCollection(db: Db) {
-  return db.collection<Organization>("organizations")
+  return db.collection<IOrganization>("organizations")
 }
 
 export function getById(db: Db, id: string) {
@@ -51,11 +50,11 @@ export function getRecent(db: Db) {
   return getCollection(db).find().limit(20).toArray()
 }
 
-export function create(db: Db, organization: Organization) {
+export function create(db: Db, organization: IOrganization) {
   return getCollection(db).insertOne(organization).then(r => r.insertedId)
 }
 
-export function update(db: Db, organizationId: string, organization: Partial<Omit<Organization, "id">>) {
+export function update(db: Db, organizationId: string, organization: Partial<Omit<IOrganization, "id">>) {
   return getCollection(db).updateOne({
     id: organizationId
   }, {
@@ -103,7 +102,7 @@ export function setService(db: Db, organizationId: string, serviceId: number, se
 }
 
 export function setUser(db: Db, organizationId: string, userId: string, user: Employee) {
-  const key: keyof Organization = "employees";
+  const key: keyof IOrganization = "employees";
   const id: keyof Employee = "id"
 
   return getCollection(db).updateOne(

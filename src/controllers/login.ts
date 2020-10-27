@@ -1,7 +1,7 @@
 import * as koa from 'koa';
 import { Context, State } from '../types/app';
 import * as validators from '../validators';
-import * as users from '../models/users';
+import * as users from '../data-access/users';
 import * as password from "../lib/password";
 import { renderView } from '../render';
 

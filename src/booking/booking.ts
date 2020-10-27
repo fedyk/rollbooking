@@ -1,7 +1,7 @@
 import * as dateFns from "date-fns"
 import * as tz from "timezone-support"
-import { Business } from "../models/businesses";
-import { Event } from "../models/events";
+import { Business } from "../data-access/businesses";
+import { Event } from "../data-access/events";
 import { DayOfWeek } from "../types";
 import * as types from "./types";
 import { TimePeriod } from "../types/time-period";

@@ -1,4 +1,4 @@
-import { getBusinessById, Service } from "../../models/businesses";
+import { getBusinessById, Service } from "../../data-access/businesses";
 import { renderView } from "../../render";
 import { Middleware } from "../../types";
 import { getUrl } from "../../helpers/get-url";

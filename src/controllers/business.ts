@@ -4,8 +4,8 @@ import * as tz from "timezone-support";
 import * as dateFns from "date-fns";
 
 import * as types from '../types';
-import * as accounts from '../models/businesses';
-import * as Events from "../models/events";
+import * as accounts from '../data-access/businesses';
+import * as Events from "../data-access/events";
 import { Booking } from '../booking';
 import { dateTimeToISODate } from '../helpers/date/date-time-to-iso-date';
 import { DateTime } from '../types';

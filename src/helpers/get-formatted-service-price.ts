@@ -1,4 +1,4 @@
-import { Service } from "../models/businesses";
+import { Service } from "../data-access/businesses";
 
 export function getFormattedServicePrice(service: Service) {
   if (service.currencyCode === "USD") {

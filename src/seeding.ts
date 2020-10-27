@@ -1,8 +1,8 @@
 import { MONGODB_URI } from "./config"
 import { createClient, getDatabase, closeClient } from "./mongo"
-import { User, createUser, createUsers } from "./models/users"
+import { IUser, createUser, createUsers } from "./data-access/users"
 import { uniqId } from "./lib/uniq-id"
-import { Business, Service, createBusiness } from "./models/businesses"
+import { Business, Service, createBusiness } from "./data-access/businesses"
 import { TimePeriod } from "./types/time-period"
 import { DayOfWeek } from "./types"
 import { service } from "./controllers/business-settings/service"
@@ -40,7 +40,7 @@ async function seeding() {
   }
 }
 
-function getRandomAccount(owner: User, employees: User[]): Business {
+function getRandomAccount(owner: IUser, employees: IUser[]): Business {
   const name = getRandomAccountName()
   const services = getRandomServices()
   const regularHours = getRandomRegularHours()
@@ -71,7 +71,7 @@ function getRandomAccount(owner: User, employees: User[]): Business {
 }
 
 function getRandomUsers(amount: number) {
-  const users: User[] = new Array(amount)
+  const users: IUser[] = new Array(amount)
 
   for (let i = 0; i < amount; i++) {
     users[i] = getRandomUser()
@@ -80,7 +80,7 @@ function getRandomUsers(amount: number) {
   return users
 }
 
-function getRandomUser(): User {
+function getRandomUser(): IUser {
   const name = getRandomUserName()
   const email = getUserEmail(name)
 

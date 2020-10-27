@@ -1,7 +1,7 @@
 import { renderView } from "../../render"
 import { Middleware } from "../../types"
 import { getUrl } from "../../helpers/get-url"
-import { getBusinessById, Service, pushService, setService } from "../../models/businesses"
+import { getBusinessById, Service, pushService, setService } from "../../data-access/businesses"
 
 export const service: Middleware = async (ctx) => {
   const business = await getBusinessById(ctx.mongo, ctx.params.businessId)

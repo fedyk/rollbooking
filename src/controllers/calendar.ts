@@ -1,9 +1,9 @@
 import * as querystring from "querystring";
 import * as dateFns from "date-fns";
 import * as tz from "timezone-support";
-import * as users from "../models/users";
-import * as accounts from "../models/businesses";
-import * as Events from "../models/events";
+import * as users from "../data-access/users";
+import * as accounts from "../data-access/businesses";
+import * as Events from "../data-access/events";
 import { Context, State } from '../types/app';
 import { datepicker } from '../helpers/datepicker';
 import { dateToISODate } from '../helpers/date/date-to-iso-date';

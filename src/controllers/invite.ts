@@ -2,9 +2,9 @@ import { Middleware } from 'koa';
 import * as Types from '../types';
 import { renderView } from '../render';
 import Router = require('@koa/router');
-import { getTokenById, deleteToken } from '../models/token';
+import { getTokenById, deleteToken } from '../data-access/token';
 import { ObjectID } from 'mongodb';
-import { createUser } from '../models/users';
+import { createUser } from '../data-access/users';
 import { hashPassword } from '../lib/password';
 import { getGravatarUrl } from '../helpers/gravatar';
 
