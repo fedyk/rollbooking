@@ -28,10 +28,18 @@ export const template: types.Middleware = async (ctx, next) => {
 
   await next()
 
+  const layout = await renderView("layout.ejs", {
+    isAuthenticated: !!ctx.state.user,
+    userName: ctx.state.user ? ctx.state.user.name : void 0,
+    userId: ctx.state.user ? ctx.state.user.id : void 0,
+    body: ctx.body,
+    alerts: ctx.state.alerts
+  })
+
   ctx.body = await renderView("template.ejs", {
     title: ctx.state.title,
     description: ctx.state.description,
-    body: ctx.body,
+    body: layout,
     scripts: ctx.state.scripts,
     styles: ctx.state.styles,
   })

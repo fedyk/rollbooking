@@ -1,5 +1,5 @@
 import * as types from "../types";
-import * as accounts from "../models/users";
+import * as accounts from "../data-access/users";
 
 /**
  * @example
