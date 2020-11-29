@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col flex-grow-0">
+    <img src="<%= avatarUrl %>" alt="<%= name %>" class="rounded d-block mb-3" width="256" height="256">
+    <h5 class="h5"><%= name %></h5>
+    <% if (settingsUrl) { %>
+    <a href="<%= settingsUrl %>" class="btn btn-outline-secondary btn-block">Settings</a>
+    <% } %>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        <button class="btn btn-primary">test</button>
+      </div>
+      <div class="card-body">
+        <blockquote class="blockquote mb-0">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+        </blockquote>
+      </div>
+    </div>
+
+
+    <% if (upcomingReservations.length > 0) { %>
+    <h6 class="h6 mb-3">Upcoming appointments</h6>
+
+    <% upcomingReservations.forEach(reservation => { %>
+    <div class="position-relative d-block border rounded p-3 mb-3">
+      <div>
+        <a href="<%= reservation.url %>" class="stretched-link"><%= reservation.serviceName %></a> · <span
+          class="text-muted"><%= reservation.price %></span>
+      </div>
+      <div class="text-muted"><%= reservation.date %></div>
+    </div>
+    <% }) %>
+    <% } %>
+
+    <h6 class="h6 mb-3">Create appointment</h6>
+
+    <% if (services.length === 0) { %>
+    <div class="text-center">Hm, looks like all is booked</div>
+    <% } %>
+
+    <% services.forEach(function(service) { %>
+    <div class="border rounded p-3 pb-0 mb-3">
+      <h6 class="m-0"><%= service.name %> · <span class="text-muted"><%= service.price %></span></h6>
+      <div class="text-muted small"><%= service.date %></div>
+      <div class="d-flex flex-wrap">
+        <% service.slots.forEach(function(slot) { %>
+        <a href="<%= slot.url %>" class="btn btn-sm btn-outline-primary mr-2 mb-2"
+          title="<%= slot.title %>"><%= slot.text %></a>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>

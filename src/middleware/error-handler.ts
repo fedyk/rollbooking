@@ -1,3 +1,4 @@
+import { inspect } from "util";
 import { Middleware } from "../types";
 
 /**
@@ -5,7 +6,7 @@ import { Middleware } from "../types";
  */
 export const errorHandler: Middleware = (ctx, next) => {
   return Promise.resolve(next()).catch(function (err) {
-    ctx.body = renderError(err.message)
+    ctx.body = renderError(err.message, err)
     ctx.status = err.status || 500
 
     if (!err.status) {
@@ -14,8 +15,8 @@ export const errorHandler: Middleware = (ctx, next) => {
   })
 }
 
-function renderError(message: string) {
-  return /*html*/`<html lang="en">
+function renderError(message: string, err: Error) {
+  return `<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -32,12 +33,16 @@ function renderError(message: string) {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
+      .container {
+        padding: 28px;
+      }
     </style>
   </head>
   <body>
-    <div>
-      <h4>${message}</h4>
-      <p><small>Please contact our <a href="#">TBD team</a>.</small></p>
+    <div class="container">
+      <h2>Ops, something went wrong</h2>
+      <p><strong>${message}</strong></p>
+      <code>${inspect(err)}</code>
     </body>
   </html>`
 }

@@ -1,4 +1,4 @@
-import { TimeOfDay } from "../../types/time-of-day";
+import { TimeOfDay } from "../types/time-of-day";
 import { throws } from "assert";
 
 export function parseISOTime(time: string): TimeOfDay {

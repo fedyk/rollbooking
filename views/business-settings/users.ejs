@@ -1,7 +1,7 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center py-2 bg-transparent">
     <span>Users</span>
-    <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#inviteModal">Invite people</button>
+    <a class="btn btn-sm btn-success" href="<%= addUserUrl %>">Add user</a>
   </div>
 
   <ul class="list-group list-group-flush">
@@ -16,29 +16,4 @@
     </a>
     <% }) %>
   </ul>
-</div>
-
-<div class="modal fade" id="inviteModal" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="inviteModalLabel">Invite people</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="?action=invite-by-email" method="POST">
-          <div class="input-group">
-            <input type="email" name="email" class="form-control" placeholder="hey@example.com"
-              aria-label="People email" required>
-            <div class="input-group-append">
-              <button class="btn btn-success" type="submit">Send invite on email</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 </div>

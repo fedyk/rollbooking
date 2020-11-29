@@ -1,50 +1,47 @@
-import { Middleware } from 'koa';
-import * as Types from '../types';
+import { Middleware } from '../types';
 import { renderView } from '../render';
-import Router = require('@koa/router');
-import { getTokenById, deleteToken } from '../data-access/token';
 import { ObjectID } from 'mongodb';
-import { createUser } from '../data-access/users';
 import { hashPassword } from '../lib/password';
 import { getGravatarUrl } from '../helpers/gravatar';
 
-export const invite: Middleware<Types.State, Types.Context> = async (ctx) => {
-  const token = await getTokenById(ctx.mongo, new ObjectID(ctx.params.token))
+export const invite_TO_REWORK: Middleware = async (ctx) => {
+  const token = await ctx.invitations.getById(new ObjectID(ctx.params.token))
 
-  if (!token || !token._id) {
-    throw new Error("Looks like token has expired")
+  if (!token) {
+    throw new Error("Token has expired, please ask for a new invite")
   }
 
-  if (token.type === "email-invite") {
-    if (ctx.method === "POST") {
-      const body = parseBody(ctx.request.body)
-  
-      await createUser(ctx.mongo, {
-        id: token.invitee_id,
-        email: token.invitee_email,
-        name: body.name,
-        avatarUrl: getGravatarUrl(token.invitee_email),
-        password: hashPassword(body.password),
-        ownedBusinessIds: [],
-        defaultBusinessId: token.business_id,
-        timezone: body.timezone
-      })
+  if (ctx.method === "POST") {
+    const body = parseBody(ctx.request.body)
 
-      await deleteToken(ctx.mongo, token._id)
+    const result = await ctx.users.createUser({
+      email: token.email,
+      name: body.name,
+      avatarUrl: getGravatarUrl(token.email),
+      password: hashPassword(body.password),
+      timezone: body.timezone,
+      phone: "",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    })
 
-      /**
-       * @todo: mark employee as accepted invitation
-       */
+    // await ctx.organizations.addMember(token.organizationId, {
+    //   id: result.insertedId,
+    //   name: body.name,
+    //   role: "normal",
+    //   position: token.position,
+    // })
 
-      return ctx.redirect("/")
-    }
+    await ctx.invitations.delete(token._id)
+
+    return ctx.redirect("/")
   }
 
   ctx.state.title = "Welcome to Rollbooking!"
   ctx.state.scripts?.push("/js/vendor/jstz.min.js")
   ctx.state.scripts?.push("/js/timezone.js")
   ctx.body = await renderView("invite.ejs", {
-    email: token.invitee_email
+    email: token.email
   })
 }
 
@@ -60,7 +57,7 @@ function parseBody(body?: any) {
   if (typeof password !== "string") {
     throw new Error("`password` is required")
   }
-  
+
   if (typeof timezone !== "string") {
     throw new Error("`timezone` is required")
   }

@@ -1,0 +1,21 @@
+<p class="lead">Your reservations</p>
+
+<% console.log(reservations) %>
+
+<div class="list-group">
+  <% reservations.forEach(r => { %>
+  <div class="list-group-item list-group-item-action">
+    <div class="d-flex w-100">
+      <span class="font-weight-bold"><%= r.serviceName %></span>
+      <span class="mx-2">·</span>
+      <span><%= r.price %></span>
+    </div>
+    <div>
+      <span class="text-secondary"><%= r.startEndTime %> at </span>
+      <a class="text-secondary" href="<%= r.organizationUrl %>"><%= r.organizationName %></a>
+      <span class="text-secondary">with</span>
+      <a class="text-secondary" href="<%= r.assigneeUrl %>"><%= r.assigneeName %></a>
+    </div>
+  </div>
+  <% }) %>
+</div>

@@ -1,34 +1,44 @@
-import { Db } from "mongodb";
+import { Collection, Db, ObjectID, WithId } from "mongodb";
 
-export interface IUser {
-  id: string
+export interface User {
   name: string
   email: string
+  phone: string
   avatarUrl: string
   timezone: string
   password?: string
-  ownedBusinessIds: string[]
-  defaultBusinessId: string | null
-  created?: Date
-  updated?: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
-export function createUser(db: Db, user: IUser) {
-  return getCollection(db).insertOne(user).then(r => r.insertedId);
-}
+export class Users {
+  protected collection: Collection<User>
 
-export function createUsers(db: Db, users: IUser[]) {
-  return getCollection(db).insertMany(users);
-}
+  constructor(db: Db) {
+    this.collection = db.collection("users")
+  }
 
-export function getUserById(db: Db, id: string) {
-  return getCollection(db).findOne({ id })
-}
+  createUser(user: User) {
+    return this.collection.insertOne(user);
+  }
 
-export function findUserByCredentials(db: Db, email: string, password: string) {
-  return getCollection(db).findOne({ email, password })
-}
+  createUsers(users: User[]) {
+    return this.collection.insertMany(users);
+  }
 
-function getCollection(db: Db) {
-  return db.collection<IUser>("users")
+  getUserById(id: string) {
+    return this.collection.findOne<WithId<User>>(new ObjectID(id))
+  }
+
+  findUserByCredentials(email: string, password: string) {
+    return this.collection.findOne<WithId<User>>({ email, password })
+  }
+
+  findIn(ids: ObjectID[]) {
+    return this.collection.find<WithId<User>>({
+      _id: {
+        $in: ids
+      }
+    }).toArray()
+  }
 }

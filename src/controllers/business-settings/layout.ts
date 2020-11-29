@@ -1,45 +1,46 @@
 import * as Router from "@koa/router";
 import * as types from "../../types";
 import { renderView } from "../../render";
+import { ObjectID } from "mongodb";
 
 export const layout: types.Middleware = async (ctx, next) => {
-  const businessId = ctx.params.businessId
+  const businessId = new ObjectID(ctx.params.id)
 
   if (!businessId) {
     throw new RangeError("`businessSettingsLayout` midlware requires `bussinessId` parameter in the scope")
   }
 
+  const org = await ctx.organizations.get(businessId)
+
   /**
-   * To mark item as selected, assign his id to `ctx.state.selectedItemId`
+   * To mark item as selected, assign his id to `  // @ts-ignore
+ctx.state.selectedItemId`
    */
   const links = [
     {
       id: "profile",
       title: "Profile",
-      url: Router.url("/business/:businessId/settings/profile", {
-        businessId
-      })
+      url: `/salon/${businessId}/settings/profile`,
     },
     {
       id: "services",
       title: "Services",
-      url: Router.url("/business/:businessId/settings/services", {
-        businessId
-      })
+      url: `/salon/${businessId}/settings/services`,
     },
     {
       id: "users",
       title: "Users",
-      url: Router.url("/business/:businessId/settings/users", {
-        businessId
-      })
+      url: `/salon/${businessId}/settings/users`,
     }]
 
   await next()
 
   ctx.body = await renderView("business-settings/layout.ejs", {
     body: ctx.body,
+    profileUrl: `/salon/${ctx.params.id}`,
+    profileName: org?.name,
     links,
+    // @ts-ignore
     selectedItemId: ctx.state.selectedItemId
   })
 }

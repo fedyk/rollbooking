@@ -1,19 +1,13 @@
-import * as types from "../types";
-import * as accounts from "../data-access/users";
+import { Middleware } from "../types";
 
-/**
- * @example
- * 
- * router.get("/", session, (ctx) => {
- *   const user = ctx.state.user
- * })
- */
-export const session: types.Middleware = async(ctx, next) => {
-  if (ctx.session) {
-    const userId = ctx.session.userId
-  
-    if (userId && !ctx.state.user) {
-      ctx.state.user = await accounts.getUserById(ctx.mongo, userId) || void 0
+export const session: Middleware = async (ctx, next) => {
+  const userId = ctx.session.userId
+
+  if (userId && !ctx.state.user) {
+    const user = await ctx.users.getUserById(userId)
+
+    if (user) {
+      ctx.state.user = user
     }
   }
 

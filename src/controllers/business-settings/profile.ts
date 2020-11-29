@@ -1,20 +1,24 @@
-import { getBusinessById, updateBusiness } from "../../data-access/businesses";
+import { ObjectID } from "mongodb";
 import { renderView } from "../../render";
 import { Middleware, DayOfWeek } from "../../types";
 import { daysOfWeek } from "../../helpers/days-of-week";
-import { timeOfDayToISOTime } from "../../helpers/date/time-of-day-to-iso-time";
+import { timeOfDayToISOTime } from "../../helpers/time-of-day-to-iso-time";
 import { TimePeriod } from "../../types/time-period";
-import { parseISOTime } from "../../helpers/date/parse-iso-time";
+import { parseISOTime } from "../../helpers/parse-iso-time";
 
 export const profile: Middleware = async (ctx) => {
-  const business = await getBusinessById(ctx.mongo, ctx.params.businessId)
+  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
 
   if (!business) {
-    return ctx.throw(404, new Error("Page not found"))
+    return ctx.throw("Not found", 404)
   }
 
-  if (ctx.session?.userId !== business.ownerId) {
-    return ctx.throw(404, new Error("Access restricted"))
+  if (!ctx.session.userId) {
+    return ctx.throw("Not found", 404)
+  }
+
+  if (!business.creatorId.equals(ctx.session.userId)) {
+    return ctx.throw("Restricted access", 404)
   }
 
   if (ctx.request.method === "POST") {
@@ -23,7 +27,7 @@ export const profile: Middleware = async (ctx) => {
     if (action === "update_profile") {
       const body = parseProfileBody(ctx.request.body)
 
-      await updateBusiness(ctx.mongo, business.id, body).then(resp => {
+      await ctx.organizations.update(business._id, body).then(resp => {
         if (resp.result.n !== 1) {
           throw new Error("Failed to update business profile")
         }
@@ -33,7 +37,7 @@ export const profile: Middleware = async (ctx) => {
     if (action === "update_hours") {
       const regularHours = parseHoursBody(ctx.request.body)
 
-      await updateBusiness(ctx.mongo, business.id, { regularHours }).then(resp => {
+      await ctx.organizations.update(business._id, { regularHours }).then(resp => {
         if (resp.result.n !== 1) {
           throw new Error("Failed to update business profile")
         }
@@ -45,7 +49,8 @@ export const profile: Middleware = async (ctx) => {
 
   const hours = getGroupedRegularHours(business.regularHours)
 
-  ctx.state.selectedItemId = "profile"
+    // @ts-ignore
+ctx.state.selectedItemId = "profile"
   ctx.state.title = business.name
   ctx.state.scripts?.push("/js/work-hours.js")
   ctx.body = await renderView("business-settings/profile.ejs", {

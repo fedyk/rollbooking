@@ -18,5 +18,4 @@ const reserved = new Set([
 
 export function isReserverAlias(alias: string) {
   return reserved.has(alias)
-  
 }

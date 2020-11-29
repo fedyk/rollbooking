@@ -21,7 +21,7 @@ export const template: types.Middleware = async (ctx, next) => {
     "/css/bootstrap-theme.css"
   ]
 
-  ctx.state.alerts = []
+   ctx.state.alerts = []
 
   ctx.state.title = "Rollbooking";
   ctx.response.type = "html"
@@ -30,8 +30,8 @@ export const template: types.Middleware = async (ctx, next) => {
 
   const layout = await renderView("layout.ejs", {
     isAuthenticated: !!ctx.state.user,
-    userName: ctx.state.user ? ctx.state.user.name : void 0,
-    userId: ctx.state.user ? ctx.state.user.id : void 0,
+    userName: ctx.state?.user?.name,
+    userId: ctx.state.user?._id?.toHexString(),
     body: ctx.body,
     alerts: ctx.state.alerts
   })

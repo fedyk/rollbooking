@@ -1,29 +1,31 @@
+import { ObjectID } from "mongodb"
 import { renderView } from "../../render"
 import { Middleware } from "../../types"
-import { getUrl } from "../../helpers/get-url"
-import { getBusinessById, Service, pushService, setService } from "../../data-access/businesses"
+import { Service } from "../../data-access/organizations"
 
 export const service: Middleware = async (ctx) => {
-  const business = await getBusinessById(ctx.mongo, ctx.params.businessId)
+  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
 
   if (!business) {
-    return ctx.throw(404, new Error("Page not found"))
+    return ctx.throw(404, "Not found")
   }
 
-  if (ctx.session?.userId !== business.ownerId) {
-    return ctx.throw(404, new Error("Access restricted"))
+  if (!ctx.session.userId) {
+    return ctx.throw(404, "Not found")
   }
 
-  const serviceId = ctx.params.serviceId === "new" ? "new" : Number(ctx.params.serviceId)
-  const listUrl = getUrl("/business/:businessId/settings/services", {
-    businessId: business.id
-  })
+  if (!business.creatorId.equals(ctx.session.userId)) {
+    return ctx.throw(404, "Not found")
+  }
+
+  const isCreatingMode = ctx.params.serviceId === "new"
+  const listUrl = `/salon/${business._id}/settings/services`
 
   let service: Service;
 
-  if (serviceId === "new") {
+  if (isCreatingMode) {
     service = {
-      id: -1,
+      id: new ObjectID(),
       name: "",
       description: "",
       duration: 30,
@@ -32,7 +34,7 @@ export const service: Middleware = async (ctx) => {
     }
   }
   else {
-    const currentService = business.services.find(s => s.id === serviceId)
+    const currentService = business.services.find(s => s.id.equals(ctx.params.serviceId))
 
     if (!currentService) {
       return ctx.throw(new Error("Page does not exist"), 404)
@@ -43,37 +45,21 @@ export const service: Middleware = async (ctx) => {
 
   if (ctx.request.method === "POST") {
     const body = parseBody(ctx.request.body)
+    const result = isCreatingMode
+      ? await ctx.organizations.addService(business._id, Object.assign(service, body))
+      : await ctx.organizations.setService(business._id, service.id, Object.assign(service, body))
 
-    if (serviceId === "new") {
-      const result = await pushService(ctx.mongo, business.id, {
-        ...service,
-        ...body,
-        id: business.servicesCount + 1
-      })
-
-      if (result.modifiedCount !== 1) {
-        return ctx.throw(new Error("failed to create service. Please try again later"), 500)
-      }
-
-      return ctx.redirect(listUrl)
+    if (result.matchedCount !== 1) {
+      return ctx.throw(500, "failed to create service. Please try again later")
     }
-    else {
-      const result = await setService(ctx.mongo, business.id, serviceId, {
-        ...service,
-        ...body
-      })
 
-      if (result.matchedCount !== 1) {
-        return ctx.throw(new Error("failed to create service. Please try again later"), 500)
-      }
-
-      return ctx.redirect(listUrl)
-    }
+    return ctx.redirect(listUrl)
   }
 
-  const pageTitle = serviceId === "new" ? "New" : service.name
-  const submitLabel = serviceId === "new" ? "Add service" : "Update service"
+  const pageTitle = isCreatingMode ? "New" : service.name
+  const submitLabel = isCreatingMode ? "Add service" : "Update service"
 
+  // @ts-ignore
   ctx.state.selectedItemId = "services"
   ctx.state.title = pageTitle
   ctx.body = await renderView("business-settings/service.ejs", {
@@ -89,33 +75,13 @@ function parseBody(body: any) {
     throw new RangeError("`body` can't be empty")
   }
 
-  let name = body.name
-  let description = body.description
+  let name = String(body?.name ?? "").trim()
+  let description = String(body?.description ?? "").trim()
   let duration = Number(body.duration)
   let price = Number(body.price)
 
-  if (typeof name !== "string") {
-    throw new RangeError("`name` should be a string")
-  }
-
-  name = name.trim()
-
-  if (name.length > 256) {
-    throw new RangeError("`name` should be a longer than 256")
-  }
-
   if (name.length === 0) {
     throw new RangeError("`name` can't be empty")
-  }
-
-  if (typeof description !== "string") {
-    throw new RangeError("`description` should be a string")
-  }
-
-  description = description.trim()
-
-  if (description.length > 2048) {
-    throw new RangeError("`description` should be a longer than 2048")
   }
 
   if (Number.isNaN(duration)) {

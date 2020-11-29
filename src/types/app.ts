@@ -1,24 +1,41 @@
 import * as Koa from "koa";
-import { Db } from "mongodb";
-import { IUser } from "../data-access/users";
+import { Db, WithId } from "mongodb";
+import { Reservations } from "../data-access/reservations";
+import { Customers } from "../data-access/customers";
+import { Invitations } from "../data-access/invitations";
+import { Organizations } from "../data-access/organizations";
+import { Reviews } from "../data-access/reviews";
+import { User, Users } from "../data-access/users";
+import { RouterParamContext } from "@koa/router";
 
-export type ParameterizedContext = Koa.ParameterizedContext<State, Context>
-
-export interface Context extends Koa.Context {
-  mongo: Db
+interface ISession {
+  userId?: string
 }
 
-export interface State {
-  user?: IUser
+interface IContext {
+  mongo: Db
+  organizations: Organizations
+  users: Users
+  reservations: Reservations
+  customers: Customers
+  reviews: Reviews
+  invitations: Invitations
+  session: ISession
+}
+
+interface IState {
+  user?: WithId<User>
 
   // template related props
-  title?: string;
+  title: string;
+  description: string;
   scripts?: string[];
   styles?: string[];
-  alerts?: {
+  alerts: {
     text: string
     type: "primary" | "secondary" | "success" | "danger" | "warning" | "info"
   }[]
 }
 
-export type Middleware = Koa.Middleware<State, ParameterizedContext>
+export type Context = Koa.ParameterizedContext<IState, IContext & RouterParamContext<IState, IContext>>
+export type Middleware = Koa.Middleware<IState, IContext & RouterParamContext<IState, IContext>>

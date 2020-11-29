@@ -1,69 +1,48 @@
 import { Middleware } from '../types/app';
-import * as validators from '../validators';
-import * as accounts from '../data-access/businesses';
-import * as users from '../data-access/users';
-import * as password from "../lib/password";
 import { DayOfWeek } from '../types/dat-of-week';
-import { uniqId } from '../lib/uniq-id';
 import { renderView } from '../render';
 import { getGravatarUrl } from '../helpers/gravatar';
+import { isEmail } from '../lib/is-email';
+import { Service } from '../data-access/organizations';
+import { ObjectID } from 'mongodb';
+import { hashPassword } from '../lib/password';
+import { formatPrice } from '../helpers/format-price';
+import { format } from 'date-fns';
+import { dateTimeToNativeDate } from '../helpers/date-time-to-native-date';
 
-export const welcome: Middleware = async (ctx) => {
+export const welcome: Middleware = async (ctx, next) => {
   if (ctx.state.user) {
-    return ctx.redirect("/calendar")
+    return dashboard(ctx, next)
   }
 
   if (ctx.request.method === "POST") {
     const body = parseBody(ctx.request.body)
-    const user: users.IUser = {
-      id: uniqId(),
-      name: body.businessName + "'s owner",
-      email: body.email,
-      avatarUrl: getGravatarUrl(body.email),
-      timezone: body.timezone,
-      password: password.hashPassword(body.password),
-      defaultBusinessId: null,
-      ownedBusinessIds: [],
-    }
-
+    const user = parseUser(body)
+    const { insertedId: userId } = await ctx.users.createUser(user)
     const services = getDefaultServices()
-
-    const business: accounts.Business = {
-      id: uniqId(),
+    const { insertedId: organizationId } = await ctx.organizations.create({
       name: body.businessName,
-      alias: getBusinessAlias(body.businessName),
-      avatarUrl: "",
+      avatarUrl: `/images/business-avatar-${body.businessName.charCodeAt(0) % 3}.png`,
       description: "",
       timezone: body.timezone,
-      ownerId: user.id,
-      employees: [{
-        id: user.id,
+      creatorId: userId,
+      users: [{
+        id: userId,
         name: user.name,
-        email: user.email,
         avatarUrl: user.avatarUrl,
         role: "owner",
         position: "",
       }],
       services: services,
-      servicesCount: services.length,
       regularHours: getDefaultHours(),
       specialHours: [],
       createdAt: new Date,
       updatedAt: new Date
-    }
+    })
 
-    user.defaultBusinessId = business.id
-    user.ownedBusinessIds = [business.id]
+    ctx.session.userId = userId.toHexString()
 
-    const result1 = await accounts.createBusiness(ctx.mongo, business)
-    const result2 = await users.createUser(ctx.mongo, user)
-
-    // todo: get check
-    if (ctx.session) {
-      ctx.session.userId = user.id
-    }
-
-    return ctx.redirect("/calendar")
+    return ctx.redirect("/salon/" + organizationId)
   }
 
   ctx.state.title = "Welcome"
@@ -72,44 +51,48 @@ export const welcome: Middleware = async (ctx) => {
   ctx.body = await renderView("welcome.ejs")
 }
 
+const dashboard: Middleware = async (ctx, next) => {
+  const userId = ctx.state.user?._id
+
+  if (!userId) {
+    throw new Error("Not available")
+  }
+ 
+  const reservations = await ctx.reservations.findByCustomerId(userId)
+
+  const items = reservations.map(reservation => {
+    const  start = dateTimeToNativeDate(reservation.start)
+    const end = dateTimeToNativeDate(reservation.end)
+    return {
+      serviceName: reservation.service.name,
+      assigneeName: reservation.assignee.name,
+      assigneeUrl: `/salon/${reservation.assignee.id}`,
+      organizationName: reservation.organization.name,
+      organizationUrl: `/salon/${reservation.organization.id}`,
+      startEndTime: `${format(start, "MMM LL, HH:mm")} - ${format(end, "HH:mm")}`,
+      price: formatPrice(reservation.service.price, reservation.service.currencyCode),
+    }
+  })
+
+  ctx.body = await renderView("dashboard.ejs", {
+    reservations: items
+  })
+}
+
 function parseBody(body: any) {
-  if (typeof body !== "object") {
-    throw new Error("Invalid body format")
+  let businessName = String(body?.business_name).trim()
+  let email = String(body?.email ?? "").trim().toLowerCase()
+  let timezone = String(body?.timezone).trim()
+  let password = body?.password
+
+  // use some default name
+  if (businessName.length < 1) {
+    businessName = "roll salon 💈"
   }
 
-  const businessName = body.business_name
-
-  if (typeof businessName !== "string") {
-    throw new Error("Business name should be a string");
-  }
-
-  if (businessName.length < 3 || businessName.length > 200) {
-    throw new Error("Business name should be somewhat between 2 and 200 characters");
-  }
-
-  let email = body.email
-
-  if (typeof email !== "string") {
-    throw new Error("Email should be a string")
-  }
-
-  email = email.trim().toLowerCase()
-
-  if (!validators.isEmail(email)) {
+  if (!isEmail(email)) {
     throw new Error("Invalid email format");
   }
-
-  const password = body.password
-
-  if (typeof password !== "string") {
-    throw new Error("Password should be a string")
-  }
-
-  if (password.length < 6 || password.length > 30) {
-    throw new Error("Password should be be somewhat between 6 and 30 characters")
-  }
-
-  const timezone = body.timezone
 
   if (typeof timezone !== "string") {
     throw new Error("timezone should be a string")
@@ -123,21 +106,9 @@ function parseBody(body: any) {
   }
 }
 
-function getBusinessAlias(businessName: string): string {
-  let alias = businessName.replace(/[\W_]+/g, " ");
-
-  alias = alias.toLowerCase()
-
-  if (alias.length < 3) {
-    alias += 100 + Math.round(Math.random() * 900) // 100 - 999
-  }
-
-  return alias
-}
-
-function getDefaultServices(): accounts.Service[] {
+function getDefaultServices(): Service[] {
   return [{
-    id: 1,
+    id: new ObjectID(),
     name: "Hair cut",
     description: "",
     duration: 30,
@@ -167,4 +138,17 @@ function getDefaultHours() {
       seconds: 0,
     }
   }))
+}
+
+function parseUser(body: ReturnType<typeof parseBody>) {
+  return {
+    name: body.businessName + "'s owner",
+    email: body.email,
+    phone: "",
+    avatarUrl: getGravatarUrl(body.email),
+    timezone: body.timezone,
+    password: hashPassword(body.password),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }
 }

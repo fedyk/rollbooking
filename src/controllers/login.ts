@@ -1,24 +1,23 @@
 import * as koa from 'koa';
-import { Context, State } from '../types/app';
-import * as validators from '../validators';
-import * as users from '../data-access/users';
-import * as password from "../lib/password";
+import { Middleware } from '../types/app';
 import { renderView } from '../render';
+import { hashPassword } from '../lib/password';
+import { isEmail } from '../lib/is-email';
 
-export const login: koa.Middleware<State, Context> = async (ctx) => {
+export const login: Middleware = async (ctx) => {
   if (!ctx.session) {
     throw new Error("Session service is not available. Please try again later")
   }
 
   if (ctx.request.method === "POST") {
     const body = parseBody(ctx.request.body)
-    const user = await users.findUserByCredentials(ctx.mongo, body.email, password.hashPassword(body.password))
+    const user = await ctx.users.findUserByCredentials(body.email, hashPassword(body.password))
 
     if (!user) {
       throw new Error("Invalid email or password")
     }
     else {
-      ctx.session.userId = user.id
+      ctx.session.userId = user._id.toHexString()
       ctx.redirect("/calendar")
     }
   }
@@ -35,7 +34,7 @@ function parseBody(body: any) {
   const email = String(body.email).trim().toLowerCase()
   const password = String(body.password)
 
-  if (!validators.isEmail(email)) {
+  if (!isEmail(email)) {
     throw new RangeError("Invalid email address");
   }
 

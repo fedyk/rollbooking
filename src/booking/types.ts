@@ -6,7 +6,7 @@ export interface Slot {
   start: ZonedTime
   end: ZonedTime
   userId: string
-  serviceId: number
+  serviceId: string
 }
 
 export interface ServiceSlots {

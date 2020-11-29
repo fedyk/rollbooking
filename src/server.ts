@@ -8,17 +8,29 @@ import * as session from "./sessions"
 import * as mongo from "./mongo"
 import { router } from "./router";
 import { errorHandler } from "./middleware"
-import { State, ParameterizedContext } from "./types/app";
-import * as migrations from "./migrations";
+import { Context } from "./types/app";
+import { runMigrations } from "./migrations";
+import { Organizations } from "./data-access/organizations"
+import { Users } from "./data-access/users"
+import { Reservations } from "./data-access/reservations"
+import { Customers } from "./data-access/customers"
+import { Reviews } from "./data-access/reviews"
+import { Invitations } from "./data-access/invitations"
 
 export async function createServer() {
-  const app = new Koa<State, ParameterizedContext>()
+  const app = new Koa<{}, Context>()
   const mongoClient = await mongo.createClient(config.MONGODB_URI)
   const mongoDatabase = mongo.getDatabase(mongoClient)
 
-  await migrations.up(mongoDatabase)
+  await runMigrations(mongoDatabase)
 
   app.context.mongo = mongoDatabase
+  app.context.organizations = new Organizations(mongoDatabase)
+  app.context.users = new Users(mongoDatabase)
+  app.context.reservations = new Reservations(mongoDatabase)
+  app.context.customers = new Customers(mongoDatabase)
+  app.context.reviews = new Reviews(mongoDatabase)
+  app.context.invitations = new Invitations(mongoDatabase)
   app.keys = config.APP_KEYS.split(";")
   app.use(errorHandler)
   app.use(bodyParser())

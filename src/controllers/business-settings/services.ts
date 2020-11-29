@@ -1,32 +1,36 @@
-import { getBusinessById, Service } from "../../data-access/businesses";
+import { ObjectID } from "mongodb";
 import { renderView } from "../../render";
 import { Middleware } from "../../types";
-import { getUrl } from "../../helpers/get-url";
-import { getFormattedServicePrice } from "../../helpers/get-formatted-service-price";
+import { formatServicePrice_DEPRECATED } from "../../helpers/format-service-price";
+import { Service } from "../../data-access/organizations";
 
 export const services: Middleware = async (ctx) => {
-  const business = await getBusinessById(ctx.mongo, ctx.params.businessId)
+  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
 
   if (!business) {
-    return ctx.throw(404, new Error("Page not found"))
+    return ctx.throw("Not found", 404)
   }
 
-  if (ctx.session?.userId !== business.ownerId) {
-    return ctx.throw(404, new Error("Access restricted"))
+  if (!ctx.session.userId) {
+    return ctx.throw("Not found", 404)
+  }
+  
+  if (!business.creatorId.equals(ctx.session.userId)) {
+    return ctx.throw("Restricted access", 404)
   }
 
   const services = business.services.map(function (service) {
-    return parseService(service, business.id)
+    return parseService(service, business._id.toHexString())
   }).reverse()
 
-  ctx.state.selectedItemId = "services"
+  // @ts-ignore
+  // @ts-ignore
+ctx.state.selectedItemId = "services"
   ctx.state.title = business.name
   ctx.body = await renderView("business-settings/services.ejs", {
     name: business.name,
     services: services,
-    addUrl: getUrl("/business/:businessId/settings/services/new", {
-      businessId: business.id,
-    })
+    addUrl: `/salon/${business._id}/settings/services/new`
   })
 }
 
@@ -35,10 +39,7 @@ function parseService(service: Service, businessId: string) {
     name: service.name,
     description: service.description,
     duration: `${service.duration}min`,
-    price: getFormattedServicePrice(service),
-    url: getUrl("/business/:businessId/settings/services/:serviceId", {
-      businessId: businessId,
-      serviceId: service.id,
-    }),
+    price: formatServicePrice_DEPRECATED(service),
+    url: `/salon/${businessId}/settings/services/${service.id}`,
   }
 }

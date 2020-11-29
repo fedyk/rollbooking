@@ -2,86 +2,76 @@ import * as fs from "fs";
 import * as path from "path";
 import { Db } from "mongodb";
 
-export async function up(db: Db) {
-  const definedMigrations = getDefinedMigrations()
-  const lastMigrationRevisiton = await getLastMigrationRevision(db)
-  const migrationsToRun = lastMigrationRevisiton == null
-    ? definedMigrations
-    : definedMigrations.filter(function (migration) {
-      return migration.revisiton > lastMigrationRevisiton
-    })
-  let nextMigrationRevisiton: number | void = void 0
+export async function runMigrations(db: Db) {
+  const definedMigrations = getMigrationFiles()
+  const currentRevision = await getCurrMigrationRevision(db)
+  const migrationsToRun = definedMigrations.filter(migration => migration.revision > currentRevision)
+  let nextRevision = currentRevision
 
   for (let i = 0; i < migrationsToRun.length; i++) {
     const migrationToRun = migrationsToRun[i]
 
     await migrationToRun.up(db)
 
-    nextMigrationRevisiton = migrationToRun.revisiton
+    nextRevision = migrationToRun.revision
   }
 
-  if (nextMigrationRevisiton != null) {
-    await setLastMigrationRevision(db, nextMigrationRevisiton)
+  if (nextRevision !== undefined && currentRevision !== nextRevision) {
+    await setCurrMigrationRevision(db, nextRevision)
   }
+
+  return nextRevision
 }
 
-function getDefinedMigrations() {
+function getMigrationFiles() {
   return fs.readdirSync(__dirname)
-    .filter(function (basename) {
-      return /^\d+\.(js|ts)$/.test(basename)
-    })
-    .map(function (basename) {
-      const revision = Number(basename.split(".")[0])
-
-      if (Number.isNaN(revision)) {
-        throw new Error(`file "${basename}" should have only digits in the name`)
-      }
-
-      const migration = require(path.join(__dirname, basename))
-
-      if (!migration) {
-        throw new Error(`file "${basename}" should have exported object`)
-      }
-
-      const up = migration.up as (db: Db) => Promise<any>
-      const down = migration.down as (db: Db) => Promise<any>
-
-      if (typeof up !== "function") {
-        throw new Error(`file "${basename}" should have exported function 'up(db) { ... }'`)
-      }
-
-      if (typeof down !== "function") {
-        throw new Error(`file "${basename}" should have exported function 'down(db) { ... }'`)
-      }
-
-      return {
-        revisiton: revision,
-        up,
-        down
-      }
-    })
-    .sort(function (a, b) {
-      return a.revisiton - b.revisiton
-    })
+    .filter(fileName => /^\d+\.(js|ts)$/.test(fileName)) // only .js/.ts files
+    .map(fileName => parseMigrationFile(fileName))
+    .sort((a, b) => a.revision - b.revision)
 }
 
-function getLastMigrationRevision(db: Db) {
+function parseMigrationFile(fileName: string) {
+  const revision = Number(fileName.split(".")[0])
+
+  if (Number.isNaN(revision)) {
+    throw new Error(`file "${fileName}" should have a number as filename`)
+  }
+
+  const migration = require(path.join(__dirname, fileName))
+
+  if (!migration) {
+    throw new Error(`file "${fileName}" should have exported object with "up" and "down" methods`)
+  }
+
+  const up = migration.up as (db: Db) => Promise<any>
+
+  if (typeof up !== "function") {
+    throw new Error(`file "${fileName}" should have exported function 'up(db) { ... }'`)
+  }
+
+  return {
+    revision,
+    up
+  }
+}
+
+function getCurrMigrationRevision(db: Db) {
   return db.collection("migrations")
     .findOne({
       _id: "migration"
     })
     .then(function (item) {
-      return item && item.last_migration_revision ? Number(item.last_migration_revision) : undefined
+      return item && item.currentMigrationRevision ? Number(item.currentMigrationRevision) : 0
     })
 }
 
-function setLastMigrationRevision(db: Db, lastMigrationRevisiton: number) {
+function setCurrMigrationRevision(db: Db, currMigrationRevision: number) {
   return db.collection("migrations")
     .findOneAndUpdate({
       _id: "migration"
     }, {
       "$set": {
-        last_migration_revision: lastMigrationRevisiton
+        currentMigrationRevision: currMigrationRevision
       }
     }, {
       upsert: true

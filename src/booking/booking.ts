@@ -1,118 +1,100 @@
 import * as dateFns from "date-fns"
 import * as tz from "timezone-support"
-import { Business } from "../data-access/businesses";
-import { Event } from "../data-access/events";
+import { Reservation } from "../data-access/reservations";
 import { DayOfWeek } from "../types";
 import * as types from "./types";
 import { TimePeriod } from "../types/time-period";
+import { Organization } from "../data-access/organizations";
 
-export class Booking {
-  business: Business
-  timezone: ReturnType<typeof tz.findTimeZone>
-  reservations: Event[]
-  users: Array<{
-    id: string
-  }>
-  services: Array<{
-    id: number,
-    duration: number
-  }>
+export function getServicesSlots(business: Organization, reservations: Reservation[]) {
+  const timezone = tz.findTimeZone(business.timezone)
+  const users = business.users.map(u => ({
+    id: u.id.toHexString()
+  }))
+  const services = business.services.map(s => ({
+    id: s.id.toHexString(),
+    duration: s.duration
+  }))
 
-  constructor(business: Business, reservations: Event[]) {
-    this.business = business
-    this.timezone = tz.findTimeZone(business.timezone)
-    this.reservations = reservations
-    this.users = business.employees
-    this.services = business.services.map(s => ({ id: s.id, duration: s.duration }))
-  }
+  const start = tz.getZonedTime(new Date(), timezone)
+  const end = tz.getZonedTime(dateFns.addDays(new Date, 30), timezone)
+  const startDate = tz.convertTimeToDate(start)
+  const endDate = tz.convertTimeToDate(end)
 
-  destroy() {
-    // TBD
-  }
+  // get general ranges
+  const businessRanges = getPeriodRanges(startDate, endDate, business.regularHours)
 
-  getServicesSlots() {
-    const start = tz.getZonedTime(new Date(), this.timezone)
-    const end = tz.getZonedTime(dateFns.addDays(new Date, 30), this.timezone)
-    const startDate = tz.convertTimeToDate(start)
-    const endDate = tz.convertTimeToDate(end)
-    const startTime = tz.getUnixTime(start)
-    const endTime = tz.getUnixTime(end)
+  // available slots by service id
+  const slotsByServiceId = new Map(services.map(s => {
+    return [s.id, [] as types.Slot[]]
+  }))
 
-    // get general ranges
-    const businessRanges = getPeriodRanges(startDate, endDate, this.business.regularHours)
+  // user reserved time
+  const reservationsPerAssignerId = new Map<string, DateTimeRange[]>()
 
-    // available slots by service id
-    const slotsByServiceId = new Map(this.services.map(s => {
-      return [s.id, [] as types.Slot[]]
-    }))
+  // reservations by user
+  for (let i = 0; i < reservations.length; i++) {
+    const r = reservations[i]
+    const list = reservationsPerAssignerId.get(r.assignee.id.toHexString())
+    const start = tz.getUnixTime(r.start, timezone)
+    const end = tz.getUnixTime(r.end, timezone)
+    const dateRange = new DateTimeRange(start, end)
 
-    // user reserved time
-    const reservations = new Map<string, DateTimeRange[]>()
-
-    // reservations by user
-    for (let i = 0; i < this.reservations.length; i++) {
-      const r = this.reservations[i]
-      const list = reservations.get(r.assigner.id)
-      const start = tz.getUnixTime(r.start, this.timezone)
-      const end = tz.getUnixTime(r.end, this.timezone)
-      const dateRange = new DateTimeRange(start, end)
-
-      if (list) {
-        list.push(dateRange)
-      }
-      else {
-        reservations.set(r.assigner.id, [dateRange])
-      }
+    if (list) {
+      list.push(dateRange)
     }
+    else {
+      reservationsPerAssignerId.set(r.assignee.id.toHexString(), [dateRange])
+    }
+  }
 
-    // calc slots for services
-    for (let k = 0; k < this.services.length; k++) {
-      const service = this.services[k]
-      const durationInMs = service.duration * 60 * 1000
+  // calc slots for services
+  for (let k = 0; k < services.length; k++) {
+    const service = services[k]
+    const durationInMs = service.duration * 60 * 1000
 
-      for (let i = 0; i < businessRanges.length; i++) {
-        const range = businessRanges[i]
+    for (let i = 0; i < businessRanges.length; i++) {
+      const range = businessRanges[i]
 
-        for (let j = 0; j < this.users.length; j++) {
-          const user = this.users[j];
-          const userReservations = reservations.get(user.id) || []
-          const dirtyRanges = range.exclude(userReservations);
-          const tidyRanges = dirtyRanges.map(r => tidy(r))
+      for (let j = 0; j < users.length; j++) {
+        const user = users[j];
+        const userReservations = reservationsPerAssignerId.get(user.id) || []
+        const dirtyRanges = range.exclude(userReservations);
+        const tidyRanges = dirtyRanges.map(r => tidy(r))
 
-          for (let l = 0; l < tidyRanges.length; l++) {
-            const tidyRange = tidyRanges[l]
-            const times = tidyRange.split(durationInMs, true)
+        for (let l = 0; l < tidyRanges.length; l++) {
+          const tidyRange = tidyRanges[l]
+          const times = tidyRange.split(durationInMs, true)
 
-            // remove last result
-            times.pop()
+          // remove last result
+          times.pop()
 
-            times.forEach(time => {
-              const start = tz.getZonedTime(time.startTime, this.timezone)
-              const end = tz.getZonedTime(time.endTime, this.timezone)
-              const slots = slotsByServiceId.get(service.id)
+          times.forEach(time => {
+            const start = tz.getZonedTime(time.startTime, timezone)
+            const end = tz.getZonedTime(time.endTime, timezone)
+            const slots = slotsByServiceId.get(service.id)
 
-              if (slots) {
-                slots.push({
-                  start,
-                  end,
-                  userId: user.id,
-                  serviceId: service.id
-                })
-              }
-            })
-          }
-        }
-
-        const slots = slotsByServiceId.get(service.id)
-
-        if (slots && slots.length !== 0) {
-          break;
+            if (slots) {
+              slots.push({
+                start,
+                end,
+                userId: user.id,
+                serviceId: service.id
+              })
+            }
+          })
         }
       }
-    }
 
-    return Array.from(slotsByServiceId);
+      const slots = slotsByServiceId.get(service.id)
+
+      if (slots && slots.length !== 0) {
+        break;
+      }
+    }
   }
+
+  return Array.from(slotsByServiceId);
 }
 
 
@@ -381,7 +363,7 @@ function merge(ranges: DateTimeRange[]): DateTimeRange[] {
   return result;
 }
 
-function tidy(range: DateTimeRange, ): DateTimeRange {
+function tidy(range: DateTimeRange,): DateTimeRange {
   const fraction = 600000 // 10min
   const start = Math.ceil(range.startTime / fraction) * fraction
   const end = Math.round(range.endTime / fraction) * fraction

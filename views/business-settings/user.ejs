@@ -12,6 +12,11 @@
   </div>
 
   <div class="form-group">
+    <label for="emailInput">Email address</label>
+    <input name="email" class="form-control" id="emailInput" type="email" value="<%= user.email %>" />
+  </div>
+
+  <div class="form-group">
     <label for="positionInput">Position</label>
     <textarea name="position" class="form-control" id="positionInput" rows="2"
       placeholder="Tell what are you doing the best"><%= user.position %></textarea>

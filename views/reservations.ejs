@@ -1,0 +1,17 @@
+  <h6>My reservations</h6>
+
+  <% if (items.length === 0) { %>
+  <div class="text-center">No reservations, yet</div>
+  <% } else { %>
+  <div class="list-group">
+    <% items.forEach(item => { %>
+    <a href="<%= item.url %>" class="list-group-item list-group-item-action">
+      <div>
+        <h5><%= item.serviceName %> · <%= item.price %></h5>
+        <div><%= item.date %> · <%= item.assigneeName %></div>
+      </div>
+    </a>
+    <% }) %>
+  </div>
+
+  <% } %>
