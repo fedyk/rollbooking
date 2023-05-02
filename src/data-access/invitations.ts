@@ -1,9 +1,9 @@
-import { Collection, Db, ObjectID, WithId } from "mongodb";
+import { Collection, Db, ObjectId, WithId } from "mongodb";
 
 export interface Invitation {
   email: string
   position: string
-  organizationId: ObjectID
+  organizationId: ObjectId
   created: Date;
   updated: Date;
 }
@@ -15,7 +15,7 @@ export class Invitations {
     this.collection = db.collection("invitations")
   }
 
-  getById(_id: ObjectID) {
+  getById(_id: ObjectId) {
     return this.collection.findOne<WithId<Invitation>>(_id)
   }
 
@@ -23,7 +23,7 @@ export class Invitations {
     return this.collection.insertOne(invitation)
   }
 
-  delete(_id: ObjectID) {
+  delete(_id: ObjectId) {
     return this.collection.deleteOne(_id)
   }
 }

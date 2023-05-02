@@ -1,4 +1,4 @@
-// import { ObjectID } from "mongodb";
+// import { ObjectId } from "mongodb";
 // import { formatDateTime } from "../helpers/format-date-time";
 // import { formatServicePrice } from "../helpers/format-service-price";
 // import { renderView } from "../render";
@@ -9,8 +9,8 @@
 //     return ctx.throw(400, "Not authorized")
 //   }
 
-//   const userId = new ObjectID(ctx.session.userId)
-//   const reservationId = new ObjectID(ctx.params.reservationId)
+//   const userId = new ObjectId(ctx.session.userId)
+//   const reservationId = new ObjectId(ctx.params.reservationId)
 //   const reservation = await ctx.reservations.findOne({
 //     _id: reservationId,
 //     customerId: userId

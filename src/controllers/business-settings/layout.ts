@@ -1,10 +1,10 @@
 import * as Router from "@koa/router";
 import * as types from "../../types";
 import { renderView } from "../../render";
-import { ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 
 export const layout: types.Middleware = async (ctx, next) => {
-  const businessId = new ObjectID(ctx.params.id)
+  const businessId = new ObjectId(ctx.params.id)
 
   if (!businessId) {
     throw new RangeError("`businessSettingsLayout` midlware requires `bussinessId` parameter in the scope")

@@ -1,4 +1,4 @@
-import { Collection, Db, ObjectID, WithId } from "mongodb";
+import { Collection, Db, ObjectId, WithId } from "mongodb";
 
 export interface User {
   name: string
@@ -27,14 +27,14 @@ export class Users {
   }
 
   getUserById(id: string) {
-    return this.collection.findOne<WithId<User>>(new ObjectID(id))
+    return this.collection.findOne<WithId<User>>(new ObjectId(id))
   }
 
   findUserByCredentials(email: string, password: string) {
     return this.collection.findOne<WithId<User>>({ email, password })
   }
 
-  findIn(ids: ObjectID[]) {
+  findIn(ids: ObjectId[]) {
     return this.collection.find<WithId<User>>({
       _id: {
         $in: ids

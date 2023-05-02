@@ -1,4 +1,4 @@
-// import { Collection, Db, ObjectID, WithId } from "mongodb";
+// import { Collection, Db, ObjectId, WithId } from "mongodb";
 
 // export interface Service {
 //   name: string
@@ -17,7 +17,7 @@
 //     this.collection = db.collection("services")
 //   }
 
-//   getOne(_id: ObjectID) {
+//   getOne(_id: ObjectId) {
 //     return this.collection.findOne<WithId<Service>>({ _id })
 //   }
 
@@ -25,7 +25,7 @@
 //     return this.collection.insertOne(service)
 //   }
 
-//   update(_id: ObjectID, service: Service) {
+//   update(_id: ObjectId, service: Service) {
 //     return this.collection.updateOne({
 //       _id
 //     }, {
@@ -33,7 +33,7 @@
 //     })
 //   }
 
-//   delete(_id: ObjectID) {
+//   delete(_id: ObjectId) {
 //     return this.collection.deleteOne({ _id })
 //   }
 // }

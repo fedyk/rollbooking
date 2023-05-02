@@ -1,10 +1,10 @@
-import { ObjectID } from "mongodb"
+import { ObjectId } from "mongodb"
 import { renderView } from "../../render"
 import { Middleware } from "../../types"
 import { Service } from "../../data-access/organizations"
 
 export const service: Middleware = async (ctx) => {
-  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
+  const business = await ctx.organizations.get(ObjectId.createFromHexString(ctx.params.id))
 
   if (!business) {
     return ctx.throw(404, "Not found")
@@ -25,7 +25,7 @@ export const service: Middleware = async (ctx) => {
 
   if (isCreatingMode) {
     service = {
-      id: new ObjectID(),
+      id: new ObjectId(),
       name: "",
       description: "",
       duration: 30,

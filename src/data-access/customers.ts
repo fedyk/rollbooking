@@ -1,8 +1,8 @@
-import { Collection, Db, ObjectID, WithId } from "mongodb";
+import { Collection, Db, ObjectId, WithId } from "mongodb";
 
 export interface Customer {
-  organizationId: ObjectID
-  userId: ObjectID
+  organizationId: ObjectId
+  userId: ObjectId
   name: string;
   email: string;
   phone: string;
@@ -21,11 +21,11 @@ export class Customers {
     return this.collection.insertOne(customer)
   }
 
-  getById(_id: ObjectID) {
+  getById(_id: ObjectId) {
     return this.collection.findOne<WithId<Customer>>({ _id })
   }
 
-  findById(organizationId: ObjectID, userId: ObjectID) {
+  findById(organizationId: ObjectId, userId: ObjectId) {
     return this.collection.findOne<WithId<Customer>>({
       organizationId,
       userId

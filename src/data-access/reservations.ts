@@ -1,4 +1,4 @@
-import { Collection, Db, FilterQuery, ObjectID, WithId } from "mongodb";
+import { Collection, Db, Filter, ObjectId, WithId } from "mongodb";
 import { DateTime } from "../types";
 import { Organization, Service } from "./organizations";
 import { User } from "./users";
@@ -17,9 +17,9 @@ export interface Reservation {
   updatedAt: Date
 }
 
-type OrganizationSummary = Pick<Organization, "name" | "avatarUrl"> & { id: ObjectID }
+type OrganizationSummary = Pick<Organization, "name" | "avatarUrl"> & { id: ObjectId }
 type ServiceSummary = Pick<Service, "id" | "name" | "price" | "currencyCode">
-type UserSummary = Pick<User, "name"> & { id: ObjectID }
+type UserSummary = Pick<User, "name"> & { id: ObjectId }
 
 export class Reservations {
   collection: Collection<Reservation>
@@ -33,22 +33,22 @@ export class Reservations {
   }
 
   /** @deprecated */
-  findOne(query: FilterQuery<WithId<Reservation>>) {
+  findOne(query: Filter<WithId<Reservation>>) {
     return this.collection.findOne<WithId<Reservation>>(query)
   }
 
   /** @deprecated */
-  find(query: FilterQuery<Reservation>) {
+  find(query: Filter<Reservation>) {
     return this.collection.find<WithId<Reservation>>(query)
   }
 
-  findByCustomerId(customerId: ObjectID) {
+  findByCustomerId(customerId: ObjectId) {
     return this.collection.find<WithId<Reservation>>({
       "customer.id": customerId
     }).toArray()
   }
 
-  findByDateRange(organizationId: ObjectID, startTime: DateTime, endTime: DateTime) {
+  findByDateRange(organizationId: ObjectId, startTime: DateTime, endTime: DateTime) {
     return this.collection.find({
       "organization.id": organizationId,
       $and: [{
@@ -64,7 +64,7 @@ export class Reservations {
     }).toArray()
   }
 
-  findCustomerUpcoming(organizationId: ObjectID, customerId: ObjectID, startTime: DateTime) {
+  findCustomerUpcoming(organizationId: ObjectId, customerId: ObjectId, startTime: DateTime) {
     return this.collection.find<WithId<Reservation>>({
       "organization.id": organizationId,
       customerId,

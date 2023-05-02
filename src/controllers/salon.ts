@@ -2,7 +2,7 @@ import * as Router from "@koa/router"
 import { stringify } from "querystring";
 import * as tz from "timezone-support";
 import * as dateFns from "date-fns";
-import { ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 
 import * as types from '../types';
 import { getServicesSlots } from '../booking';
@@ -14,7 +14,7 @@ import { dateTimeToNativeDate } from "../helpers/date-time-to-native-date";
 import { formatPrice } from "../helpers/format-price";
 
 export const salon: types.Middleware = async (ctx) => {
-  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
+  const business = await ctx.organizations.get(ObjectId.createFromHexString(ctx.params.id))
 
   if (!business) {
     throw new ErrorWithType("Not found", "ORGANIZATION_NOT_EXIST", 404)

@@ -1,4 +1,4 @@
-import { Collection, Db, FilterQuery, ObjectID, WithId } from "mongodb";
+import { Collection, Db, Filter, ObjectId, WithId } from "mongodb";
 import { TimePeriod } from "../types/time-period";
 import { SpecialHourPeriod } from "../types/special-hour-period";
 import { User } from "./users";
@@ -12,7 +12,7 @@ export interface Organization {
   services: Service[]
   regularHours: TimePeriod[]
   specialHours: SpecialHourPeriod[]
-  creatorId: ObjectID
+  creatorId: ObjectId
   createdAt: Date
   updatedAt: Date
 }
@@ -20,13 +20,13 @@ export interface Organization {
 export type UserRole = "owner" | "admin"| "normal"
 
 export interface UserSummary extends Pick<User, "name" | "avatarUrl"> {
-  id: ObjectID
+  id: ObjectId
   role: UserRole
   position?: string
 }
 
 export interface Service {
-  id: ObjectID
+  id: ObjectId
   name: string
   description: string
   /** service duration in minutes */
@@ -43,15 +43,15 @@ export class Organizations {
     this.collection = db.collection("organizations")
   }
 
-  get(id: ObjectID) {
+  get(id: ObjectId) {
     return this.collection.findOne<WithId<Organization>>({ _id: id })
   }
 
-  findOne(filters: FilterQuery<WithId<Organization>>) {
+  findOne(filters: Filter<WithId<Organization>>) {
     return this.collection.findOne<WithId<Organization>>(filters)
   }
 
-  findManyByIds(ids: ObjectID[]) {
+  findManyByIds(ids: ObjectId[]) {
     return this.collection.find<WithId<Organization>>({
       _id: {
         $in: ids
@@ -63,7 +63,7 @@ export class Organizations {
     return this.collection.insertOne(organization)
   }
 
-  update(id: ObjectID, org: Partial<Organization>) {
+  update(id: ObjectId, org: Partial<Organization>) {
     return this.collection.updateOne({
       _id: id
     }, {
@@ -71,7 +71,7 @@ export class Organizations {
     })
   }
 
-  addMember(id: ObjectID, member: UserSummary) {
+  addMember(id: ObjectId, member: UserSummary) {
     return this.collection.updateOne({
       _id: id
     }, {
@@ -81,7 +81,7 @@ export class Organizations {
     })
   }
 
-  setMember(id: ObjectID, userId: ObjectID, member: Partial<UserSummary>) {
+  setMember(id: ObjectId, userId: ObjectId, member: Partial<UserSummary>) {
     return this.collection.updateOne({
       _id: id,
       "members.id": userId
@@ -92,7 +92,7 @@ export class Organizations {
     })
   }
 
-  removeMember(id: ObjectID, memberId: ObjectID) {
+  removeMember(id: ObjectId, memberId: ObjectId) {
     return this.collection.updateOne({
       _id: id
     }, {
@@ -104,7 +104,7 @@ export class Organizations {
     })
   }
 
-  addService(id: ObjectID, service: Service) {
+  addService(id: ObjectId, service: Service) {
     return this.collection.updateOne({
       _id: id
     }, {
@@ -114,7 +114,7 @@ export class Organizations {
     })
   }
 
-  setService(id: ObjectID, serviceId: ObjectID, service: Partial<Service>) {
+  setService(id: ObjectId, serviceId: ObjectId, service: Partial<Service>) {
     return this.collection.updateOne({
       _id: id,
       "services.id": serviceId,
@@ -125,7 +125,7 @@ export class Organizations {
     })
   }
 
-  removeService(id: ObjectID, serviceId: ObjectID) {
+  removeService(id: ObjectId, serviceId: ObjectId) {
     return this.collection.updateOne({
       _id: id
     }, {

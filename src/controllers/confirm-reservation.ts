@@ -1,4 +1,4 @@
-import { ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import * as dateFns from "date-fns";
 import * as Types from '../types';
 import { renderView } from "../render";
@@ -7,7 +7,7 @@ import { ok } from "assert";
 
 export const confirmReservation: Types.Middleware = async (ctx) => {
   const user = ctx.state.user
-  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
+  const business = await ctx.organizations.get(ObjectId.createFromHexString(ctx.params.id))
   const query = parseQuery(ctx.request.query)
 
   if (!business) {
@@ -38,7 +38,7 @@ export const confirmReservation: Types.Middleware = async (ctx) => {
 
     // if (!customer) {
     //   customer = {
-    //     _id: new ObjectID(),
+    //     _id: new ObjectId(),
     //     organizationId: business._id,
     //     userId: user._id,
     //     name: user.name,
@@ -84,7 +84,7 @@ export const confirmReservation: Types.Middleware = async (ctx) => {
       updatedAt: new Date()
     })
 
-    if (result.insertedCount !== 1) {
+    if (!result.insertedId) {
       throw new Error("Event has not been created. Please try again later.")
     }
 
@@ -107,8 +107,8 @@ export const confirmReservation: Types.Middleware = async (ctx) => {
 }
 
 function parseQuery(query: any) {
-  const userId = ObjectID.createFromHexString(query?.user_id)
-  const serviceId = ObjectID.createFromHexString(query?.service_id)
+  const userId = ObjectId.createFromHexString(query?.user_id)
+  const serviceId = ObjectId.createFromHexString(query?.service_id)
   const date = new Date(query.date)
 
   if (Number.isNaN(date.getTime())) {

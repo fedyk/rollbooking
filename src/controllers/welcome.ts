@@ -4,7 +4,7 @@ import { renderView } from '../render';
 import { getGravatarUrl } from '../helpers/gravatar';
 import { isEmail } from '../lib/is-email';
 import { Service } from '../data-access/organizations';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { hashPassword } from '../lib/password';
 import { formatPrice } from '../helpers/format-price';
 import { format } from 'date-fns';
@@ -108,7 +108,7 @@ function parseBody(body: any) {
 
 function getDefaultServices(): Service[] {
   return [{
-    id: new ObjectID(),
+    id: new ObjectId(),
     name: "Hair cut",
     description: "",
     duration: 30,

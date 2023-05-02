@@ -1,12 +1,12 @@
-import { Collection, Db, ObjectID, WithId } from "mongodb";
+import { Collection, Db, ObjectId, WithId } from "mongodb";
 
 export interface Review {
   text: string
   stars: number
-  eventId: ObjectID
-  authorId: ObjectID
-  serviceId: ObjectID
-  organizationId: ObjectID
+  eventId: ObjectId
+  authorId: ObjectId
+  serviceId: ObjectId
+  organizationId: ObjectId
   created: Date;
   updated: Date;
 }
@@ -22,7 +22,7 @@ export class Reviews {
     return this.collection.insertOne(review)
   }
 
-  getById(_id: ObjectID) {
+  getById(_id: ObjectId) {
     return this.collection.findOne<WithId<Review>>({ _id })
   }
 }

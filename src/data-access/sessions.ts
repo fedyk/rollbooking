@@ -1,4 +1,4 @@
-import { Collection, Db, ObjectID } from "mongodb";
+import { Collection, Db, ObjectId } from "mongodb";
 
 export interface Session {
   body: string
@@ -17,11 +17,11 @@ export class Sessions {
   }
 
   // generateId() {
-  //   return new ObjectID().toHexString()
+  //   return new ObjectId().toHexString()
   // }
 
   // get(id: String) {
-  //   return this.collection.findOne(ObjectID(id)).then
+  //   return this.collection.findOne(ObjectId(id)).then
   // }
 
   // create(id: string, session: Session) {
@@ -30,7 +30,7 @@ export class Sessions {
   //   })
   // }
 
-  // delete(_id: ObjectID) {
+  // delete(_id: ObjectId) {
   //   return this.collection.deleteOne({
   //     _id
   //   })

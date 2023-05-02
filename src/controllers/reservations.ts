@@ -1,4 +1,4 @@
-import { ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import { dateTimeToNativeDate } from "../helpers/date-time-to-native-date";
 import { formatPrice } from "../helpers/format-price";
 import { renderView } from "../render";
@@ -9,7 +9,7 @@ export const reservations: Middleware = async (ctx) => {
     return ctx.throw(400, "Not authorized")
   }
 
-  const userId = ObjectID.createFromHexString(ctx.session.userId)
+  const userId = ObjectId.createFromHexString(ctx.session.userId)
   const reservations = await ctx.reservations.findByCustomerId(userId)
 
   const items = reservations.map(reservation => {

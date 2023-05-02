@@ -1,11 +1,11 @@
 import { Middleware } from '../types';
 import { renderView } from '../render';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { hashPassword } from '../lib/password';
 import { getGravatarUrl } from '../helpers/gravatar';
 
 export const invite_TO_REWORK: Middleware = async (ctx) => {
-  const token = await ctx.invitations.getById(new ObjectID(ctx.params.token))
+  const token = await ctx.invitations.getById(new ObjectId(ctx.params.token))
 
   if (!token) {
     throw new Error("Token has expired, please ask for a new invite")

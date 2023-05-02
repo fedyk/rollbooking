@@ -2,6 +2,11 @@ import * as fs from "fs";
 import * as path from "path";
 import { Db } from "mongodb";
 
+interface TMigrationSchema {
+  _id: string
+  currentMigrationRevision: number
+}
+
 export async function runMigrations(db: Db) {
   const definedMigrations = getMigrationFiles()
   const currentRevision = await getCurrMigrationRevision(db)
@@ -56,7 +61,7 @@ function parseMigrationFile(fileName: string) {
 }
 
 function getCurrMigrationRevision(db: Db) {
-  return db.collection("migrations")
+  return db.collection<TMigrationSchema>("migrations")
     .findOne({
       _id: "migration"
     })
@@ -66,13 +71,11 @@ function getCurrMigrationRevision(db: Db) {
 }
 
 function setCurrMigrationRevision(db: Db, currMigrationRevision: number) {
-  return db.collection("migrations")
+  return db.collection<TMigrationSchema>("migrations")
     .findOneAndUpdate({
-      _id: "migration"
+      "_id": "migration"
     }, {
-      "$set": {
-        currentMigrationRevision: currMigrationRevision
-      }
+      currentMigrationRevision: currMigrationRevision
     }, {
       upsert: true
     })

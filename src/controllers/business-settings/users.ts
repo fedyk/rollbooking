@@ -1,9 +1,9 @@
-import { ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import { renderView } from "../../render";
 import { Middleware } from "../../types";
 
 export const users: Middleware = async (ctx) => {
-  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
+  const business = await ctx.organizations.get(ObjectId.createFromHexString(ctx.params.id))
 
   if (!business) {
     return ctx.throw("Not found", 404)

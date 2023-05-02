@@ -1,4 +1,4 @@
-import { ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import { renderView } from "../../render";
 import { Middleware, DayOfWeek } from "../../types";
 import { daysOfWeek } from "../../helpers/days-of-week";
@@ -7,7 +7,7 @@ import { TimePeriod } from "../../types/time-period";
 import { parseISOTime } from "../../helpers/parse-iso-time";
 
 export const profile: Middleware = async (ctx) => {
-  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
+  const business = await ctx.organizations.get(ObjectId.createFromHexString(ctx.params.id))
 
   if (!business) {
     return ctx.throw("Not found", 404)
@@ -28,7 +28,7 @@ export const profile: Middleware = async (ctx) => {
       const body = parseProfileBody(ctx.request.body)
 
       await ctx.organizations.update(business._id, body).then(resp => {
-        if (resp.result.n !== 1) {
+        if (resp.modifiedCount !== 1) {
           throw new Error("Failed to update business profile")
         }
       })
@@ -38,7 +38,7 @@ export const profile: Middleware = async (ctx) => {
       const regularHours = parseHoursBody(ctx.request.body)
 
       await ctx.organizations.update(business._id, { regularHours }).then(resp => {
-        if (resp.result.n !== 1) {
+        if (resp.modifiedCount !== 1) {
           throw new Error("Failed to update business profile")
         }
       })

@@ -1,4 +1,4 @@
-import { ObjectID } from "mongodb"
+import { ObjectId } from "mongodb"
 import { UserRole, UserSummary } from "../../data-access/organizations"
 import { User } from "../../data-access/users"
 import { getGravatarUrl } from "../../helpers/gravatar"
@@ -14,7 +14,7 @@ interface UserForm {
 }
 
 export const user: Middleware = async (ctx) => {
-  const business = await ctx.organizations.get(ObjectID.createFromHexString(ctx.params.id))
+  const business = await ctx.organizations.get(ObjectId.createFromHexString(ctx.params.id))
 
   if (!business) {
     return ctx.throw(new Error("Page not found"), 404)
