@@ -13,7 +13,7 @@ import { user as businessUser } from "./controllers/business-settings/user";
 import { services as businessServices } from "./controllers/business-settings/services";
 import { service as businessService } from "./controllers/business-settings/service";
 import { layout as businessLayout } from "./controllers/business-settings/layout";
-// import { reservation } from "./controllers/reservation";
+import { privacy } from "./privacy";
 
 export const router = new Router<{}, Context>()
 
@@ -30,6 +30,7 @@ router.all("/salon/:id/settings/users", template, businessLayout, businessUsers)
 router.all("/salon/:id/settings/users/:userId", template, businessLayout, businessUser)
 router.all("/salon/:id/settings/services", template, businessLayout, businessServices)
 router.all("/salon/:id/settings/services/:serviceId", template, businessLayout, businessService)
+router.all("/privacy", template, privacy)
 
 /**
  * Critical

@@ -2,11 +2,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "./dist",
-    "allowJs": true,
-    "target": "es2019",
-    "sourceMap": true,
+    "target": "ESNext",
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "jsx": "react"
   },
   "include": [
     "./src/**/*"
